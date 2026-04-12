@@ -17,6 +17,7 @@ composer.lock
 /.ddev/.homeadditions/
 /.ddev/db_snapshots/
 /.ddev/.ddev-docker-compose-full.yaml
+/.ddev/.ddev-docker-compose-base.yaml
 
 # Composer auth (may contain tokens)
 /auth.json
