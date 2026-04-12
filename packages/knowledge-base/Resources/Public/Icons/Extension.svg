@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img">
+  <title>KB — Knowledge Base extension icon</title>
+  <desc>Open book with a lightning spark badge, icon for the TYPO3 v14 knowledge base extension</desc>
+
+  <!-- background -->
+  <rect x="0" y="0" width="120" height="120" rx="22" fill="#1D9E75"/>
+
+  <!-- book depth shadow -->
+  <rect x="18" y="28" width="84" height="66" rx="4" fill="#085041" opacity="0.4"/>
+
+  <!-- left page -->
+  <path d="M60 30 C44 28 24 32 20 38 L20 86 C24 80 44 76 60 80 Z" fill="#E1F5EE"/>
+
+  <!-- left page spine glow -->
+  <path d="M60 30 C56 30 54 32 54 38 L54 80 C56 78 58 77 60 80 Z" fill="#9FE1CB" opacity="0.5"/>
+
+  <!-- right page -->
+  <path d="M60 30 C76 28 96 32 100 38 L100 86 C96 80 76 76 60 80 Z" fill="#ffffff"/>
+
+  <!-- right page spine shadow -->
+  <path d="M60 30 C64 30 66 32 66 38 L66 80 C64 78 62 77 60 80 Z" fill="#D3D1C7" opacity="0.4"/>
+
+  <!-- spine -->
+  <rect x="57" y="28" width="6" height="54" rx="2" fill="#085041"/>
+
+  <!-- left page lines -->
+  <line x1="27" y1="43" x2="50" y2="41" stroke="#9FE1CB" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="27" y1="52" x2="50" y2="50" stroke="#9FE1CB" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="27" y1="61" x2="50" y2="59" stroke="#9FE1CB" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="27" y1="70" x2="42" y2="69" stroke="#9FE1CB" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- right page lines -->
+  <line x1="70" y1="41" x2="93" y2="43" stroke="#D3D1C7" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="70" y1="50" x2="93" y2="52" stroke="#D3D1C7" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="70" y1="59" x2="93" y2="61" stroke="#D3D1C7" stroke-width="2.2" stroke-linecap="round"/>
+  <line x1="70" y1="69" x2="84" y2="70" stroke="#D3D1C7" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- book bottom curve -->
+  <path d="M20 86 C24 92 44 96 60 94 C76 96 96 92 100 86" fill="none" stroke="#085041" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- spark badge: outer ring (matches bg, creates separation) -->
+  <circle cx="92" cy="26" r="17" fill="#1D9E75"/>
+  <!-- spark badge: white ring -->
+  <circle cx="92" cy="26" r="14" fill="#ffffff"/>
+  <!-- spark badge: amber fill -->
+  <circle cx="92" cy="26" r="11" fill="#FAEEDA"/>
+  <!-- lightning bolt -->
+  <path d="M94 16 L87 27 L92 27 L90 36 L97 25 L92 25 Z" fill="#BA7517"/>
+</svg>

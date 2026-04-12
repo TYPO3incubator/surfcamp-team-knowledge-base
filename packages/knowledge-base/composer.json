@@ -1,0 +1,30 @@
+{
+  "name": "typo3-incubator/knowledge-base",
+  "description": "A knowledge base for typo3",
+  "type": "typo3-cms-extension",
+  "license": "GPL-2.0-or-later",
+  "require": {
+    "php": "^8.4",
+    "typo3/cms-core": "^14",
+    "typo3/cms-felogin": "^14",
+    "typo3/cms-dashboard": "^14",
+    "typo3/cms-install": "^14",
+    "typo3/cms-beuser": "^14"
+  },
+  "autoload": {
+    "psr-4": {
+      "TYPO3Incubator\\KnowledgeBase\\": "Classes/"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "knowledge-base"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    }
+  }
+}
