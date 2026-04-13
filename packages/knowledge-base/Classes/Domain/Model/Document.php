@@ -9,11 +9,11 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Document extends AbstractEntity
 {
-    public const TYPE_NORMAL = 'normal';
-    public const TYPE_BOARD = 'board';
+    public const string TYPE_NORMAL = 'normal';
+    public const string TYPE_BOARD = 'board';
 
-    public const VISIBILITY_PUBLIC = 'public';
-    public const VISIBILITY_PRIVATE = 'private';
+    public const string VISIBILITY_PUBLIC = 'public';
+    public const string VISIBILITY_PRIVATE = 'private';
 
     protected string $headline = '';
 
@@ -24,6 +24,8 @@ class Document extends AbstractEntity
     protected string $visibility = self::VISIBILITY_PUBLIC;
 
     protected ?Document $parent = null;
+
+    protected ?Status $status = null;
 
     protected BackendUser $user;
 
@@ -80,6 +82,16 @@ class Document extends AbstractEntity
     public function setParent(?Document $parent): void
     {
         $this->parent = $parent;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): void
+    {
+        $this->status = $status;
     }
 
     public function getUser(): BackendUser
