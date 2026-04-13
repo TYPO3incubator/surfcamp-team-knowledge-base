@@ -38,6 +38,7 @@ return [
             'config' => [
                 'type' => 'text',
                 'enableRichtext' => true,
+                'richtextConfiguration' => 'default',
                 'rows' => 15,
             ],
         ],
