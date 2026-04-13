@@ -15,7 +15,7 @@ return [
     ],
     'types' => [
         'normal' => [
-            'showitem' => 'type, headline, markup, parent, user, visibility',
+            'showitem' => 'type, headline, markup, parent, status, user, visibility',
         ],
         'board' => [
             'showitem' => 'type, headline, parent, user, visibility',
@@ -79,6 +79,19 @@ return [
                     ],
                 ],
                 'default' => 'public',
+            ],
+        ],
+        'status' => [
+            'label' => 'LLL:EXT:knowledge-base/Resources/Private/Language/locallang_db.xlf:tx_knowledgebase_domain_model_document.status',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'foreign_table' => 'tx_knowledgebase_domain_model_status',
+                'foreign_table_where' => 'AND {#tx_knowledgebase_domain_model_status}.{#document} = ###REC_FIELD_parent### ORDER BY title ASC',
+                'items' => [
+                    ['label' => '', 'value' => 0],
+                ],
+                'default' => 0,
             ],
         ],
         'type' => [
