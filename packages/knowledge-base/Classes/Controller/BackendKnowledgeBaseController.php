@@ -10,9 +10,12 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Beuser\Domain\Repository\BackendUserRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 
 #[AsController]
@@ -25,6 +28,9 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly PageRenderer $pageRenderer,
         protected readonly DocumentTreeService $documentTreeService,
         protected readonly DocumentService $documentService,
+        protected readonly DocumentRepository $documentRepository,
+        protected readonly PersistenceManager $persistenceManager,
+        protected readonly BackendUserRepository $backendUserRepository,
     ) {}
 
     public function initializeAction(): void
@@ -38,6 +44,7 @@ class BackendKnowledgeBaseController extends ActionController
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $this->moduleTemplate->assign('allDocuments', $this->documentRepository->findAll());
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
@@ -58,7 +65,24 @@ class BackendKnowledgeBaseController extends ActionController
             );
             return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
         }
-        $this->addFlashMessage(LocalizationUtility::translate('flash.document.updated', 'KnowledgeBase') ?? '');
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.updated', 'Knowledge-base') ?? '');
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
+    }
+
+    public function createAction(string $documentHeadline, int $parentId): ResponseInterface
+    {
+        $result = $this->documentService->createDocument($documentHeadline, $parentId);
+
+        if (!$result['success']) {
+            $this->addFlashMessage(
+                $result['message'] ?? '',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('index');
+        }
+
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
+        return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
 }
