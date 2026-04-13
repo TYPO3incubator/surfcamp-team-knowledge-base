@@ -16,6 +16,11 @@
       "TYPO3Incubator\\KnowledgeBase\\": "Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "TYPO3Incubator\\KnowledgeBase\\Tests\\": "Tests/"
+    }
+  },
   "extra": {
     "typo3/cms": {
       "extension-key": "knowledge-base"

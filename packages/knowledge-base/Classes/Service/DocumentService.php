@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TYPO3Incubator\KnowledgeBase\Service;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 
 class DocumentService
@@ -12,6 +13,19 @@ class DocumentService
     public function __construct(
         protected readonly DocumentRepository $documentRepository
     ) {}
+
+    public function searchDocuments(string $query): array
+    {
+        $documents = $this->documentRepository->search($query);
+
+        return array_map(fn(Document $document) => [
+            'uid' => $document->getUid(),
+            'headline' => $document->getHeadline(),
+            'type' => $document->getType(),
+            'visibility' => $document->getVisibility(),
+            'breadcrumb' => $document->getBreadcrumbs(),
+        ], $documents);
+    }
 
     public function updateDocument(int $documentUid, array $documentData): array
     {

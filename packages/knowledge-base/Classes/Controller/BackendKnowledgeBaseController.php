@@ -41,11 +41,15 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
+    public function searchAction(string $query = ''): ResponseInterface
+    {
+        $results = $this->documentService->searchDocuments($query);
+        return $this->jsonResponse((string)json_encode($results));
+    }
+
     public function updateAction(int $documentUid, array $documentData): ResponseInterface
     {
         $result = $this->documentService->updateDocument($documentUid, $documentData);
-
-
         if (!$result['success']) {
             $this->addFlashMessage(
                 $result['message'] ?? '',

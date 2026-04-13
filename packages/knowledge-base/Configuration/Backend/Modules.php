@@ -16,6 +16,7 @@ return [
         'controllerActions' => [
             BackendKnowledgeBaseController::class => [
                 'index',
+                'search',
                 'update',
             ],
         ],
