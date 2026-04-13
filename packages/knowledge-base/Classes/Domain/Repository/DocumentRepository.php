@@ -53,4 +53,42 @@ class DocumentRepository
             ->executeQuery()
             ->fetchOne();
     }
+
+    public function findByUid(int $uid): ?Document
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $row = $queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        if ($row === false) {
+            return null;
+        }
+
+        $objects = $this->dataMapper->map(Document::class, [$row]);
+        return $objects[0] ?? null;
+    }
+
+    public function update(Document $document): void
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $queryBuilder
+            ->update($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($document->getUid(), Connection::PARAM_INT))
+            )
+            ->set('headline', $document->getHeadline())
+            ->set('markup', $document->getMarkup())
+            ->set('type', $document->getType())
+            ->set('visibility', $document->getVisibility())
+            ->set('parent', (string)($document->getParent()?->getUid() ?? 0))
+            ->set('status', (string)($document->getStatus()?->getUid() ?? 0))
+            ->set('tstamp', (string)time())
+            ->executeStatement();
+    }
 }
