@@ -7,20 +7,53 @@
 <f:section name="Content">
     <h1>Knowledge Base</h1>
     <p>Welcome to the Knowledge Base module.</p>
-    <div style="font-family: monospace;" class="document-tree">
-        <f:render section="Tree" arguments="{tree: tree}"/>
+    <div class="document-tree">
+        <div class="tree">
+            <div class="tree-header">
+                <span>Pages</span>
+                <button class="basic-button">
+                    <core:icon identifier="tx-knowledge-base-add" size="default" />
+                </button>
+            </div>
+
+            <f:render section="Tree" arguments="{tree: tree}"/>
+        </div>
     </div>
 </f:section>
 
 <f:section name="Tree">
     <f:for each="{tree}" as="node">
-        <div>- {node.document.headline} (ID: {node.document.uid})</div>
-        <f:if condition="{node.children}">
-            <f:render section="Tree" arguments="{tree: node.children}"/>
-        </f:if>
-        <br>
+        <div class="item-wrapper">
+            <div class="item">
+                <span class="icon">
+
+                    <f:if condition="{node.document.type} == 'board'">
+                        <f:then>
+                            <core:icon identifier="tx-knowledge-base-boards" size="default" />
+                        </f:then>
+                        <f:else>
+                            <core:icon identifier="tx-knowledge-base-page" size="default" />
+                        </f:else>
+                    </f:if>
+
+                </span>
+                <div>
+                    <span>{node.document.headline} (ID: {node.document.uid})</span>
+                    <span>
+                        <button class="basic-button">
+                        <core:icon identifier="tx-knowledge-base-add" size="default" />
+                </button></span>
+                </div>
+            </div>
+
+            <f:if condition="{node.children}">
+                <div class="item-childs">
+                    <f:render section="Tree" arguments="{tree: node.children}"/>
+                </div>
+            </f:if>
+        </div>
     </f:for>
-    <br>
+
 </f:section>
 
 </html>
