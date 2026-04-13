@@ -25,3 +25,46 @@
     height: 24px;
     line-height: 24px;
 }
+
+.tree {
+    max-width: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* PageTree Header */
+.tree-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    border-bottom: 1px solid #c3c3c3;
+}
+
+.basic-button {
+    background: unset;
+    border: unset;
+    width: 24px;
+    height: 24px;
+}
+
+
+/* PageTree Nodes */
+.item-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+}
+
+.item .icon {
+    margin-right: 10px;
+}
+
+.item-childs {
+    padding-left: 20px;
+}
+
