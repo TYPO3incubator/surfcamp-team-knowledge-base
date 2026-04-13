@@ -36,6 +36,43 @@
             <trans-unit id="tx_knowledgebase_domain_model_document.type.board">
                 <source>Board</source>
             </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_comment">
+                <source>Comment</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_comment.document">
+                <source>Document</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_comment.user">
+                <source>User</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_comment.comment">
+                <source>Comment</source>
+            </trans-unit>
+
+            <trans-unit id="tx_knowledgebase_domain_model_reaction">
+                <source>Reaction</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.document">
+                <source>Document</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.user">
+                <source>User</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.reaction">
+                <source>Reaction</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.reaction.like">
+                <source>Like</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.reaction.heart">
+                <source>Heart</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.reaction.thumbs_down">
+                <source>Thumbs Down</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_reaction.reaction.celebrate">
+                <source>Celebrate</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
