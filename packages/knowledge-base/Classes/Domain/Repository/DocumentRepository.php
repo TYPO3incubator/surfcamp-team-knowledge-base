@@ -29,6 +29,35 @@ class DocumentRepository extends Repository
         return $this->tableName;
     }
 
+    public function search(string $query): array
+    {
+        // Strip FULLTEXT boolean operators from user input to prevent syntax errors
+        $sanitized = preg_replace('/[+\-><()~*"@]+/', ' ', trim($query));
+        $words = array_values(array_filter(array_map('trim', explode(' ', $sanitized))));
+
+        if (empty($words)) {
+            return [];
+        }
+
+        // +word* = word must be present and may have any suffix (prefix match, boolean mode)
+        $booleanQuery = implode(' ', array_map(fn(string $w) => '+' . $w . '*', $words));
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $param = $queryBuilder->createNamedParameter($booleanQuery);
+        $matchExpression = 'MATCH(headline, markup) AGAINST (' . $param . ' IN BOOLEAN MODE)';
+
+        $rows = $queryBuilder
+            ->select('*')
+            ->addSelectLiteral($matchExpression . ' AS search_score')
+            ->from($this->tableName)
+            ->where($matchExpression)
+            ->orderBy('search_score', 'DESC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        return $this->dataMapper->map(Document::class, $rows);
+    }
+
     public function fetchNodesByParent(int $parentIdentifier): array
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);

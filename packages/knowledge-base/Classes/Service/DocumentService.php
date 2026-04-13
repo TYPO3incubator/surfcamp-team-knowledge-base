@@ -40,7 +40,7 @@ class DocumentService
         $document = $this->documentRepository->findByUid($documentUid);
         if ($document === null) {
             $result['success'] = false;
-            $result['message'] = LocalizationUtility::translate('flash.document.notFound', 'KnowledgeBase') ?? '';
+            $result['message'] = LocalizationUtility::translate('flash.document.notFound', 'Knowledge-base') ?? '';
             return $result;
         }
 
@@ -52,7 +52,7 @@ class DocumentService
         return $result;
     }
 
-    public function createDocument(string $documentHeadline, int $parentId): array
+    public function createDocument(string $documentHeadline, int $parentId, string $visibility): array
     {
         $result = [
             'success' => true,
@@ -65,13 +65,15 @@ class DocumentService
 
         if ($backendUser === null) {
             $result['success'] = false;
-            $result['message'] = LocalizationUtility::translate('flash.document.userNotFound', 'KnowledgeBase') ?? 'Backend user not found.';
+            $result['message'] = LocalizationUtility::translate('flash.document.userNotFound', 'Knowledge-base') ?? 'Backend user not found.';
             return $result;
         }
+
 
         $document = new Document();
         $document->setHeadline($documentHeadline);
         $document->setUser($backendUser);
+        $document->setVisibility($visibility);
 
         if ($parentId > 0) {
             $parent = $this->documentRepository->findByUid($parentId);

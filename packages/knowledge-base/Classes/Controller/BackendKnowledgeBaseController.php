@@ -68,9 +68,9 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
     }
 
-    public function createAction(string $documentHeadline, int $parentId): ResponseInterface
+    public function createAction(string $documentHeadline, int $parentId, string $visibility): ResponseInterface
     {
-        $result = $this->documentService->createDocument($documentHeadline, $parentId);
+        $result = $this->documentService->createDocument($documentHeadline, $parentId, $visibility);
 
         if (!$result['success']) {
             $this->addFlashMessage(

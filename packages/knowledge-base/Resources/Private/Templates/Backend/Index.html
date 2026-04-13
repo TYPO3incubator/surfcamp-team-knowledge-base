@@ -18,6 +18,10 @@
             <label for="parentId">Parent</label>
             <f:form.textfield name="parentId" id="parentId" />
         </div>
+        <div>
+            <label for="visibility">Visibility</label>
+            <f:form.select name="visibility" id="visibility" options="{public: 'Public', private: 'Private'}" />
+        </div>
         <f:form.submit value="Create" />
     </f:form>
 
