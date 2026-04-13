@@ -25,6 +25,8 @@ class Document extends AbstractEntity
 
     protected ?Document $parent = null;
 
+    protected ?Status $status = null;
+
     protected BackendUser $user;
 
     public function getHeadline(): string
@@ -80,6 +82,16 @@ class Document extends AbstractEntity
     public function setParent(?Document $parent): void
     {
         $this->parent = $parent;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): void
+    {
+        $this->status = $status;
     }
 
     public function getUser(): BackendUser

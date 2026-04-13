@@ -36,6 +36,9 @@
             <trans-unit id="tx_knowledgebase_domain_model_document.type.board">
                 <source>Board</source>
             </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.status">
+                <source>Status</source>
+            </trans-unit>
             <trans-unit id="tx_knowledgebase_domain_model_comment">
                 <source>Comment</source>
             </trans-unit>
@@ -72,6 +75,16 @@
             </trans-unit>
             <trans-unit id="tx_knowledgebase_domain_model_reaction.reaction.celebrate">
                 <source>Celebrate</source>
+            </trans-unit>
+
+            <trans-unit id="tx_knowledgebase_domain_model_status">
+                <source>Status</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_status.title">
+                <source>Title</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_status.document">
+                <source>Board Document</source>
             </trans-unit>
         </body>
     </file>
