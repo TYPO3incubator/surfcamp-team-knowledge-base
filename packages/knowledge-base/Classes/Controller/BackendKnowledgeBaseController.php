@@ -44,7 +44,6 @@ class BackendKnowledgeBaseController extends ActionController
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
-        $this->moduleTemplate->assign('allDocuments', $this->documentRepository->findAll());
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
