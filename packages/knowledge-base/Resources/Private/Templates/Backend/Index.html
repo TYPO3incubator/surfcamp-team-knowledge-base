@@ -5,19 +5,15 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <h1>Knowledge Base</h1>
-    <p>Welcome to the Knowledge Base module.</p>
     <div class="document-tree">
-        <div class="tree">
-            <div class="tree-header">
-                <span>Pages</span>
-                <button class="basic-button">
-                    <core:icon identifier="tx-knowledge-base-add" size="default" />
-                </button>
-            </div>
-
-            <f:render section="Tree" arguments="{tree: tree}"/>
+        <div class="tree-header">
+            <span>Pages</span>
+            <button class="basic-button">
+                <core:icon identifier="tx-knowledge-base-add" size="default" />
+            </button>
         </div>
+
+        <f:render section="Tree" arguments="{tree: tree}"/>
     </div>
 </f:section>
 
@@ -37,12 +33,11 @@
                     </f:if>
 
                 </span>
-                <div>
+                <div class="item-text">
                     <span>{node.document.headline} (ID: {node.document.uid})</span>
-                    <span>
-                        <button class="basic-button">
+                    <button class="basic-button">
                         <core:icon identifier="tx-knowledge-base-add" size="default" />
-                </button></span>
+                    </button>
                 </div>
             </div>
 
