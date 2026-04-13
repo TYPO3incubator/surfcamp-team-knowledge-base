@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="messages" date="2026-04-12T00:00:00Z" product-name="knowledge_base">
+        <header/>
+        <body>
+            <trans-unit id="tx_knowledgebase_domain_model_document">
+                <source>Document</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.headline">
+                <source>Headline</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.markup">
+                <source>Content</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.parent">
+                <source>Parent Document</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.user">
+                <source>User</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.visibility">
+                <source>Visibility</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.visibility.public">
+                <source>Public</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.visibility.private">
+                <source>Private</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.type">
+                <source>Type</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.type.normal">
+                <source>Normal</source>
+            </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_document.type.board">
+                <source>Board</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -1,0 +1,94 @@
+<?php
+
+declare(strict_types=1);
+
+namespace TYPO3Incubator\KnowledgeBase\Domain\Model;
+
+use TYPO3\CMS\Beuser\Domain\Model\BackendUser;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+
+class Document extends AbstractEntity
+{
+    public const TYPE_NORMAL = 'normal';
+    public const TYPE_BOARD = 'board';
+
+    public const VISIBILITY_PUBLIC = 'public';
+    public const VISIBILITY_PRIVATE = 'private';
+
+    protected string $headline = '';
+
+    protected string $markup = '';
+
+    protected string $type = self::TYPE_NORMAL;
+
+    protected string $visibility = self::VISIBILITY_PUBLIC;
+
+    protected ?Document $parent = null;
+
+    protected BackendUser $user;
+
+    public function getHeadline(): string
+    {
+        return $this->headline;
+    }
+
+    public function setHeadline(string $headline): void
+    {
+        $this->headline = $headline;
+    }
+
+    public function getMarkup(): string
+    {
+        return $this->markup;
+    }
+
+    public function setMarkup(string $markup): void
+    {
+        $this->markup = $markup;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function isBoard(): bool
+    {
+        return $this->type === self::TYPE_BOARD;
+    }
+
+    public function getVisibility(): string
+    {
+        return $this->visibility;
+    }
+
+    public function setVisibility(string $visibility): void
+    {
+        $this->visibility = $visibility;
+    }
+
+    public function getParent(): ?Document
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Document $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    public function getUser(): BackendUser
+    {
+        return $this->user;
+    }
+
+    public function setUser(BackendUser $user): void
+    {
+        $this->user = $user;
+    }
+}
