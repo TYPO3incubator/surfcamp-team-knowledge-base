@@ -45,4 +45,12 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:knowledge-base/Resources/Public/Icons/Share.svg',
     ],
+    'tx-knowledge-base-reactions' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:knowledge-base/Resources/Public/Icons/Reactions.svg',
+    ],
+    'tx-knowledge-base-status' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:knowledge-base/Resources/Public/Icons/Status.svg',
+    ],
 ];
