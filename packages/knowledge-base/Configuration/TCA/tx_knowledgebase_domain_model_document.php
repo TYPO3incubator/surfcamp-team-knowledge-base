@@ -12,6 +12,7 @@ return [
             'disabled' => 'hidden',
         ],
         'searchFields' => 'headline',
+        'iconfile' => 'EXT:knowledge-base/Resources/Public/Icons/Page.svg',
     ],
     'types' => [
         'normal' => [

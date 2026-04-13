@@ -11,6 +11,7 @@ return [
             'disabled' => 'hidden',
         ],
         'searchFields' => 'comment',
+        'iconfile' => 'EXT:knowledge-base/Resources/Public/Icons/Comment.svg',
     ],
     'types' => [
         '1' => [
