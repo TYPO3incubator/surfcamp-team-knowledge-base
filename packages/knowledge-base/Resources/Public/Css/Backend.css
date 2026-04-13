@@ -1,3 +1,13 @@
+/* Hide the TYPO3 module docheader — we use our own kb-header instead */
+.module-docheader {
+    display: none !important;
+}
+
+.module-body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
 /* Header */
 .kb-header {
     display: grid;
@@ -36,11 +46,11 @@
     left: 10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    color: #6b6b6b;
+    line-height: 0;
+    opacity: 0.5;
     pointer-events: none;
 }
+
 
 .kb-search-input {
     width: 100%;
@@ -79,10 +89,13 @@
     background-color: #e67a00;
 }
 
-.kb-btn-share svg {
-    width: 15px;
-    height: 15px;
+.kb-btn-share .icon {
     flex-shrink: 0;
+}
+
+/* Always white — icon sits on orange background in both light and dark mode */
+.kb-btn-share [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
 }
 
 /* Search flyout */
@@ -124,12 +137,10 @@
     color: inherit;
 }
 
-.kb-search-result-icon {
-    width: 16px;
-    height: 16px;
+.kb-search-result-item .icon {
     flex-shrink: 0;
-    color: #6b6b6b;
 }
+
 
 .kb-search-result-info {
     display: flex;
@@ -147,14 +158,6 @@
     color: #6b6b6b;
 }
 
-/* Extension icons: 24px for small size */
-[class*="icon-tx-knowledge-base"].icon-size-small,
-[class*="icon-tx-knowledge-base"].icon-size-small img,
-[class*="icon-tx-knowledge-base"].icon-size-small svg {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
-}
 
 /* =============================================================================
    Dark mode overrides — must come AFTER base styles (same specificity, last wins)
