@@ -7,18 +7,20 @@
 <f:section name="Content">
     <h1>Knowledge Base</h1>
     <p>Welcome to the Knowledge Base module.</p>
-    <div style="font-family: monospace; white-space: pre-wrap;">
-        <f:render section="Tree" arguments="{tree: tree, treeNodes: treeNodes}"/>
+    <div style="font-family: monospace;" class="document-tree">
+        <f:render section="Tree" arguments="{tree: tree}"/>
     </div>
 </f:section>
 
 <f:section name="Tree">
     <f:for each="{tree}" as="node">
-        <div><f:for each="{treeNodes}" as="i" iteration="iter"><f:if condition="{iter.index} < {node.depth}">  </f:if></f:for>- {node.name} (ID: {node.identifier})</div>
+        <div>- {node.document.headline} (ID: {node.document.uid})</div>
         <f:if condition="{node.children}">
-            <f:render section="Tree" arguments="{tree: node.children, treeNodes: treeNodes}"/>
+            <f:render section="Tree" arguments="{tree: node.children}"/>
         </f:if>
+        <br>
     </f:for>
+    <br>
 </f:section>
 
 </html>

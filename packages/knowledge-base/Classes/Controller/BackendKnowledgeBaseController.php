@@ -7,7 +7,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-use TYPO3Incubator\KnowledgeBase\Tree\DocumentTreeProvider;
+use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
 {
@@ -15,7 +15,7 @@ class BackendKnowledgeBaseController extends ActionController
 
     public function __construct(
         protected readonly ModuleTemplateFactory $moduleTemplateFactory,
-        protected readonly DocumentTreeProvider $documentTreeProvider
+        protected readonly DocumentTreeService $documentTreeService
     ) {}
 
     public function initializeAction(): void
@@ -25,9 +25,8 @@ class BackendKnowledgeBaseController extends ActionController
 
     public function indexAction(): ResponseInterface
     {
-        $tree = $this->documentTreeProvider->getFullTree();
+        $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
-        $this->moduleTemplate->assign('treeNodes', array_fill(0, 100, 0));
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 }
