@@ -5,8 +5,33 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <h1>Knowledge Base</h1>
-    <p>Welcome to the Knowledge Base module.</p>
+    <div class="kb-header">
+        <span class="kb-header-title">Knowledge Base</span>
+
+        <form class="kb-search-form">
+            <div class="kb-search-wrapper">
+                <svg class="kb-search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.3-4.3"/>
+                </svg>
+                <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" />
+            </div>
+        </form>
+
+        <div class="kb-header-actions">
+            <button type="button" class="kb-btn-share">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/>
+                    <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>
+                </svg>
+                Share
+            </button>
+        </div>
+    </div>
+
     <div style="font-family: monospace;" class="document-tree">
         <f:render section="Tree" arguments="{tree: tree}"/>
     </div>
