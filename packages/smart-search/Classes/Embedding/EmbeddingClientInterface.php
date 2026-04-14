@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TYPO3Incubator\KnowledgeBase\Embedding;
+namespace TYPO3Incubator\SmartSearch\Embedding;
 
 interface EmbeddingClientInterface
 {

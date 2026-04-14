@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace TYPO3Incubator\KnowledgeBase\Service;
+namespace TYPO3Incubator\SmartSearch\Generation;
 
 use TYPO3\CMS\Core\Http\RequestFactory;
-use TYPO3Incubator\KnowledgeBase\Configuration\LlamaCppConfiguration;
+use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
 
-class LlamaCppGenerationClient
+class LlamaCppGenerationClient implements GenerationClientInterface
 {
     public function __construct(
         private readonly RequestFactory $requestFactory,
-        private readonly LlamaCppConfiguration $configuration,
+        private readonly SmartSearchConfiguration $configuration,
     ) {}
 
     /**

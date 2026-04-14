@@ -2,32 +2,37 @@
 
 declare(strict_types=1);
 
-namespace TYPO3Incubator\KnowledgeBase\Configuration;
+namespace TYPO3Incubator\SmartSearch\Configuration;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
-class LlamaCppConfiguration
+class SmartSearchConfiguration
 {
     private readonly array $config;
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
-        $this->config = (array)$extensionConfiguration->get('knowledge-base');
+        $this->config = (array)$extensionConfiguration->get('smart-search');
     }
 
     public function getEmbeddingServerUrl(): string
     {
-        return (string)($this->config['embeddingServerUrl'] ?? 'http://localhost:8081');
+        return (string)($this->config['embeddingServerUrl'] ?? 'http://localhost:8080');
     }
 
     public function getGenerationServerUrl(): string
     {
-        return (string)($this->config['generationServerUrl'] ?? 'http://localhost:8080');
+        return (string)($this->config['generationServerUrl'] ?? 'http://localhost:8081');
     }
 
     public function getGenerationMaxTokens(): int
     {
         return (int)($this->config['generationMaxTokens'] ?? 512);
+    }
+
+    public function getEmbeddingContextLength(): int
+    {
+        return (int)($this->config['embeddingContextLength'] ?? 6000);
     }
 
     public function getRagTopK(): int
@@ -43,10 +48,5 @@ class LlamaCppConfiguration
     public function getSemanticThreshold(): float
     {
         return (float)($this->config['semanticThreshold'] ?? 0.30);
-    }
-
-    public function getEmbeddingContextLength(): int
-    {
-        return (int)($this->config['embeddingContextLength'] ?? 1500);
     }
 }

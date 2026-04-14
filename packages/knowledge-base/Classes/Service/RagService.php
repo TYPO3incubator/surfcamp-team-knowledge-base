@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace TYPO3Incubator\KnowledgeBase\Service;
 
-use TYPO3Incubator\KnowledgeBase\Configuration\LlamaCppConfiguration;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
+use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
+use TYPO3Incubator\SmartSearch\Service\GenerationService;
 
 class RagService
 {
     public function __construct(
         private readonly EmbeddingService $embeddingService,
         private readonly DocumentRepository $documentRepository,
-        private readonly LlamaCppGenerationClient $generationClient,
+        private readonly GenerationService $generationService,
         private readonly DocumentService $documentService,
-        private readonly LlamaCppConfiguration $configuration,
+        private readonly SmartSearchConfiguration $configuration,
     ) {}
 
     /**
@@ -23,9 +24,9 @@ class RagService
      *
      * @return array<array{uid: int, headline: string, type: string, visibility: string, breadcrumb: array, score: float}>
      */
-    public function searchSemantic(string $query): array
+    public function searchSemantic(string $query, int $topKDocuments = 10): array
     {
-        $hits = $this->embeddingService->findSimilar($query, $this->configuration->getRagTopK());
+        $hits = $this->embeddingService->findSimilar($query, $topKDocuments);
 
         if (empty($hits)) {
             return [];
@@ -52,12 +53,12 @@ class RagService
      *     mode: string
      * }
      */
-    public function ask(string $query): array
+    public function ask(string $query, int $topKDocuments = 10, float $semanticThreshold = 0.3): array
     {
-        $semanticHits = $this->embeddingService->findSimilar($query, $this->configuration->getRagTopK());
+        $semanticHits = $this->embeddingService->findSimilar($query, $topKDocuments);
         $aboveThreshold = array_filter(
             $semanticHits,
-            fn(array $hit) => $hit['score'] >= $this->configuration->getSemanticThreshold()
+            fn(array $hit) => $hit['score'] >= $semanticThreshold
         );
 
         if (!empty($aboveThreshold)) {
@@ -82,7 +83,7 @@ class RagService
             ];
         }
 
-        $answer = $this->generate($query, $documents);
+        $answer = $this->generationService->generate($query, $this->buildContextBlocks($documents));
 
         return [
             'answer'  => $answer,
@@ -100,38 +101,23 @@ class RagService
 
     /**
      * @param Document[] $documents
+     * @return string[]
      */
-    private function generate(string $query, array $documents): string
+    private function buildContextBlocks(array $documents): array
     {
-        $contextBlocks = [];
-        foreach ($documents as $index => $document) {
+        $blocks = [];
+        foreach ($documents as $document) {
             $plainText = strip_tags($document->getMarkup());
-            $plainText = preg_replace('/\s+/', ' ', trim($plainText));
+            $plainText = (string)preg_replace('/\s+/', ' ', trim($plainText));
             $truncated = mb_substr($plainText, 0, $this->configuration->getDocumentContextLength());
 
-            $contextBlocks[] = sprintf(
+            $blocks[] = sprintf(
                 '[%d] Title: "%s"%s',
                 $document->getUid(),
                 $document->getHeadline(),
                 $truncated !== '' ? "\n    Content: " . $truncated : ''
             );
         }
-
-        $context = implode("\n\n", $contextBlocks);
-
-        $messages = [
-            [
-                'role' => 'system',
-                'content' => 'You are a helpful assistant for a knowledge base. '
-                    . 'Answer the question using only the provided documents. '
-                    . 'Be detailed and cite your sources by their uid (e.g. [1], [2]).',
-            ],
-            [
-                'role' => 'user',
-                'content' => "Documents:\n\n{$context}\n\nQuestion: {$query}",
-            ],
-        ];
-
-        return $this->generationClient->complete($messages);
+        return $blocks;
     }
 }

@@ -16,6 +16,9 @@
         }
     ],
     "require": {
+        "luisasofie/unicorn": "^1.0",
+        "typo3-incubator/knowledge-base": "dev-main",
+        "typo3-incubator/smart-search": "dev-main",
         "typo3/cms-adminpanel": "@dev",
         "typo3/cms-backend": "@dev",
         "typo3/cms-belog": "@dev",
@@ -51,9 +54,7 @@
         "typo3/cms-viewpage": "@dev",
         "typo3/cms-webhooks": "@dev",
         "typo3/cms-workspaces": "@dev",
-        "typo3/theme-camino": "@dev",
-        "typo3-incubator/knowledge-base": "dev-main",
-        "luisasofie/unicorn": "^1.0"
+        "typo3/theme-camino": "@dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^11.0",

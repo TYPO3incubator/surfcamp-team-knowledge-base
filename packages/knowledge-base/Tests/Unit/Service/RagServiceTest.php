@@ -7,30 +7,30 @@ namespace TYPO3Incubator\KnowledgeBase\Tests\Unit\Service;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use TYPO3Incubator\KnowledgeBase\Configuration\LlamaCppConfiguration;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
-use TYPO3Incubator\KnowledgeBase\Service\LlamaCppGenerationClient;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
+use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
+use TYPO3Incubator\SmartSearch\Service\GenerationService;
 
 final class RagServiceTest extends TestCase
 {
     private EmbeddingService&MockObject $embeddingService;
     private DocumentRepository&MockObject $documentRepository;
-    private LlamaCppGenerationClient&MockObject $generationClient;
+    private GenerationService&MockObject $generationService;
     private DocumentService&MockObject $documentService;
-    private LlamaCppConfiguration&MockObject $configuration;
+    private SmartSearchConfiguration&MockObject $configuration;
     private RagService $service;
 
     protected function setUp(): void
     {
         $this->embeddingService = $this->createMock(EmbeddingService::class);
         $this->documentRepository = $this->createMock(DocumentRepository::class);
-        $this->generationClient = $this->createMock(LlamaCppGenerationClient::class);
+        $this->generationService = $this->createMock(GenerationService::class);
         $this->documentService = $this->createMock(DocumentService::class);
-        $this->configuration = $this->createMock(LlamaCppConfiguration::class);
+        $this->configuration = $this->createMock(SmartSearchConfiguration::class);
 
         $this->configuration->method('getRagTopK')->willReturn(5);
         $this->configuration->method('getSemanticThreshold')->willReturn(0.30);
@@ -39,7 +39,7 @@ final class RagServiceTest extends TestCase
         $this->service = new RagService(
             $this->embeddingService,
             $this->documentRepository,
-            $this->generationClient,
+            $this->generationService,
             $this->documentService,
             $this->configuration,
         );
@@ -58,7 +58,7 @@ final class RagServiceTest extends TestCase
             ->method('findByUids')
             ->willReturn([$document]);
 
-        $this->generationClient->method('complete')->willReturn('Here is the answer.');
+        $this->generationService->method('generate')->willReturn('Here is the answer.');
 
         $result = $this->service->ask('How do I configure this?');
 
@@ -82,7 +82,7 @@ final class RagServiceTest extends TestCase
             ->method('findByUids')
             ->willReturn([$document]);
 
-        $this->generationClient->method('complete')->willReturn('Here is the answer.');
+        $this->generationService->method('generate')->willReturn('Here is the answer.');
 
         $result = $this->service->ask('configure');
 
@@ -102,7 +102,7 @@ final class RagServiceTest extends TestCase
             ->method('findByUids')
             ->willReturn([$document]);
 
-        $this->generationClient->method('complete')->willReturn('Generated answer.');
+        $this->generationService->method('generate')->willReturn('Generated answer.');
 
         $result = $this->service->ask('What is My Doc?');
 
@@ -132,7 +132,7 @@ final class RagServiceTest extends TestCase
     }
 
     #[Test]
-    public function askPassesDocumentContextToGenerationClient(): void
+    public function askPassesDocumentContextToGenerationService(): void
     {
         $document = $this->makeDocument(1, 'TYPO3 Caching', '<p>Use caches wisely.</p>');
 
@@ -144,14 +144,17 @@ final class RagServiceTest extends TestCase
             ->method('findByUids')
             ->willReturn([$document]);
 
-        $this->generationClient
+        $this->generationService
             ->expects(self::once())
-            ->method('complete')
-            ->with(self::callback(function (array $messages): bool {
-                $userContent = $messages[1]['content'] ?? '';
-                return str_contains($userContent, 'TYPO3 Caching')
-                    && str_contains($userContent, 'Use caches wisely.');
-            }))
+            ->method('generate')
+            ->with(
+                'caching question',
+                self::callback(function (array $contextBlocks): bool {
+                    $joined = implode(' ', $contextBlocks);
+                    return str_contains($joined, 'TYPO3 Caching')
+                        && str_contains($joined, 'Use caches wisely.');
+                })
+            )
             ->willReturn('Answer.');
 
         $this->service->ask('caching question');
@@ -160,7 +163,7 @@ final class RagServiceTest extends TestCase
     #[Test]
     public function askPassesConfiguredTopKToEmbeddingService(): void
     {
-        $config = $this->createMock(LlamaCppConfiguration::class);
+        $config = $this->createMock(SmartSearchConfiguration::class);
         $config->method('getRagTopK')->willReturn(3);
         $config->method('getSemanticThreshold')->willReturn(0.30);
         $config->method('getDocumentContextLength')->willReturn(800);
@@ -169,7 +172,7 @@ final class RagServiceTest extends TestCase
         $embeddingService
             ->expects(self::once())
             ->method('findSimilar')
-            ->with('query', 3)
+            ->with('query', 10)
             ->willReturn([]);
 
         $documentService = $this->createMock(DocumentService::class);
@@ -181,7 +184,7 @@ final class RagServiceTest extends TestCase
         $service = new RagService(
             $embeddingService,
             $documentRepository,
-            $this->generationClient,
+            $this->generationService,
             $documentService,
             $config,
         );
@@ -248,11 +251,11 @@ final class RagServiceTest extends TestCase
     }
 
     #[Test]
-    public function searchSemanticDoesNotCallGenerationClient(): void
+    public function searchSemanticDoesNotCallGenerationService(): void
     {
         $this->embeddingService->method('findSimilar')->willReturn([]);
 
-        $this->generationClient->expects(self::never())->method('complete');
+        $this->generationService->expects(self::never())->method('generate');
 
         $this->service->searchSemantic('query');
     }
@@ -263,7 +266,7 @@ final class RagServiceTest extends TestCase
         $this->embeddingService
             ->expects(self::once())
             ->method('findSimilar')
-            ->with('query', 5)
+            ->with('query', 10)
             ->willReturn([]);
 
         $this->service->searchSemantic('query');

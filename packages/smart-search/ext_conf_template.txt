@@ -5,16 +5,16 @@ embeddingServerUrl = http://localhost:8080
 generationServerUrl = http://localhost:8081
 
 # cat=LLM/basic; type=integer; label=Max tokens for generated answer
-generationMaxTokens = 512
+generationMaxTokens = 2028
+
+# cat=LLM/basic; type=integer; label=Maximum characters of text sent to the embedding server (keep in sync with --ctx-size; ~4 chars per token for typical prose)
+embeddingContextLength = 6000
 
 # cat=LLM/RAG; type=integer; label=Number of top documents to retrieve for RAG context
 ragTopK = 5
 
 # cat=LLM/RAG; type=integer; label=Maximum characters of document content included per RAG context block
 documentContextLength = 800
-
-# cat=LLM/basic; type=integer; label=Maximum characters of document content sent to the embedding server (keep in sync with --ctx-size; ~4 chars per token)
-embeddingContextLength = 6000
 
 # cat=LLM/RAG; type=string; label=Minimum cosine similarity score (0.0–1.0) for semantic results; below this falls back to keyword search
 semanticThreshold = 0.30

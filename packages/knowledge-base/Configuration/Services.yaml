@@ -8,8 +8,3 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/Domain/Model/*'
-
-  # Bind the embedding interface to the llama.cpp implementation.
-  # Server URLs are configured via ext_conf_template.txt (TYPO3 Install Tool → Settings → Extension Configuration).
-  TYPO3Incubator\KnowledgeBase\Embedding\EmbeddingClientInterface:
-    alias: TYPO3Incubator\KnowledgeBase\Embedding\LlamaCppEmbeddingClient
