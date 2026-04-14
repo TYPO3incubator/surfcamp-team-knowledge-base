@@ -245,10 +245,27 @@
     filter: none;
 }
 
+.knowledge-base {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
+    height: 100%;
+}
+
 .document-tree {
     max-width: 200px;
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+.document-content {
+    width: 100%;
+    padding: 2rem;
+}
+
+.content-inner {
+    padding: 2rem;
 }
 
 /* PageTree Header */
@@ -325,4 +342,3 @@
 .item-childs {
     padding-left: 20px;
 }
-
