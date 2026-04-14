@@ -31,8 +31,7 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
-
-        $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/backend.js');
+        $this->pageRenderer->addjSFile('EXT:knowledge-base/Resources/Public/JavaScript/Backend.js');
     }
 
     public function indexAction(int $openDocumentId = 0): ResponseInterface
@@ -89,7 +88,7 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->jsonResponse((string)json_encode($result));
     }
 
-    public function loadDocumentChildrenAction(int $documentUid): ResponseInterface
+    public function ajaxLoadDocumentChildrenAction(int $documentUid): ResponseInterface
     {
         $result = $this->documentService->loadDocumentChildren($documentUid);
         return $this->jsonResponse((string)json_encode($result));
