@@ -35,13 +35,18 @@
                 </span>
                 <div class="item-text">
                     <span>{node.document.headline} (ID: {node.document.uid})</span>
-                    <button class="basic-button">
-                        <core:icon identifier="tx-knowledge-base-add" size="default" />
-                    </button>
+
+                    <f:if condition="{node.document.type} != 'board'">
+                        <f:then>
+                            <button class="basic-button">
+                                <core:icon identifier="tx-knowledge-base-add" size="default" />
+                            </button>
+                        </f:then>
+                    </f:if>
                 </div>
             </div>
 
-            <f:if condition="{node.children}">
+            <f:if condition="{node.children} && {node.document.type} != 'board'">
                 <div class="item-childs">
                     <f:render section="Tree" arguments="{tree: node.children}"/>
                 </div>
