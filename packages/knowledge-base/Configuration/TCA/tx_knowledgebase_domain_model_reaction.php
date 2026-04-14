@@ -10,6 +10,7 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
+        'iconfile' => 'EXT:knowledge-base/Resources/Public/Icons/Reactions.svg',
     ],
     'types' => [
         '1' => [

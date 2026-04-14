@@ -1,0 +1,8 @@
+tx_knowledgebase_domain_model_document,,,,,,,,,,,,,
+,uid,pid,tstamp,crdate,deleted,hidden,headline,markup,type,visibility,parent,status,user
+,1,1,0,0,0,0,Introduction to TYPO3,Learn how TYPO3 works and how to build websites with it.,normal,public,0,0,0
+,2,1,0,0,0,0,Welcome Document,This document is about the surfcamp knowledge management system.,normal,public,0,0,0
+,3,1,0,0,0,0,Knowledge Base Overview,This knowledge base contains all relevant documentation for the project.,normal,public,0,0,0
+,4,1,0,0,0,0,Knowledge Article,A short article about organizing information.,normal,public,0,0,0
+,5,1,0,0,1,0,Deleted Document,This deleted record must never appear in search results.,normal,public,0,0,0
+,6,1,0,0,0,1,Hidden Document,This hidden record must never appear in search results.,normal,public,0,0,0
