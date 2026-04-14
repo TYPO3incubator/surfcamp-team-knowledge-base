@@ -44,4 +44,9 @@ class LlamaCppConfiguration
     {
         return (float)($this->config['semanticThreshold'] ?? 0.30);
     }
+
+    public function getEmbeddingContextLength(): int
+    {
+        return (int)($this->config['embeddingContextLength'] ?? 1500);
+    }
 }

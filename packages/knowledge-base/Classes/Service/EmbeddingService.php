@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TYPO3Incubator\KnowledgeBase\Service;
 
+use TYPO3Incubator\KnowledgeBase\Configuration\LlamaCppConfiguration;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\EmbeddingRepository;
 use TYPO3Incubator\KnowledgeBase\Embedding\EmbeddingClientInterface;
@@ -13,6 +14,7 @@ class EmbeddingService
     public function __construct(
         private readonly EmbeddingClientInterface $embeddingClient,
         private readonly EmbeddingRepository $embeddingRepository,
+        private readonly LlamaCppConfiguration $configuration,
     ) {}
 
     public function generateAndStoreIfChanged(Document $document): void
@@ -82,8 +84,13 @@ class EmbeddingService
     private function buildEmbedText(Document $document): string
     {
         $plainText = strip_tags($document->getMarkup());
-        // Collapse whitespace for consistent hashing and shorter input
         $plainText = preg_replace('/\s+/', ' ', trim($plainText));
+
+        $maxChars = $this->configuration->getEmbeddingContextLength();
+        if (mb_strlen($plainText) > $maxChars) {
+            $plainText = mb_substr($plainText, 0, $maxChars);
+        }
+
         return $document->getHeadline() . "\n\n" . $plainText;
     }
 }

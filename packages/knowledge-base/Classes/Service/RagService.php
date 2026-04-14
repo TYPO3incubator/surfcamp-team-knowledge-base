@@ -111,7 +111,7 @@ class RagService
 
             $contextBlocks[] = sprintf(
                 '[%d] Title: "%s"%s',
-                $index + 1,
+                $document->getUid(),
                 $document->getHeadline(),
                 $truncated !== '' ? "\n    Content: " . $truncated : ''
             );
@@ -124,7 +124,7 @@ class RagService
                 'role' => 'system',
                 'content' => 'You are a helpful assistant for a knowledge base. '
                     . 'Answer the question using only the provided documents. '
-                    . 'Be concise and cite your sources by their number (e.g. [1], [2]).',
+                    . 'Be detailed and cite your sources by their uid (e.g. [1], [2]).',
             ],
             [
                 'role' => 'user',

@@ -159,7 +159,8 @@ llama-server \
   --port 8080 \
   --embeddings \
   --pooling mean \
-  --ctx-size 512 \
+  --ctx-size 2048 \
+  --ubatch-size 2048 \
   --log-disable
 ```
 
@@ -167,7 +168,8 @@ llama-server \
 |---|---|
 | `--embeddings` | Enables the `/embedding` endpoint required for vector generation |
 | `--pooling mean` | Mean pooling strategy required by the nomic model |
-| `--ctx-size 512` | Max input tokens — 512 is sufficient for document chunks |
+| `--ctx-size 2048` | Max input tokens — matches the model's training context length |
+| `--ubatch-size 2048` | Physical batch size — must be ≥ the longest input you expect to embed |
 
 Verify it is running:
 
@@ -222,7 +224,7 @@ MODELS_DIR="$(dirname "$0")/models"
 
 llama-server \
   --model "$MODELS_DIR/nomic-embed-text-v1.5.Q8_0.gguf" \
-  --port 8080 --embeddings --pooling mean --ctx-size 512 --log-disable &
+  --port 8080 --embeddings --pooling mean --ctx-size 2048 --ubatch-size 2048 --log-disable &
 
 llama-server \
   --model "$MODELS_DIR/gemma-3-4b-it-Q4_K_M.gguf" \
