@@ -132,7 +132,7 @@ class DocumentRepository extends Repository
             )
             ->executeQuery()
             ->fetchAllAssociative();
-        return $this->dataMapper->map(Document::class, $rows);
+        return $rows;
     }
 }
 
