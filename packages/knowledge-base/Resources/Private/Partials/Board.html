@@ -1,6 +1,9 @@
 <div class="board module">
 	<div class="board__info">
-		<h2 class="board__title">Knowledge Base Board</h2>
+		<div class="board__info-header">
+			<h2 class="board__title">Knowledge Base Board</h2>
+			<span class="board__description">Track content creation and updates</span>
+		</div>
 		<div class="kb-header-actions">
 			<button type="button" class="kb-btn-share">
 				<core:icon identifier="tx-knowledge-base-add" size="small" />
@@ -18,52 +21,35 @@
 </div>
 
 <f:section name="Status Column">
-	<div class="board__column">
-		<div class="board__column--data">
-			<h3 class="board__column-title">To Do</h3>
-			<span class="board__column-items">3</span>
+	<div class="board__content-container">
+		<div class="board__column">
+			<div class="board__column--data">
+				<h3 class="board__column-title">To Do</h3>
+				<span class="board__column-items">3</span>
+			</div>
+			<div class="board__column-content t3-grid-cell">
+				<!--Cards-->
+				<f:render section="Card" arguments="{_all}" />
+			</div>
 		</div>
-		<div class="board__column-content t3-grid-cell">
-			<!--Cards-->
-			<f:render section="Card" arguments="{_all}" />
+		<div class="board__column">
+			<div class="board__column--data">
+				<h3 class="board__column-title">In Progress</h3>
+				<span class="board__column-items">3</span>
+			</div>
+			<div class="board__column-content t3-grid-cell">
+				<!--Cards-->
+				<f:render section="Card" arguments="{_all}" />
+			</div>
 		</div>
-	</div>
-	<div class="board__column">
-		<div class="board__column--data">
-			<h3 class="board__column-title">In Progress</h3>
-			<span class="board__column-items">3</span>
-		</div>
-		<div class="board__column-content t3-grid-cell">
-			<!--Cards-->
-			<f:render section="Card" arguments="{_all}" />
-		</div>
-	</div>
-	<div class="board__column">
-		<div class="board__column--data">
-			<h3 class="board__column-title">In Review</h3>
-			<span class="board__column-items">3</span>
-		</div>
-		<div class="board__column-content t3-grid-cell">
-			<f:render section="Card" arguments="{_all}" />
-		</div>
-	</div>
-	<div class="board__column">
-		<div class="board__column--data">
-			<h3 class="board__column-title">Done</h3>
-			<span class="board__column-items">3</span>
-		</div>
-		<div class="board__column-content t3-grid-cell">
-			<!--Cards-->
-			<f:render section="Card" arguments="{_all}" />
-		</div>
-	</div>
 
-	<div class="board__column">
-		<div class="board__column--data">
-			<h3 class="board__column-title">Add New</h3>
-		</div>
-		<div class="board__column-content board__column-new t3-grid-cell">
-			<span class="add-new-icon">+</span>
+		<div class="board__column">
+			<div class="board__column--data">
+				<h3 class="board__column-title">Add New</h3>
+			</div>
+			<div class="board__column-content board__column-new t3-grid-cell">
+				<span class="add-new-icon">+</span>
+			</div>
 		</div>
 	</div>
 
