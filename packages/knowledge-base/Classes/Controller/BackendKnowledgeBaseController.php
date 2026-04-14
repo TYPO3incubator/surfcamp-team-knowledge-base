@@ -31,7 +31,6 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
-        $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Pagetree.css');
         $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/pagetree.js');
     }
 
