@@ -62,7 +62,7 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
     }
 
-    public function createAction(string $documentHeadline, int $parentId, string $type): ResponseInterface
+    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal'): ResponseInterface
     {
         $result = $this->documentService->createDocument($documentHeadline, $parentId, $type);
 
