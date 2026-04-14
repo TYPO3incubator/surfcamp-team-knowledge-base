@@ -1,26 +1,72 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Default"/>
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <div class="knowledge-base">
-        <div class="document-tree">
-            <div class="tree-header">
-                <span>Pages</span>
-                <button class="basic-button">
-                    <core:icon identifier="tx-knowledge-base-add" size="default" />
-                </button>
+    <div class="kb-header">
+        <span class="kb-header-title">Knowledge Base</span>
+
+        <form class="kb-search-form">
+            <div class="kb-search-wrapper">
+                <span class="kb-search-icon">
+                    <core:icon identifier="tx-knowledge-base-search" size="small" />
+                </span>
+                <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" />
+
+                <div class="kb-search-flyout">
+                    <a href="#" class="kb-search-result-item">
+                        <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        <div class="kb-search-result-info">
+                            <span class="kb-search-result-title">Getting Started</span>
+                            <span class="kb-search-result-path">Documentation</span>
+                        </div>
+                    </a>
+                    <a href="#" class="kb-search-result-item">
+                        <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        <div class="kb-search-result-info">
+                            <span class="kb-search-result-title">Installation</span>
+                            <span class="kb-search-result-path">Documentation › Getting Started</span>
+                        </div>
+                    </a>
+                    <a href="#" class="kb-search-result-item">
+                        <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        <div class="kb-search-result-info">
+                            <span class="kb-search-result-title">Configuration Guide</span>
+                            <span class="kb-search-result-path">Documentation › Getting Started</span>
+                        </div>
+                    </a>
+                </div>
             </div>
+        </form>
 
-            <f:render section="Tree" arguments="{tree: tree}"/>
-        </div>
-
-        <div class="document-content">
-            <f:render section="PageContent" arguments="{tree: tree}"/>
+        <div class="kb-header-actions">
+            <button type="button" class="kb-btn-share">
+                <core:icon identifier="tx-knowledge-base-share" size="small" />
+                Share
+            </button>
         </div>
     </div>
+
+    <div class="knowledge-base">
+    <div class="document-tree">
+        <div class="tree-header">
+            <span>Pages</span>
+            <button class="basic-button">
+                <core:icon identifier="tx-knowledge-base-add" size="default" />
+            </button>
+        </div>
+
+        <f:render section="Tree" arguments="{tree: tree}"/>
+    </div>
+
+    <div class="document-content">
+        <f:render section="PageContent" arguments="{tree: tree}"/>
+    </div>
+</div>
+
 
     <h2>Create Document</h2>
     <f:form action="create">
@@ -34,7 +80,7 @@
         </div>
         <div>
             <label for="type">Visibility</label>
-            <f:form.select name="type" id="type" options="{public: 'Page', private: 'Board'}" />
+            <f:form.select name="type" id="type" options="{public: 'normal', private: 'board'}" />
         </div>
         <f:form.submit value="Create" />
     </f:form>
