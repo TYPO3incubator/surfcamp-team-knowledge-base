@@ -52,7 +52,17 @@
         "typo3/cms-webhooks": "@dev",
         "typo3/cms-workspaces": "@dev",
         "typo3/theme-camino": "@dev",
-        "typo3-incubator/knowledge-base": "dev-main"
+        "typo3-incubator/knowledge-base": "dev-main",
+        "luisasofie/unicorn": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "typo3/testing-framework": "^9.0"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TYPO3Incubator\\KnowledgeBase\\Tests\\": "packages/knowledge-base/Tests/"
+        }
     },
     "config": {
         "allow-plugins": {

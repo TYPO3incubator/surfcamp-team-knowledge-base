@@ -15,6 +15,46 @@
 
         <f:render section="Tree" arguments="{tree: tree}"/>
     </div>
+
+
+    <h2>Create Document</h2>
+    <f:form action="create">
+        <div>
+            <label for="documentHeadline">Headline</label>
+            <f:form.textfield name="documentHeadline" id="documentHeadline" />
+        </div>
+        <div>
+            <label for="parentId">Parent</label>
+            <f:form.textfield name="parentId" id="parentId" />
+        </div>
+        <div>
+            <label for="type">Visibility</label>
+            <f:form.select name="type" id="type" options="{public: 'Page', private: 'Board'}" />
+        </div>
+        <f:form.submit value="Create" />
+    </f:form>
+
+    <h2>Update Document</h2>
+    <f:form action="update">
+        <div>
+            <label for="documentUid">Document</label>
+            <f:form.select name="documentUid" id="documentUid" options="{allDocuments}" optionLabelField="headline" optionValueField="uid" prependOptionLabel="-- Select Document --" />
+        </div>
+        <div>
+            <label for="headline">New Headline</label>
+            <f:form.textfield name="documentData[headline]" id="headline" />
+        </div>
+        <div>
+            <label for="markup">New Content</label>
+            <f:form.textarea name="documentData[markup]" id="markup" rows="5" />
+        </div>
+        <div>
+            <label for="visibility">Visibility</label>
+            <f:form.select name="documentData[visibility]" id="visibility" options="{public: 'Public', private: 'Private'}" />
+        </div>
+        <f:form.submit value="Update" />
+    </f:form>
+
 </f:section>
 
 <f:section name="Tree">

@@ -11,6 +11,7 @@ return [
             'disabled' => 'hidden',
         ],
         'searchFields' => 'title',
+        'iconfile' => 'EXT:knowledge-base/Resources/Public/Icons/Status.svg',
     ],
     'types' => [
         '1' => [

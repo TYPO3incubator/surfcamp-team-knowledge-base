@@ -103,4 +103,10 @@ class Document extends AbstractEntity
     {
         $this->user = $user;
     }
+
+    public function getBreadcrumbs(): array
+    {
+        // TODO add breadcrumbs builder
+        return [];
+    }
 }
