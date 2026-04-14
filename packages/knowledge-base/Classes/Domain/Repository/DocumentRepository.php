@@ -7,71 +7,26 @@ namespace TYPO3Incubator\KnowledgeBase\Domain\Repository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 
-class DocumentRepository
+class DocumentRepository extends Repository
 {
     private readonly string $tableName;
 
     public function __construct(
         protected readonly ConnectionPool $connectionPool,
-        protected readonly DataMapper $dataMapper
+        protected readonly DataMapper $dataMapper,
+        protected PersistenceManagerInterface $persistenceManager,
     ) {
+        parent::__construct();
         $this->tableName = $this->dataMapper->getDataMap(Document::class)->getTableName();
     }
 
     public function getTableName(): string
     {
         return $this->tableName;
-    }
-
-    public function fetchNodesByParent(int $parentIdentifier): array
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
-        $rows = $queryBuilder
-            ->select('*')
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT))
-            )
-            ->orderBy('headline', 'ASC')
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        return $this->dataMapper->map(Document::class, $rows);
-    }
-
-    public function hasChildren(int $uid): bool
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
-        return (bool)$queryBuilder
-            ->count('uid')
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchOne();
-    }
-
-    public function findByUid(int $uid): ?Document
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
-        $row = $queryBuilder
-            ->select('*')
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-
-        if ($row === false) {
-            return null;
-        }
-
-        $objects = $this->dataMapper->map(Document::class, [$row]);
-        return $objects[0] ?? null;
     }
 
     public function search(string $query): array
@@ -103,7 +58,36 @@ class DocumentRepository
         return $this->dataMapper->map(Document::class, $rows);
     }
 
-    public function update(Document $document): void
+    public function fetchNodesByParent(int $parentIdentifier): array
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $rows = $queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT))
+            )
+            ->orderBy('headline', 'ASC')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        return $this->dataMapper->map(Document::class, $rows);
+    }
+
+    public function hasChildren(int $uid): bool
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        return (bool)$queryBuilder
+            ->count('uid')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchOne();
+    }
+
+    public function update($document): void
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
         $queryBuilder
@@ -120,4 +104,10 @@ class DocumentRepository
             ->set('tstamp', (string)time())
             ->executeStatement();
     }
+    public function add($object): void
+    {
+        parent::add($object);
+        $this->persistenceManager->persistAll();
+    }
 }
+
