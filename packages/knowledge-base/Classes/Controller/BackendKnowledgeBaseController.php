@@ -44,12 +44,15 @@ class BackendKnowledgeBaseController extends ActionController
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        // Search partial — remove these four lines to disable the search UI
         $this->moduleTemplate->assign('searchUrl', $this->uriBuilder->reset()->uriFor(
             'search',
             ['query' => 'PLACEHOLDER_QUERY', 'mode' => 'PLACEHOLDER_MODE']
         ));
         $this->moduleTemplate->assign('reindexUrl', $this->uriBuilder->reset()->uriFor('reindex'));
+        $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Search.css');
         $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/search.js');
+
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 

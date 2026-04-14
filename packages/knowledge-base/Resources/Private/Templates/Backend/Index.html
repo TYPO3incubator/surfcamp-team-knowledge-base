@@ -6,67 +6,7 @@
 
 <f:section name="Content">
 
-    <div class="kb-search-panel" data-search-url="{searchUrl}">
-
-        <div class="kb-search-header">
-            <h1 class="kb-search-title">Knowledge Base Search</h1>
-            <p class="kb-search-subtitle">Test keyword, semantic, and RAG search modes</p>
-        </div>
-
-        <div class="kb-search-modes" role="tablist" aria-label="Search mode">
-            <button class="kb-mode-btn active" data-mode="keyword" role="tab" aria-selected="true" type="button">
-                <span class="kb-mode-icon">⌕</span> Keyword
-            </button>
-            <button class="kb-mode-btn" data-mode="semantic" role="tab" aria-selected="false" type="button">
-                <span class="kb-mode-icon">◈</span> Semantic
-            </button>
-            <button class="kb-mode-btn" data-mode="rag" role="tab" aria-selected="false" type="button">
-                <span class="kb-mode-icon">✦</span> RAG
-            </button>
-        </div>
-
-        <div class="kb-mode-description">
-            <span data-mode-desc="keyword">Exact keyword matching using MySQL full-text search.</span>
-            <span data-mode-desc="semantic" hidden>Meaning-based vector similarity search using embeddings. Requires the embedding server to be running.</span>
-            <span data-mode-desc="rag" hidden>Semantic retrieval + AI-generated answer. Requires both servers to be running.</span>
-        </div>
-
-        <div class="kb-search-input-row">
-            <input
-                type="search"
-                data-kb="input"
-                class="kb-search-input form-control"
-                placeholder="Type a query and press Enter or click Search…"
-                autocomplete="off"
-                aria-label="Search query"
-            />
-            <button data-kb="btn" class="btn btn-primary kb-search-btn" type="button">
-                Search
-            </button>
-        </div>
-
-        <div data-kb="status" class="kb-search-status" hidden aria-live="polite"></div>
-
-        <div data-kb="results" class="kb-search-results" aria-live="polite"></div>
-
-    </div>
-
-    <hr class="kb-divider"/>
-
-    <div class="kb-reindex-panel" data-reindex-url="{reindexUrl}">
-        <div class="kb-reindex-row">
-            <div>
-                <strong>Re-index embeddings</strong>
-                <p class="kb-reindex-desc">Generate or refresh vector embeddings for all documents. Required once before semantic search works, and after switching embedding models.</p>
-            </div>
-            <button data-kb-reindex="btn" class="btn btn-secondary kb-reindex-btn" type="button">
-                Re-index
-            </button>
-        </div>
-        <div data-kb-reindex="status" class="kb-search-status" hidden aria-live="polite"></div>
-    </div>
-
-    <hr class="kb-divider"/>
+    <f:render partial="Backend/Search" arguments="{searchUrl: searchUrl, reindexUrl: reindexUrl}"/>
 
     <details class="kb-tree-details">
         <summary class="kb-tree-summary">Document tree</summary>
