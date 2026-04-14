@@ -120,5 +120,19 @@ class DocumentRepository extends Repository
         parent::add($object);
         $this->persistenceManager->persistAll();
     }
+
+    public function getChildren(int $documentUid): array
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $rows = $queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($documentUid, Connection::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $this->dataMapper->map(Document::class, $rows);
+    }
 }
 

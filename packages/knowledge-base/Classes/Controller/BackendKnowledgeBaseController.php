@@ -31,6 +31,8 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
+
+        $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/backend.js');
     }
 
     public function indexAction(int $openDocumentId = 0): ResponseInterface
@@ -38,6 +40,8 @@ class BackendKnowledgeBaseController extends ActionController
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
+        $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
@@ -82,6 +86,12 @@ class BackendKnowledgeBaseController extends ActionController
     public function loadDocumentAction(int $documentUid): ResponseInterface
     {
         $result = $this->documentService->loadDocument($documentUid);
+        return $this->jsonResponse((string)json_encode($result));
+    }
+
+    public function loadDocumentChildrenAction(int $documentUid): ResponseInterface
+    {
+        $result = $this->documentService->loadDocumentChildren($documentUid);
         return $this->jsonResponse((string)json_encode($result));
     }
 }
