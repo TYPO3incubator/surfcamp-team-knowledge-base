@@ -5,25 +5,59 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <h1>Knowledge Base</h1>
-    <p>Welcome to the Knowledge Base module.</p>
-    <div class="knowledge-base d-flex flex-row">
-        <div class="document-tree">
-            <div class="tree">
-                <div class="tree-header">
-                    <span>Pages</span>
-                    <button class="basic-button">
-                        <core:icon identifier="tx-knowledge-base-add" size="default" />
-                    </button>
-                </div>
+    <div class="document-tree">
+        <div class="tree-header">
+            <span>Pages</span>
+            <button class="basic-button">
+                <core:icon identifier="tx-knowledge-base-add" size="default" />
+            </button>
+        </div>
 
-                <f:render section="Tree" arguments="{tree: tree}"/>
-            </div>
-        </div>
-        <div class="document-content w-100 p-3 t3-page-ce-element">
-            <f:render section="PageContent" arguments="{tree: tree}"/>
-        </div>
+        <f:render section="Tree" arguments="{tree: tree}"/>
     </div>
+
+    <div class="document-content w-100 p-3 t3-page-ce-element">
+        <f:render section="PageContent" arguments="{tree: tree}"/>
+    </div>
+
+
+    <h2>Create Document</h2>
+    <f:form action="create">
+        <div>
+            <label for="documentHeadline">Headline</label>
+            <f:form.textfield name="documentHeadline" id="documentHeadline" />
+        </div>
+        <div>
+            <label for="parentId">Parent</label>
+            <f:form.textfield name="parentId" id="parentId" />
+        </div>
+        <div>
+            <label for="type">Visibility</label>
+            <f:form.select name="type" id="type" options="{public: 'Page', private: 'Board'}" />
+        </div>
+        <f:form.submit value="Create" />
+    </f:form>
+
+    <h2>Update Document</h2>
+    <f:form action="update">
+        <div>
+            <label for="documentUid">Document</label>
+            <f:form.select name="documentUid" id="documentUid" options="{allDocuments}" optionLabelField="headline" optionValueField="uid" prependOptionLabel="-- Select Document --" />
+        </div>
+        <div>
+            <label for="headline">New Headline</label>
+            <f:form.textfield name="documentData[headline]" id="headline" />
+        </div>
+        <div>
+            <label for="markup">New Content</label>
+            <f:form.textarea name="documentData[markup]" id="markup" rows="5" />
+        </div>
+        <div>
+            <label for="visibility">Visibility</label>
+            <f:form.select name="documentData[visibility]" id="visibility" options="{public: 'Public', private: 'Private'}" />
+        </div>
+        <f:form.submit value="Update" />
+    </f:form>
 
 </f:section>
 
@@ -43,12 +77,11 @@
                     </f:if>
 
                 </span>
-                <div>
+                <div class="item-text">
                     <span>{node.document.headline} (ID: {node.document.uid})</span>
-                    <span>
-                        <button class="basic-button">
+                    <button class="basic-button">
                         <core:icon identifier="tx-knowledge-base-add" size="default" />
-                </button></span>
+                    </button>
                 </div>
             </div>
 
@@ -59,6 +92,7 @@
             </f:if>
         </div>
     </f:for>
+
 </f:section>
 
 <f:section name="PageContent">
