@@ -5,18 +5,23 @@
 			<span class="board__description">Track content creation and updates</span>
 		</div>
 		<div class="kb-header-actions">
-			<button type="button" class="kb-btn-share">
+			<button type="button" class="kb-btn-share" id="kb-open-modal">
 				<core:icon identifier="tx-knowledge-base-add" size="small" />
 				New Task
 			</button>
 		</div>
 	</div>
-
 	<!--Breadcrumb-->
 	<div class="breadcrumb">This is the breadcrumb area</div>
 	<!--Board-->
 	<div class="board__content">
 		<f:render section="Status Column" arguments="{_all}"/>
+	</div>
+
+	<div class="kb-create-task-modal-content">
+		<div class="kb-create-task-modal-box">
+			<f:render partial="CreateTask" />
+		</div>
 	</div>
 </div>
 
@@ -80,5 +85,3 @@
 		</div>
 	</div>
 </f:section>
-
-</html>

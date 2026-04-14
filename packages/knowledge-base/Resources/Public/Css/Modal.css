@@ -18,3 +18,22 @@
 .kb-modal-body {
     padding: 24px;
 }
+
+.kb-create-task-modal-content {
+    position: fixed; /* better than absolute for modal */
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8e8e880;
+}
+
+.kb-create-task-modal-content.is-open {
+    display: flex;
+}
+
+.kb-create-task-modal-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}

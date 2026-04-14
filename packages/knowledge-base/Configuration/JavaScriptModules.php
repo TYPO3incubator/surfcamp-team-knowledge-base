@@ -8,5 +8,6 @@ return [
         // recursive definiton, all *.js files in this folder are import-mapped
         // trailing slash is required per importmap-specification
         '@vendor/typo3-incubator/knowledge-base/' => 'EXT:knowledge-base/Resources/Public/JavaScript/',
-    ],
+		'@typo3/knowledge-base/' => 'EXT:knowledge-base/Resources/Public/JavaScript/',
+	],
 ];
