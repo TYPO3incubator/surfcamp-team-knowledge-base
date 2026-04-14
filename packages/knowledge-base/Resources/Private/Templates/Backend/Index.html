@@ -59,32 +59,25 @@
                         <core:icon identifier="tx-knowledge-base-add" size="default" />
                     </button>
                 </div>
+            </div>
 
-        <f:render section="Tree" arguments="{tree: tree}"/>
-    </div>
-
-    <div class="document-content">
-        <f:render section="PageContent" arguments="{tree: tree}"/>
-    </div>
-</div>
-
-
-    <h2>Create Document</h2>
-    <f:form action="create">
-        <div>
-            <label for="documentHeadline">Headline</label>
-            <f:form.textfield name="documentHeadline" id="documentHeadline" />
-        </div>
-        <div>
-            <label for="parentId">Parent</label>
-            <f:form.textfield name="parentId" id="parentId" />
-        </div>
-        <div>
-            <label for="type">Visibility</label>
-            <f:form.select name="type" id="type" options="{public: 'normal', private: 'board'}" />
-        </div>
-        <f:form.submit value="Create" />
-    </f:form>
+            <f:render section="Tree" arguments="{tree: tree}"/>
+            <h2>Create Document</h2>
+            <f:form action="create">
+                <div>
+                    <label for="documentHeadline">Headline</label>
+                    <f:form.textfield name="documentHeadline" id="documentHeadline" />
+                </div>
+                <div>
+                    <label for="parentId">Parent</label>
+                    <f:form.textfield name="parentId" id="parentId" />
+                </div>
+                <div>
+                    <label for="type">Visibility</label>
+                    <f:form.select name="type" id="type" options="{public: 'normal', private: 'board'}" />
+                </div>
+                <f:form.submit value="Create" />
+            </f:form>
 
             <h2>Update Document</h2>
             <f:form action="update">
@@ -107,8 +100,8 @@
                 <f:form.submit value="Update" />
             </f:form>
         </div>
-
-        <div class="kb-board">
+        <div class="kb-content">
+            <f:render section="PageContent" arguments="{tree: tree}" />
             <f:render partial="Board" arguments="{_all}" />
         </div>
     </div>
@@ -166,9 +159,7 @@
                 </f:for>
             </f:if>
         </div>
-
         <f:render section="Comment" arguments="{_all}"/>
-
     </f:for>
 </f:section>
 

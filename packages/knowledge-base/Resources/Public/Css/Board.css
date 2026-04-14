@@ -1,11 +1,5 @@
-:root {
-    --kb-font-family: var(--typo3-font-family, Inter, system-ui, -apple-system, sans-serif);
-}
 
-body {
-    height: 100vh;
-    font-family: var(--kb-font-family);
-}
+/*Board*/
 
 .board {
     position: relative;
@@ -181,19 +175,4 @@ h1, h2, h3, h4, h5, h6, p {
 .icon-markup img{
     width: 14px !important;
     height: 14px !important;
-}
-
-.kb-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-}
-
-.kb-tree {
-    width: 20%;
-}
-
-.kb-board {
-    width: 80%;
 }
