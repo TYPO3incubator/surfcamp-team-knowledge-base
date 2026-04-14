@@ -1,14 +1,13 @@
+/*Page*/
 
-/*Board*/
-
-.board {
+.page {
     position: relative;
     height: 100%;
     overflow: hidden;
     border-left: 4px solid #d4d4d4;
 }
 
-.board__info {
+.page__info {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -18,14 +17,14 @@
     padding: 0px 24px;
 }
 
-.board__title {
+.page__title {
     display: flex;
     align-content: center;
     flex-wrap: wrap;
     height: 100%;
 }
 
-.board__content {
+.page__content {
     display: flex;
     overflow: auto;
     gap: 24px;

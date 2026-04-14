@@ -31,6 +31,7 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
+        $this->pageRenderer->addJsFile('EXT:knowledge-base/Resources/Public/JavaScript/Backend.js');
     }
 
     public function indexAction(int $openDocumentId = 0): ResponseInterface
