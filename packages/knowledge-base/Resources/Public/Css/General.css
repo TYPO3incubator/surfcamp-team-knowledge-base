@@ -1,0 +1,102 @@
+/* Hide the TYPO3 module docheader — we use our own kb-header instead */
+:root {
+    --kb-font-family: var(--typo3-font-family, Inter, system-ui, -apple-system, sans-serif);
+}
+
+body {
+    height: 100vh;
+    font-family: var(--kb-font-family);
+}
+
+.module-docheader {
+    display: none !important;
+}
+
+.module-body {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.module-body-container {
+    height: 100%;
+}
+
+[data-bs-theme="dark"] [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
+}
+
+[data-bs-theme="dark"] .kb-search-input {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+}
+
+[data-bs-theme="dark"] .kb-search-input::placeholder {
+    color: #aaa;
+}
+
+[data-bs-theme="dark"] .kb-search-icon {
+    color: #aaa;
+}
+
+[data-bs-theme="dark"] .kb-search-flyout {
+    background: #2d2d2d;
+    border-color: #555;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-bs-theme="dark"] .kb-search-result-item {
+    border-bottom-color: #3a3a3a;
+}
+
+[data-bs-theme="dark"] .kb-search-result-item:hover {
+    background: #3a3a3a;
+}
+
+[data-bs-theme="dark"] .kb-search-result-icon,
+[data-bs-theme="dark"] .kb-search-result-path {
+    color: #aaa;
+}
+
+[data-bs-theme="light"] [class*="icon-tx-knowledge-base"] img {
+    filter: none;
+}
+
+.kb-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.kb-tree {
+    padding: 0 24px;
+    width: 20%;
+}
+
+.kb-content {
+    width: 80%;
+}
+
+.knowledge-base {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
+    height: 100%;
+}
+
+.document-tree {
+    max-width: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.document-content {
+    width: 100%;
+    padding: 2rem;
+}
+
+.content-inner {
+    padding: 2rem;
+}

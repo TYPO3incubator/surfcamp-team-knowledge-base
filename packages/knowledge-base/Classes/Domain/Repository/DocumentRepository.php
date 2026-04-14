@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TYPO3Incubator\KnowledgeBase\Domain\Repository;
 
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
@@ -19,6 +20,7 @@ class DocumentRepository extends Repository
         protected readonly ConnectionPool $connectionPool,
         protected readonly DataMapper $dataMapper,
         protected PersistenceManagerInterface $persistenceManager,
+        protected readonly Context $context,
     ) {
         parent::__construct();
         $this->tableName = $this->dataMapper->getDataMap(Document::class)->getTableName();
@@ -60,12 +62,20 @@ class DocumentRepository extends Repository
 
     public function fetchNodesByParent(int $parentIdentifier): array
     {
+        $backendUserUid = $this->context->getPropertyFromAspect('backend.user', 'id');
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
         $rows = $queryBuilder
             ->select('*')
             ->from($this->tableName)
             ->where(
-                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT))
+                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT)),
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->eq('visibility', $queryBuilder->createNamedParameter('public', Connection::PARAM_STR)),
+                    $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->eq('visibility', $queryBuilder->createNamedParameter('private', Connection::PARAM_STR)),
+                        $queryBuilder->expr()->eq('user', $queryBuilder->createNamedParameter($backendUserUid, Connection::PARAM_INT))
+                    )
+                )
             )
             ->orderBy('headline', 'ASC')
             ->executeQuery()
