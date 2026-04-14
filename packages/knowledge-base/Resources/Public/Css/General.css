@@ -1,0 +1,50 @@
+.module-docheader {
+    display: none !important;
+}
+
+.module-body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+
+[data-bs-theme="dark"] [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
+}
+
+[data-bs-theme="dark"] .kb-search-input {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+}
+
+[data-bs-theme="dark"] .kb-search-input::placeholder {
+    color: #aaa;
+}
+
+[data-bs-theme="dark"] .kb-search-icon {
+    color: #aaa;
+}
+
+[data-bs-theme="dark"] .kb-search-flyout {
+    background: #2d2d2d;
+    border-color: #555;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-bs-theme="dark"] .kb-search-result-item {
+    border-bottom-color: #3a3a3a;
+}
+
+[data-bs-theme="dark"] .kb-search-result-item:hover {
+    background: #3a3a3a;
+}
+
+[data-bs-theme="dark"] .kb-search-result-icon,
+[data-bs-theme="dark"] .kb-search-result-path {
+    color: #aaa;
+}
+
+[data-bs-theme="light"] [class*="icon-tx-knowledge-base"] img {
+    filter: none;
+}
