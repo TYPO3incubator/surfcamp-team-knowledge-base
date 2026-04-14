@@ -18,9 +18,39 @@ The extension ships llama.cpp HTTP clients for both embedding and generation, an
 
 ## Server setup
 
-### Embedding server (port 8080)
+### DDEV (recommended)
 
-Uses [nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF), a high-quality English embedding model. The `--ctx-size` and `--ubatch-size` must match the `embeddingContextLength` setting (2048 tokens ≈ ~8000 characters).
+The project ships a `.ddev/docker-compose.llama.yaml` that starts both servers automatically as part of `ddev start`. Models are downloaded from Hugging Face on first start and cached in named Docker volumes, so subsequent starts skip the download.
+
+```bash
+ddev start
+# llama-embed (port 8080) and llama-generate (port 8081) start alongside the web container
+```
+
+Watch download progress on first run:
+
+```bash
+ddev logs -s llama-embed
+ddev logs -s llama-generate
+```
+
+Verify the servers are up from inside the web container:
+
+```bash
+ddev exec curl -s http://llama-embed:8080/health
+ddev exec curl -s http://llama-generate:8081/health
+```
+
+### Running llama-server manually (without DDEV)
+
+<details>
+<summary>Expand for manual setup instructions</summary>
+
+Install [llama.cpp](https://github.com/ggml-org/llama.cpp) built with `LLAMA_CURL=1`, then start two server processes:
+
+**Embedding server (port 8080)**
+
+Uses [nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF). The `--ctx-size` and `--ubatch-size` must match the `embeddingContextLength` setting (2048 tokens ≈ ~8000 characters).
 
 ```bash
 llama-server \
@@ -32,7 +62,7 @@ llama-server \
   --ubatch-size 2048
 ```
 
-### Generation server (port 8081)
+**Generation server (port 8081)**
 
 Uses [gemma-3-4b-it](https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF), a compact instruction-tuned model that runs well on CPU.
 
@@ -42,7 +72,9 @@ llama-server \
   --port 8081
 ```
 
-Both commands download the model on first run via the `-hf` flag (requires `llama-server` built with `LLAMA_CURL=1`).
+Both commands download the model on first run via the `-hf` flag. After starting the servers, update the URLs in **Admin Tools → Settings → Extension Configuration → smart-search** to point to your host (`http://localhost:8080` / `http://localhost:8081`).
+
+</details>
 
 ## Installation
 

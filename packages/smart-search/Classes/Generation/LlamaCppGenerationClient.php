@@ -32,6 +32,7 @@ class LlamaCppGenerationClient implements GenerationClientInterface
                     ],
                     JSON_THROW_ON_ERROR
                 ),
+                'timeout' => $this->configuration->getGenerationTimeout(),
             ]
         );
 

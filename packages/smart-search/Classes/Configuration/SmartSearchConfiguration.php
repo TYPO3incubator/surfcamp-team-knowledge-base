@@ -17,17 +17,22 @@ class SmartSearchConfiguration
 
     public function getEmbeddingServerUrl(): string
     {
-        return (string)($this->config['embeddingServerUrl'] ?? 'http://localhost:8080');
+        return trim((string)($this->config['embeddingServerUrl'] ?? 'http://localhost:8080'));
     }
 
     public function getGenerationServerUrl(): string
     {
-        return (string)($this->config['generationServerUrl'] ?? 'http://localhost:8081');
+        return trim((string)($this->config['generationServerUrl'] ?? 'http://localhost:8081'));
     }
 
     public function getGenerationMaxTokens(): int
     {
         return (int)($this->config['generationMaxTokens'] ?? 512);
+    }
+
+    public function getGenerationTimeout(): int
+    {
+        return (int)($this->config['generationTimeout'] ?? 300);
     }
 
     public function getEmbeddingContextLength(): int
