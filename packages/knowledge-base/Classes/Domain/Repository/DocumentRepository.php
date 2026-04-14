@@ -11,6 +11,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
+use TYPO3Incubator\KnowledgeBase\Dto\SlimDocumentDto;
 
 class DocumentRepository extends Repository
 {
@@ -60,12 +61,12 @@ class DocumentRepository extends Repository
         return $this->dataMapper->map(Document::class, $rows);
     }
 
-    public function fetchNodesByParent(int $parentIdentifier): array
+    public function fetchSlimNodesByParent(int $parentIdentifier): array
     {
         $backendUserUid = $this->context->getPropertyFromAspect('backend.user', 'id');
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
         $rows = $queryBuilder
-            ->select('*')
+            ->select('uid', 'parent', 'visibility', 'type', 'headline')
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT)),
@@ -81,7 +82,7 @@ class DocumentRepository extends Repository
             ->executeQuery()
             ->fetchAllAssociative();
 
-        return $this->dataMapper->map(Document::class, $rows);
+        return $this->dataMapper->map(SlimDocumentDto::class, $rows);
     }
 
     public function hasChildren(int $uid): bool

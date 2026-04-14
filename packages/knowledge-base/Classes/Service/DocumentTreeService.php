@@ -19,7 +19,7 @@ class DocumentTreeService
 
     protected function getNodesRecursive(int $parentIdentifier): array
     {
-        $documents = $this->documentRepository->fetchNodesByParent($parentIdentifier);
+        $documents = $this->documentRepository->fetchSlimNodesByParent($parentIdentifier);
 
         $items = [];
         foreach ($documents as $document) {
