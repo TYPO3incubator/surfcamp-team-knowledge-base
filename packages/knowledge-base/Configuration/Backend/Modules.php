@@ -18,6 +18,8 @@ return [
                 'index',
                 'search',
                 'update',
+                'rag',
+                'reindex',
             ],
         ],
     ],

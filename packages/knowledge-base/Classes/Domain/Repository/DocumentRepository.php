@@ -6,10 +6,17 @@ namespace TYPO3Incubator\KnowledgeBase\Domain\Repository;
 
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 
-class DocumentRepository
+
+/**
+ * @extends Repository<Document>
+ */
+class DocumentRepository extends Repository
 {
     private readonly string $tableName;
 
@@ -17,7 +24,14 @@ class DocumentRepository
         protected readonly ConnectionPool $connectionPool,
         protected readonly DataMapper $dataMapper
     ) {
+        parent::__construct();
         $this->tableName = $this->dataMapper->getDataMap(Document::class)->getTableName();
+    }
+
+    public function initializeObject(): void
+    {
+        $this->defaultQuerySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $this->defaultQuerySettings->setRespectStoragePage(false);
     }
 
     public function getTableName(): string
@@ -54,26 +68,6 @@ class DocumentRepository
             ->fetchOne();
     }
 
-    public function findByUid(int $uid): ?Document
-    {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
-        $row = $queryBuilder
-            ->select('*')
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT))
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-
-        if ($row === false) {
-            return null;
-        }
-
-        $objects = $this->dataMapper->map(Document::class, [$row]);
-        return $objects[0] ?? null;
-    }
-
     public function search(string $query): array
     {
         // Strip FULLTEXT boolean operators from user input to prevent syntax errors
@@ -103,21 +97,45 @@ class DocumentRepository
         return $this->dataMapper->map(Document::class, $rows);
     }
 
-    public function update(Document $document): void
+    /**
+     * @param int[] $uids
+     * @return Document[]
+     */
+    public function findByUids(array $uids): array
     {
+        if (empty($uids)) {
+            return [];
+        }
+
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
-        $queryBuilder
-            ->update($this->tableName)
+        $rows = $queryBuilder
+            ->select('*')
+            ->from($this->tableName)
             ->where(
-                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($document->getUid(), Connection::PARAM_INT))
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
+                )
             )
-            ->set('headline', $document->getHeadline())
-            ->set('markup', $document->getMarkup())
-            ->set('type', $document->getType())
-            ->set('visibility', $document->getVisibility())
-            ->set('parent', (string)($document->getParent()?->getUid() ?? 0))
-            ->set('status', (string)($document->getStatus()?->getUid() ?? 0))
-            ->set('tstamp', (string)time())
-            ->executeStatement();
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        // Preserve the order of $uids
+        $indexed = [];
+        foreach ($this->dataMapper->map(Document::class, $rows) as $document) {
+            $indexed[$document->getUid()] = $document;
+        }
+
+        $ordered = [];
+        foreach ($uids as $uid) {
+            if (isset($indexed[$uid])) {
+                $ordered[] = $indexed[$uid];
+            }
+        }
+        return $ordered;
     }
 }

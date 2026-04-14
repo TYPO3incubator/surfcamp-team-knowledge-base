@@ -12,8 +12,11 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
+use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
+use TYPO3Incubator\KnowledgeBase\Service\RagService;
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -25,6 +28,9 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly PageRenderer $pageRenderer,
         protected readonly DocumentTreeService $documentTreeService,
         protected readonly DocumentService $documentService,
+        protected readonly RagService $ragService,
+        protected readonly EmbeddingService $embeddingService,
+        protected readonly DocumentRepository $documentRepository,
     ) {}
 
     public function initializeAction(): void
@@ -38,13 +44,95 @@ class BackendKnowledgeBaseController extends ActionController
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $this->moduleTemplate->assign('searchUrl', $this->uriBuilder->reset()->uriFor(
+            'search',
+            ['query' => 'PLACEHOLDER_QUERY', 'mode' => 'PLACEHOLDER_MODE']
+        ));
+        $this->moduleTemplate->assign('reindexUrl', $this->uriBuilder->reset()->uriFor('reindex'));
+        $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/search.js');
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
-    public function searchAction(string $query = ''): ResponseInterface
+    private const VALID_MODES = ['keyword', 'semantic', 'rag'];
+
+    public function searchAction(string $query = '', string $mode = 'keyword'): ResponseInterface
     {
-        $results = $this->documentService->searchDocuments($query);
-        return $this->jsonResponse((string)json_encode($results));
+        if (!in_array($mode, self::VALID_MODES, true)) {
+            return $this->jsonResponse((string)json_encode([
+                'error' => 'Invalid mode. Allowed: ' . implode(', ', self::VALID_MODES),
+            ]));
+        }
+
+        if ($query === '' && $mode !== 'keyword') {
+            return $this->jsonResponse((string)json_encode([
+                'error' => 'Query must not be empty for mode: ' . $mode,
+            ]));
+        }
+
+        $envelope = match($mode) {
+            'keyword'  => $this->buildKeywordResults($query),
+            'semantic' => $this->buildSemanticResults($query),
+            'rag'      => $this->buildRagResults($query),
+        };
+
+        return $this->jsonResponse((string)json_encode($envelope));
+    }
+
+    public function ragAction(string $query = ''): ResponseInterface
+    {
+        return $this->searchAction($query, 'rag');
+    }
+
+    private function buildKeywordResults(string $query): array
+    {
+        $documents = $this->documentService->searchDocuments($query);
+
+        return [
+            'mode'    => 'keyword',
+            'query'   => $query,
+            'results' => array_map(
+                fn(array $d) => $d + ['score' => null],
+                $documents
+            ),
+            'answer'  => null,
+        ];
+    }
+
+    private function buildSemanticResults(string $query): array
+    {
+        $results = $this->ragService->searchSemantic($query);
+
+        return [
+            'mode'    => 'semantic',
+            'query'   => $query,
+            'results' => $results,
+            'answer'  => null,
+        ];
+    }
+
+    private function buildRagResults(string $query): array
+    {
+        $ragResult = $this->ragService->ask($query);
+
+        return [
+            'mode'    => 'rag',
+            'query'   => $query,
+            'results' => $ragResult['sources'],
+            'answer'  => $ragResult['answer'],
+        ];
+    }
+
+    public function reindexAction(): ResponseInterface
+    {
+        $documents = $this->documentRepository->findAll();
+        $count = 0;
+
+        foreach ($documents as $document) {
+            $this->embeddingService->generateAndStoreIfChanged($document);
+            $count++;
+        }
+
+        return $this->jsonResponse((string)json_encode(['reindexed' => $count]));
     }
 
     public function updateAction(int $documentUid, array $documentData): ResponseInterface

@@ -11,7 +11,8 @@ use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 class DocumentService
 {
     public function __construct(
-        protected readonly DocumentRepository $documentRepository
+        protected readonly DocumentRepository $documentRepository,
+        protected readonly EmbeddingService $embeddingService,
     ) {}
 
     public function searchDocuments(string $query): array
@@ -45,6 +46,7 @@ class DocumentService
         $document->setVisibility($documentData['visibility'] ?? $document->getVisibility());
 
         $this->documentRepository->update($document);
+        $this->embeddingService->generateAndStoreIfChanged($document);
         return $result;
     }
 }
