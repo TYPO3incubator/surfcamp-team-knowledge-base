@@ -107,4 +107,10 @@ class DocumentService
 
         return $result;
     }
+
+    public function loadDocumentChildren(int $documentUid): array
+    {
+        $children = $this->documentRepository->getChildren($documentUid);
+        return $children;
+    }
 }

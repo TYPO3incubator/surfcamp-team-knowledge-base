@@ -1,0 +1,1 @@
+console.log(TYPO3.settings.ajaxUrls.loadDocumentChildren);
