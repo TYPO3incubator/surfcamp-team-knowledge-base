@@ -52,7 +52,7 @@ class DocumentService
         return $result;
     }
 
-    public function createDocument(string $documentHeadline, int $parentId, string $visibility): array
+    public function createDocument(string $documentHeadline, int $parentId, string $type): array
     {
         $result = [
             'success' => true,
@@ -73,7 +73,7 @@ class DocumentService
         $document = new Document();
         $document->setHeadline($documentHeadline);
         $document->setUser($backendUser);
-        $document->setVisibility($visibility);
+        $document->setType($type);
 
         if ($parentId > 0) {
             $parent = $this->documentRepository->findByUid($parentId);
