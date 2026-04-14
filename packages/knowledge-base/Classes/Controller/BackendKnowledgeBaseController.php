@@ -10,12 +10,9 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Beuser\Domain\Repository\BackendUserRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 
 #[AsController]
@@ -28,9 +25,6 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly PageRenderer $pageRenderer,
         protected readonly DocumentTreeService $documentTreeService,
         protected readonly DocumentService $documentService,
-        protected readonly DocumentRepository $documentRepository,
-        protected readonly PersistenceManager $persistenceManager,
-        protected readonly BackendUserRepository $backendUserRepository,
     ) {}
 
     public function initializeAction(): void
