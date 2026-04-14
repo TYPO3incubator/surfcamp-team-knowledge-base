@@ -3,7 +3,12 @@ function initTree() {
     document.querySelectorAll('.kb-btn-collapse').forEach(btn => { btn.classList.add('is-collapsed'); });
 }
 
-initTree();
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTree);
+} else {
+    initTree();
+}
+
 window.addEventListener('pageshow', initTree);
 
 document.addEventListener('click', e => {
@@ -11,6 +16,7 @@ document.addEventListener('click', e => {
     if (!button) return;
 
     e.stopPropagation();
+    e.preventDefault();
 
     const wrapper = button.closest('.item-wrapper');
     const children = wrapper?.querySelector(':scope > .item-childs');

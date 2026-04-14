@@ -18,7 +18,7 @@
             <div class="item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}">
                 <f:if condition="{node.children}">
                     <f:then>
-                        <button class="basic-button kb-btn-collapse">
+                        <button type="button" class="kb-btn-collapse">
                             <core:icon identifier="tx-knowledge-base-collapse" size="small" />
                         </button>
                     </f:then>
@@ -30,17 +30,17 @@
                 <span class="item-node-icon">
                     <f:if condition="{node.document.type} == 'board'">
                         <f:then>
-                            <core:icon identifier="tx-knowledge-base-boards" size="default" />
+                            <core:icon identifier="tx-knowledge-base-boards" size="small" />
                         </f:then>
                         <f:else>
-                            <core:icon identifier="tx-knowledge-base-page" size="default" />
+                            <core:icon identifier="tx-knowledge-base-page" size="small" />
                         </f:else>
                     </f:if>
                 </span>
 
                 <div class="item-text">
                     <span>{node.document.headline}</span>
-                    <button class="basic-button">
+                    <button type="button" class="basic-button">
                         <core:icon identifier="tx-knowledge-base-add" size="default" />
                     </button>
                 </div>

@@ -17,6 +17,10 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:knowledge-base/Resources/Public/Icons/Page.svg',
     ],
+    'tx-knowledge-base-folder' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:knowledge-base/Resources/Public/Icons/Folder.svg',
+    ],
     'tx-knowledge-base-boards' => [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:knowledge-base/Resources/Public/Icons/Boards.svg',

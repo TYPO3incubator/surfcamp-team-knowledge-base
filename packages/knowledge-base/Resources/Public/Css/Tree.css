@@ -1,33 +1,69 @@
-/* PageTree Header */
+.document-tree {
+    width: 250px;
+    flex-shrink: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Header */
 .tree-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid #c3c3c3;
+    padding: 6px 8px 6px 12px;
+    margin-bottom: 4px;
 }
 
-.basic-button {
-    background: unset;
-    border: unset;
-    width: 24px;
-    height: 24px;
+.tree-header > span {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b6b6b;
 }
 
-/* PageTree Nodes */
+/* Nodes */
 .item-wrapper {
     display: flex;
     flex-direction: column;
-    margin-bottom: 10px;
 }
 
 .item {
     display: flex;
     align-items: center;
     width: 100%;
-    padding: 4px 8px;
-    gap: 8px;
+    padding: 5px 8px;
+    gap: 4px;
+    border-radius: 6px;
+    cursor: pointer;
     overflow: hidden;
+    transition: background 0.1s ease;
+}
+
+.item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+[data-bs-theme="dark"] .item:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+[data-bs-theme="dark"] .basic-button:hover,
+[data-bs-theme="dark"] .kb-btn-collapse:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.item.is-active {
+    background: rgba(255, 135, 0, 0.1);
+}
+
+.item.is-active .item-text > span {
+    color: #ff8700;
+    font-weight: 500;
+}
+
+.item.is-active .item-node-icon [class*="icon-tx-knowledge-base"] img {
+    filter: brightness(0) saturate(100%) invert(55%) sepia(90%) saturate(900%) hue-rotate(10deg) brightness(103%);
 }
 
 .item-text {
@@ -39,11 +75,12 @@
 }
 
 .item-text > span {
+    font-size: 0.875rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
-    margin-right: 5px;
+    margin-right: 4px;
 }
 
 .basic-button {
@@ -52,24 +89,68 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     padding: 2px;
-    transition: opacity 0.2s;
+    border-radius: 4px;
+    flex-shrink: 0;
+    transition: background 0.1s ease, opacity 0.15s ease;
 }
 
-.item:hover .basic-button {
-    opacity: 1;
+.basic-button:hover {
+    background: rgba(0, 0, 0, 0.08);
 }
 
-.item .basic-button {
+/* Add button: hidden until row is hovered */
+.item .basic-button:not(.kb-btn-collapse) {
     opacity: 0;
 }
 
-.basic-button svg {
-    width: 16px;
-    height: 16px;
+.item:hover .basic-button:not(.kb-btn-collapse) {
+    opacity: 1;
 }
 
 .item-childs {
     padding-left: 20px;
 }
 
+.item-node-icon {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.kb-btn-collapse {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: transform 0.15s ease, background 0.1s ease, opacity 0.1s ease;
+}
+
+.kb-btn-collapse:hover {
+    background: rgba(0, 0, 0, 0.08);
+    opacity: 1;}
+
+.kb-btn-collapse.is-collapsed {
+    transform: rotate(-90deg);
+}
+
+.kb-collapse-placeholder {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
