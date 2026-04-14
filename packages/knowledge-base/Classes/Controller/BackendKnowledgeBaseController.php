@@ -78,4 +78,10 @@ class BackendKnowledgeBaseController extends ActionController
         $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
+
+    public function loadDocumentAction(int $documentUid): ResponseInterface
+    {
+        $result = $this->documentService->loadDocument($documentUid);
+        return $this->jsonResponse((string)json_encode($result));
+    }
 }
