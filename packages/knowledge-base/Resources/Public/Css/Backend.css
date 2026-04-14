@@ -68,3 +68,8 @@
     padding-left: 20px;
 }
 
+.knowledge-base {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
