@@ -5,95 +5,86 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
+    <f:asset.css identifier="tree-modal" src="EXT:knowledge-base/Resources/Public/Css/Modal.css" />
+    <f:asset.script identifier="tree-modal" src="EXT:knowledge-base/Resources/Public/Js/Modal.js" />
+
     <div class="document-tree">
         <div class="tree-header">
             <span>Pages</span>
-            <button class="basic-button">
-                <core:icon identifier="tx-knowledge-base-add" size="default" />
-            </button>
-        </div>
+            <div class="dropdown">
+                <button class="basic-button show" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <core:icon identifier="tx-knowledge-base-add" size="default" />
+                </button>
+                <ul class="modal modal-style-default modal-severity-notice modal-size-medium modal-position-center" data-bs-popper="static">
+                    <div class="modal-header t3js-modal-header">
+                        New Page Content
+                        <button class="modal-header-close t3js-modal-close"><typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon><span class="visually-hidden"><!--?lit$623924901$-->Close New Page Content</span></button>
+                    </div>
+                    <div class="modal-body t3js-modal-body">
+                        <li>
+                            <a class="dropdown-item add-action" data-type="page" data-parent="{node.document.uid}" href="#">
+                                <core:icon identifier="tx-knowledge-base-page" size="medium" />
+                                <div class="item-content">
+                                    <span class="item-title">New Page</span>
+                                    <span>Publish a standard document with rich text, images, and structured content. Perfect for guides and documentation.</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item add-action" data-type="board" data-parent="{node.document.uid}" href="#">
+                                <core:icon identifier="tx-knowledge-base-boards" size="medium" />
+                                <div class="item-content">
+                                    <span class="item-title">New Board</span>
+                                    <span>Launch a dynamic Trello-style board with multiple columns. Ideal for organizing tasks and managing team workflows.</span>
+                                </div>
+                            </a>
+                        </li>
+                    </div>
 
-        <f:render section="Tree" arguments="{tree: tree}"/>
-    </div>
-
-
-    <h2>Create Document</h2>
-    <f:form action="create">
-        <div>
-            <label for="documentHeadline">Headline</label>
-            <f:form.textfield name="documentHeadline" id="documentHeadline" />
-        </div>
-        <div>
-            <label for="parentId">Parent</label>
-            <f:form.textfield name="parentId" id="parentId" />
-        </div>
-        <div>
-            <label for="type">Visibility</label>
-            <f:form.select name="type" id="type" options="{public: 'Page', private: 'Board'}" />
-        </div>
-        <f:form.submit value="Create" />
-    </f:form>
-
-    <h2>Update Document</h2>
-    <f:form action="update">
-        <div>
-            <label for="documentUid">Document</label>
-            <f:form.select name="documentUid" id="documentUid" options="{allDocuments}" optionLabelField="headline" optionValueField="uid" prependOptionLabel="-- Select Document --" />
-        </div>
-        <div>
-            <label for="headline">New Headline</label>
-            <f:form.textfield name="documentData[headline]" id="headline" />
-        </div>
-        <div>
-            <label for="markup">New Content</label>
-            <f:form.textarea name="documentData[markup]" id="markup" rows="5" />
-        </div>
-        <div>
-            <label for="visibility">Visibility</label>
-            <f:form.select name="documentData[visibility]" id="visibility" options="{public: 'Public', private: 'Private'}" />
-        </div>
-        <f:form.submit value="Update" />
-    </f:form>
-
-</f:section>
-
-<f:section name="Tree">
-    <f:for each="{tree}" as="node">
-        <div class="item-wrapper">
-            <div class="item">
-                <span class="icon">
-
-                    <f:if condition="{node.document.type} == 'board'">
-                        <f:then>
-                            <core:icon identifier="tx-knowledge-base-boards" size="default" />
-                        </f:then>
-                        <f:else>
-                            <core:icon identifier="tx-knowledge-base-page" size="default" />
-                        </f:else>
-                    </f:if>
-
-                </span>
-                <div class="item-text">
-                    <span>{node.document.headline} (ID: {node.document.uid})</span>
-
-                    <f:if condition="{node.document.type} != 'board'">
-                        <f:then>
-                            <button class="basic-button">
-                                <core:icon identifier="tx-knowledge-base-add" size="default" />
-                            </button>
-                        </f:then>
-                    </f:if>
-                </div>
+                </ul>
             </div>
 
-            <f:if condition="{node.children} && {node.document.type} != 'board'">
-                <div class="item-childs">
-                    <f:render section="Tree" arguments="{tree: node.children}"/>
+            <h2>Create Document</h2>
+            <f:form action="create">
+                <div>
+                    <label for="documentHeadline">Headline</label>
+                    <f:form.textfield name="documentHeadline" id="documentHeadline" />
                 </div>
-            </f:if>
-        </div>
-    </f:for>
+                <div>
+                    <label for="parentId">Parent</label>
+                    <f:form.textfield name="parentId" id="parentId" />
+                </div>
+                <div>
+                    <label for="type">Visibility</label>
+                    <f:form.select name="type" id="type" options="{public: 'Page', private: 'Board'}" />
+                </div>
+                <f:form.submit value="Create" />
+            </f:form>
 
+            <h2>Update Document</h2>
+            <f:form action="update">
+                <div>
+                    <label for="documentUid">Document</label>
+                    <f:form.select name="documentUid" id="documentUid" options="{allDocuments}" optionLabelField="headline" optionValueField="uid" prependOptionLabel="-- Select Document --" />
+                </div>
+                <div>
+                    <label for="headline">New Headline</label>
+                    <f:form.textfield name="documentData[headline]" id="headline" />
+                </div>
+                <div>
+                    <label for="markup">New Content</label>
+                    <f:form.textarea name="documentData[markup]" id="markup" rows="5" />
+                </div>
+                <div>
+                    <label for="visibility">Visibility</label>
+                    <f:form.select name="documentData[visibility]" id="visibility" options="{public: 'Public', private: 'Private'}" />
+                </div>
+                <f:form.submit value="Update" />
+            </f:form>
+        </div>
+
+        <f:render partial="Node" arguments="{items: tree}"/>
+    </div>
 </f:section>
 
 </html>

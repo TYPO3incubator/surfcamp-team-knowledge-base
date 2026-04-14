@@ -46,6 +46,14 @@
     border: unset;
     width: 24px;
     height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.basic-button:hover {
+    background: #c3c3c34a;
 }
 
 /* PageTree Nodes */
