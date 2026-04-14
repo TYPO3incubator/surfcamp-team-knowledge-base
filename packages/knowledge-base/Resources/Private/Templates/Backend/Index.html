@@ -5,21 +5,22 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <div class="document-tree">
-        <div class="tree-header">
-            <span>Pages</span>
-            <button class="basic-button">
-                <core:icon identifier="tx-knowledge-base-add" size="default" />
-            </button>
+    <div class="knowledge-base">
+        <div class="document-tree">
+            <div class="tree-header">
+                <span>Pages</span>
+                <button class="basic-button">
+                    <core:icon identifier="tx-knowledge-base-add" size="default" />
+                </button>
+            </div>
+
+            <f:render section="Tree" arguments="{tree: tree}"/>
         </div>
 
-        <f:render section="Tree" arguments="{tree: tree}"/>
+        <div class="document-content">
+            <f:render section="PageContent" arguments="{tree: tree}"/>
+        </div>
     </div>
-
-    <div class="document-content w-100 p-3 t3-page-ce-element">
-        <f:render section="PageContent" arguments="{tree: tree}"/>
-    </div>
-
 
     <h2>Create Document</h2>
     <f:form action="create">
@@ -97,27 +98,43 @@
 
 <f:section name="PageContent">
     <f:for each="{tree}" as="node">
-        <div class="content-inner">
-            <f:if condition="{node.children}">
+        <div class="wrapper">
+            <div class="page-title">
                 <f:for each="{node.children}" as="child">
                     <h2>{child.document.headline} (ID: {child.document.uid})</h2>
+                </f:for>
+            </div>
+        </div>
+
+        <div class="content-inner t3-page-ce-element">
+            <f:if condition="{node.children}">
+                <f:for each="{node.children}" as="child">
                     <f:format.raw>{child.document.markup}</f:format.raw>
                 </f:for>
             </f:if>
         </div>
+
+        <f:render section="Comment" arguments="{_all}"/>
+
     </f:for>
 </f:section>
 
 <f:section name="Comment">
-    <f:for each="{tree}" as="node">
-        <div class="content-inner">
-            <f:if condition="{node.children}">
-                <f:for each="{node.children}" as="child">
-                    <h2>{child.document.headline} (ID: {child.document.uid})</h2>
-                    <f:format.raw>{child.document.markup}</f:format.raw>
-                </f:for>
-            </f:if>
+    <div class="wrapper">
+        <div class="page-title">
+            <h2>Comments</h2>
         </div>
+    </div>
+    <f:for each="{tree}" as="node">
+        <div class="t3-page-ce-element">
+            <div class="t3-page-ce-header">
+
+            </div>
+            <div class="comment-inner t3-page-ce-body">
+                comment section
+            </div>
+        </div>
+
     </f:for>
 
 </f:section>
