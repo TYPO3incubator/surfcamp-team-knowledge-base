@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -88,8 +89,10 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->jsonResponse((string)json_encode($result));
     }
 
-    public function ajaxLoadDocumentChildrenAction(int $documentUid): ResponseInterface
+    public function ajaxLoadDocumentChildrenAction(ServerRequest $request): ResponseInterface
     {
+        $params = $request->getQueryParams();
+        $documentUid = $params['documentUid'] ?? 0;
         $result = $this->documentService->loadDocumentChildren($documentUid);
         return $this->jsonResponse((string)json_encode($result));
     }
