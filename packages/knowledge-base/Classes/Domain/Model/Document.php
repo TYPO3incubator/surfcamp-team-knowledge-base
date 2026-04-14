@@ -27,7 +27,7 @@ class Document extends AbstractEntity implements \JsonSerializable
 
     protected ?Status $status = null;
 
-    protected BackendUser $user;
+    protected ?BackendUser $user = null;
 
     public function getHeadline(): string
     {
@@ -94,7 +94,7 @@ class Document extends AbstractEntity implements \JsonSerializable
         $this->status = $status;
     }
 
-    public function getUser(): BackendUser
+    public function getUser(): ?BackendUser
     {
         return $this->user;
     }
@@ -120,7 +120,7 @@ class Document extends AbstractEntity implements \JsonSerializable
             'visibility' => $this->getVisibility(),
             'parent' => $this->getParent()?->getUid(),
             'status' => $this->getStatus()?->getUid(),
-            'user' => $this->getUser()->getUid(),
+            'user' => $this->getUser()?->getUid(),
         ];
     }
 }
