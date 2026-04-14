@@ -1,34 +1,190 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Default"/>
 <f:layout name="Module"/>
 
 <f:section name="Content">
+    <div class="kb-header">
+        <span class="kb-header-title">Knowledge Base</span>
 
-    <f:render partial="Backend/Search" arguments="{searchUrl: searchUrl, reindexUrl: reindexUrl}"/>
+        <form class="kb-search-form">
+            <div class="kb-search-wrapper">
+                <span class="kb-search-icon">
+                    <core:icon identifier="tx-knowledge-base-search" size="small" />
+                </span>
+                <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" />
 
-    <details class="kb-tree-details">
-        <summary class="kb-tree-summary">Document tree</summary>
-        <div class="document-tree">
-            <f:render section="Tree" arguments="{tree: tree}"/>
+                <div class="kb-search-flyout">
+                    <a href="#" class="kb-search-result-item">
+                        <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        <div class="kb-search-result-info">
+                            <span class="kb-search-result-title">Getting Started</span>
+                            <span class="kb-search-result-path">Documentation</span>
+                        </div>
+                    </a>
+                    <a href="#" class="kb-search-result-item">
+                        <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        <div class="kb-search-result-info">
+                            <span class="kb-search-result-title">Installation</span>
+                            <span class="kb-search-result-path">Documentation › Getting Started</span>
+                        </div>
+                    </a>
+                    <a href="#" class="kb-search-result-item">
+                        <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        <div class="kb-search-result-info">
+                            <span class="kb-search-result-title">Configuration Guide</span>
+                            <span class="kb-search-result-path">Documentation › Getting Started</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <div class="kb-header-actions">
+            <button type="button" class="kb-btn-share">
+                <core:icon identifier="tx-knowledge-base-share" size="small" />
+                Share
+            </button>
         </div>
-    </details>
+    </div>
+
+    <div class="knowledge-base">
+    <div class="document-tree">
+        <div class="tree-header">
+            <span>Pages</span>
+            <button class="basic-button">
+                <core:icon identifier="tx-knowledge-base-add" size="default" />
+            </button>
+        </div>
+
+        <f:render section="Tree" arguments="{tree: tree}"/>
+    </div>
+
+    <div class="document-content">
+        <f:render section="PageContent" arguments="{tree: tree}"/>
+        <f:render partial="Backend/Search" arguments="{searchUrl: searchUrl, reindexUrl: reindexUrl}"/>
+
+    </div>
+</div>
+
+
+    <h2>Create Document</h2>
+    <f:form action="create">
+        <div>
+            <label for="documentHeadline">Headline</label>
+            <f:form.textfield name="documentHeadline" id="documentHeadline" />
+        </div>
+        <div>
+            <label for="parentId">Parent</label>
+            <f:form.textfield name="parentId" id="parentId" />
+        </div>
+        <div>
+            <label for="type">Visibility</label>
+            <f:form.select name="type" id="type" options="{public: 'normal', private: 'board'}" />
+        </div>
+        <f:form.submit value="Create" />
+    </f:form>
+
+    <h2>Update Document</h2>
+    <f:form action="update">
+        <div>
+            <label for="documentUid">Document</label>
+            <f:form.select name="documentUid" id="documentUid" options="{allDocuments}" optionLabelField="headline" optionValueField="uid" prependOptionLabel="-- Select Document --" />
+        </div>
+        <div>
+            <label for="headline">New Headline</label>
+            <f:form.textfield name="documentData[headline]" id="headline" />
+        </div>
+        <div>
+            <label for="markup">New Content</label>
+            <f:form.textarea name="documentData[markup]" id="markup" rows="5" />
+        </div>
+        <div>
+            <label for="visibility">Visibility</label>
+            <f:form.select name="documentData[visibility]" id="visibility" options="{public: 'Public', private: 'Private'}" />
+        </div>
+        <f:form.submit value="Update" />
+    </f:form>
 
 </f:section>
 
 <f:section name="Tree">
     <f:for each="{tree}" as="node">
-        <div class="kb-tree-node">
-            <span class="kb-tree-label">— {node.document.headline}</span>
-            <span class="kb-tree-uid text-muted">#{node.document.uid}</span>
-        </div>
-        <f:if condition="{node.children}">
-            <div class="kb-tree-children">
-                <f:render section="Tree" arguments="{tree: node.children}"/>
+        <div class="item-wrapper">
+            <div class="item">
+                <span class="icon">
+
+                    <f:if condition="{node.document.type} == 'board'">
+                        <f:then>
+                            <core:icon identifier="tx-knowledge-base-boards" size="default" />
+                        </f:then>
+                        <f:else>
+                            <core:icon identifier="tx-knowledge-base-page" size="default" />
+                        </f:else>
+                    </f:if>
+
+                </span>
+                <div class="item-text">
+                    <span>{node.document.headline} (ID: {node.document.uid})</span>
+                    <button class="basic-button">
+                        <core:icon identifier="tx-knowledge-base-add" size="default" />
+                    </button>
+                </div>
             </div>
-        </f:if>
+
+            <f:if condition="{node.children}">
+                <div class="item-childs">
+                    <f:render section="Tree" arguments="{tree: node.children}"/>
+                </div>
+            </f:if>
+        </div>
     </f:for>
+
+</f:section>
+
+<f:section name="PageContent">
+    <f:for each="{tree}" as="node">
+        <div class="wrapper">
+            <div class="page-title">
+                <f:for each="{node.children}" as="child">
+                    <h2>{child.document.headline} (ID: {child.document.uid})</h2>
+                </f:for>
+            </div>
+        </div>
+
+        <div class="content-inner t3-page-ce-element">
+            <f:if condition="{node.children}">
+                <f:for each="{node.children}" as="child">
+                    <f:format.raw>{child.document.markup}</f:format.raw>
+                </f:for>
+            </f:if>
+        </div>
+
+        <f:render section="Comment" arguments="{_all}"/>
+
+    </f:for>
+</f:section>
+
+<f:section name="Comment">
+    <div class="wrapper">
+        <div class="page-title">
+            <h2>Comments</h2>
+        </div>
+    </div>
+    <f:for each="{tree}" as="node">
+        <div class="t3-page-ce-element">
+            <div class="t3-page-ce-header">
+
+            </div>
+            <div class="comment-inner t3-page-ce-body">
+                comment section
+            </div>
+        </div>
+
+    </f:for>
+
 </f:section>
 
 </html>

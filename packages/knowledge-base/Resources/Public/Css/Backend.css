@@ -1,27 +1,344 @@
-/* Dark mode: TYPO3 renders SVG icons as <img> tags inside an iframe, so CSS
-   color inheritance and [data-bs-theme] on the outer shell do not apply here.
-   Use prefers-color-scheme (works in auto mode) plus explicit dark override. */
+/* Hide the TYPO3 module docheader — we use our own kb-header instead */
+.module-docheader {
+    display: none !important;
+}
+
+.module-body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Header */
+.kb-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0 14px;
+    border-bottom: 1px solid var(--bs-border-color);
+    margin-bottom: 16px;
+}
+
+.kb-header-title {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.kb-header-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Search form */
+.kb-search-form {
+    width: 100%;
+    max-width: 550px;
+    margin: 0 auto;
+}
+
+.kb-search-wrapper {
+    position: relative;
+}
+
+.kb-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 0;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+
+.kb-search-input {
+    width: 100%;
+    padding: 8px 16px 8px 36px;
+    font-size: 0.875rem;
+    border: 1px solid #d4d4d4;
+    background: #fff;
+    color: #212529;
+    border-radius: 4px;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.kb-search-input:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #ff8700;
+}
+
+/* Share button */
+.kb-btn-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #ff8700;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.kb-btn-share:hover {
+    background-color: #e67a00;
+}
+
+.kb-btn-share .icon {
+    flex-shrink: 0;
+}
+
+/* Always white — icon sits on orange background in both light and dark mode */
+.kb-btn-share [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
+}
+
+/* Search flyout */
+.kb-search-flyout {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.kb-search-wrapper:focus-within .kb-search-flyout {
+    display: block;
+}
+
+.kb-search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.kb-search-result-item:last-child {
+    border-bottom: none;
+}
+
+.kb-search-result-item:hover {
+    background: #f5f5f5;
+    text-decoration: none;
+    color: inherit;
+}
+
+.kb-search-result-item .icon {
+    flex-shrink: 0;
+}
+
+
+.kb-search-result-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.kb-search-result-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.kb-search-result-path {
+    font-size: 0.75rem;
+    color: #6b6b6b;
+}
+
+
+/* =============================================================================
+   Dark mode overrides — must come AFTER base styles (same specificity, last wins)
+   TYPO3 renders SVG icons as <img> inside an iframe, so [data-bs-theme] on the
+   outer shell does not cascade in. Use prefers-color-scheme for auto mode plus
+   an explicit [data-bs-theme="dark"] selector for manual dark mode.
+   ============================================================================= */
 @media (prefers-color-scheme: dark) {
     [class*="icon-tx-knowledge-base"] img {
         filter: invert(1);
     }
+
+    .kb-search-input {
+        background: #3a3a3a;
+        color: #fff;
+        border-color: #555;
+    }
+
+    .kb-search-input::placeholder {
+        color: #aaa;
+    }
+
+    .kb-search-icon {
+        color: #aaa;
+    }
+
+    .kb-search-flyout {
+        background: #2d2d2d;
+        border-color: #555;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .kb-search-result-item {
+        border-bottom-color: #3a3a3a;
+    }
+
+    .kb-search-result-item:hover {
+        background: #3a3a3a;
+    }
+
+    .kb-search-result-icon,
+    .kb-search-result-path {
+        color: #aaa;
+    }
 }
 
-/* Explicit dark mode (user manually selected) */
 [data-bs-theme="dark"] [class*="icon-tx-knowledge-base"] img {
     filter: invert(1);
 }
 
-/* Explicit light mode cancels the media query invert */
+[data-bs-theme="dark"] .kb-search-input {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+}
+
+[data-bs-theme="dark"] .kb-search-input::placeholder {
+    color: #aaa;
+}
+
+[data-bs-theme="dark"] .kb-search-icon {
+    color: #aaa;
+}
+
+[data-bs-theme="dark"] .kb-search-flyout {
+    background: #2d2d2d;
+    border-color: #555;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-bs-theme="dark"] .kb-search-result-item {
+    border-bottom-color: #3a3a3a;
+}
+
+[data-bs-theme="dark"] .kb-search-result-item:hover {
+    background: #3a3a3a;
+}
+
+[data-bs-theme="dark"] .kb-search-result-icon,
+[data-bs-theme="dark"] .kb-search-result-path {
+    color: #aaa;
+}
+
 [data-bs-theme="light"] [class*="icon-tx-knowledge-base"] img {
     filter: none;
 }
 
-/* Extension icons: 24px for small size */
-[class*="icon-tx-knowledge-base"].icon-size-small,
-[class*="icon-tx-knowledge-base"].icon-size-small img,
-[class*="icon-tx-knowledge-base"].icon-size-small svg {
+.knowledge-base {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    width: 100%;
+    height: 100%;
+}
+
+.document-tree {
+    max-width: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.document-content {
+    width: 100%;
+    padding: 2rem;
+}
+
+.content-inner {
+    padding: 2rem;
+}
+
+/* PageTree Header */
+.tree-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #c3c3c3;
+}
+
+.basic-button {
+    background: unset;
+    border: unset;
     width: 24px;
     height: 24px;
-    line-height: 24px;
+}
+
+/* PageTree Nodes */
+.item-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 4px 8px;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.item-text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    min-width: 0;
+}
+
+.item-text > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    margin-right: 5px;
+}
+
+.basic-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    transition: opacity 0.2s;
+}
+
+.item:hover .basic-button {
+    opacity: 1;
+}
+
+.item .basic-button {
+    opacity: 0;
+}
+
+.basic-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.item-childs {
+    padding-left: 20px;
 }

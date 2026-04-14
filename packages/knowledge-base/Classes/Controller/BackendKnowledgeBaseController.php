@@ -149,7 +149,24 @@ class BackendKnowledgeBaseController extends ActionController
             );
             return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
         }
-        $this->addFlashMessage(LocalizationUtility::translate('flash.document.updated', 'KnowledgeBase') ?? '');
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.updated', 'Knowledge-base') ?? '');
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
+    }
+
+    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal'): ResponseInterface
+    {
+        $result = $this->documentService->createDocument($documentHeadline, $parentId, $type);
+
+        if (!$result['success']) {
+            $this->addFlashMessage(
+                $result['message'] ?? '',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('index');
+        }
+
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
+        return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
 }

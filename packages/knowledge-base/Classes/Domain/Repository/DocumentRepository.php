@@ -8,10 +8,10 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
-use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
-
 
 /**
  * @extends Repository<Document>
@@ -22,7 +22,8 @@ class DocumentRepository extends Repository
 
     public function __construct(
         protected readonly ConnectionPool $connectionPool,
-        protected readonly DataMapper $dataMapper
+        protected readonly DataMapper $dataMapper,
+        protected PersistenceManagerInterface $persistenceManager,
     ) {
         parent::__construct();
         $this->tableName = $this->dataMapper->getDataMap(Document::class)->getTableName();
@@ -97,6 +98,13 @@ class DocumentRepository extends Repository
         return $this->dataMapper->map(Document::class, $rows);
     }
 
+
+    public function add($object): void
+    {
+        parent::add($object);
+        $this->persistenceManager->persistAll();
+    }
+
     /**
      * @param int[] $uids
      * @return Document[]
@@ -139,3 +147,4 @@ class DocumentRepository extends Repository
         return $ordered;
     }
 }
+

@@ -44,6 +44,9 @@ return [
     'tx-knowledge-base-share' => [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:knowledge-base/Resources/Public/Icons/Share.svg',
+    ],    'tx-knowledge-base-add' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:knowledge-base/Resources/Public/Icons/Add.svg',
     ],
     'tx-knowledge-base-reactions' => [
         'provider' => SvgIconProvider::class,

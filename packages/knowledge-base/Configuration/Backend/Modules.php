@@ -17,6 +17,7 @@ return [
             BackendKnowledgeBaseController::class => [
                 'index',
                 'search',
+                'create',
                 'update',
                 'rag',
                 'reindex',
