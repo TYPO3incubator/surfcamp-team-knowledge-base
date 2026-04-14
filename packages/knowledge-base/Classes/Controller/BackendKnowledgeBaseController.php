@@ -41,11 +41,15 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
+    public function searchAction(string $query = ''): ResponseInterface
+    {
+        $results = $this->documentService->searchDocuments($query);
+        return $this->jsonResponse((string)json_encode($results));
+    }
+
     public function updateAction(int $documentUid, array $documentData): ResponseInterface
     {
         $result = $this->documentService->updateDocument($documentUid, $documentData);
-
-
         if (!$result['success']) {
             $this->addFlashMessage(
                 $result['message'] ?? '',
@@ -54,7 +58,24 @@ class BackendKnowledgeBaseController extends ActionController
             );
             return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
         }
-        $this->addFlashMessage(LocalizationUtility::translate('flash.document.updated', 'KnowledgeBase') ?? '');
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.updated', 'Knowledge-base') ?? '');
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
+    }
+
+    public function createAction(string $documentHeadline, int $parentId, string $type): ResponseInterface
+    {
+        $result = $this->documentService->createDocument($documentHeadline, $parentId, $type);
+
+        if (!$result['success']) {
+            $this->addFlashMessage(
+                $result['message'] ?? '',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('index');
+        }
+
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
+        return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
 }
