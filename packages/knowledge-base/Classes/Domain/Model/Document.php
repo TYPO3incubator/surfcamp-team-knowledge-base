@@ -106,7 +106,15 @@ class Document extends AbstractEntity
 
     public function getBreadcrumbs(): array
     {
-        // TODO add breadcrumbs builder
-        return [];
+        $breadcrumbs = [];
+        $current = $this;
+        while ($current) {
+            $breadcrumbs[] = [
+                'headline' => $current->getHeadline(),
+                'uid' => $current->getUid(),
+            ];
+            $current = $current->parent;
+        }
+        return array_reverse($breadcrumbs);
     }
 }
