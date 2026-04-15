@@ -21,6 +21,8 @@ return [
                 'update',
                 'loadDocument',
                 'loadDocumentChildren',
+                'rag',
+                'reindex',
             ],
         ],
     ],

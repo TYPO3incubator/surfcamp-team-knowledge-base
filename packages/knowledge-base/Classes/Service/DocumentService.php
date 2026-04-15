@@ -16,6 +16,7 @@ class DocumentService
         protected readonly DocumentRepository $documentRepository,
         protected readonly BackendUserRepository $backendUserRepository,
         protected readonly Context $context,
+        protected readonly EmbeddingService $embeddingService,
     ) {}
 
     public function searchDocuments(string $query): array
@@ -49,6 +50,7 @@ class DocumentService
         $document->setVisibility($documentData['visibility'] ?? $document->getVisibility());
 
         $this->documentRepository->update($document);
+        $this->embeddingService->generateAndStoreIfChanged($document);
         return $result;
     }
 

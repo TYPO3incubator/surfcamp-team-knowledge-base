@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+## Description: Start or stop the llama.cpp containers for semantic search and RAG
+## Usage: llama [start|stop]
+## Example: "ddev llama start", "ddev llama stop"
+
+set -euo pipefail
+
+ACTION="${1:-start}"
+PROJECT="ddev-${DDEV_SITENAME}"
+COMPOSE_FILE="${DDEV_APPROOT}/.ddev/.ddev-docker-compose-full.yaml"
+
+case "$ACTION" in
+  start)
+    echo "Starting llama.cpp containers..."
+    docker compose -p "$PROJECT" -f "$COMPOSE_FILE" --profile llama up -d
+    echo "Watch progress: ddev logs -f -s llama-generate"
+    ;;
+  stop)
+    echo "Stopping llama.cpp containers..."
+    docker stop "${PROJECT}-llama-embed" "${PROJECT}-llama-generate" 2>/dev/null || true
+    echo "llama containers stopped."
+    ;;
+  *)
+    echo "Usage: ddev llama [start|stop]"
+    exit 1
+    ;;
+esac
