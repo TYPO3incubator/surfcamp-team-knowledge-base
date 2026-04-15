@@ -176,6 +176,27 @@
     align-items: center;
     gap: 12px;
     margin-bottom: 12px;
+    cursor: grab;
+    user-select: none;
+}
+
+.board__column.column-dragging {
+    opacity: 0.4;
+}
+
+.board__column--placeholder {
+    flex: 0 0 320px;
+    border: 2px dashed #ff8700;
+    border-radius: 4px;
+    background: #fff4e6;
+    margin-top: 36px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .board__column--placeholder {
+        background: #2d1a00;
+        border-color: #ff9e33;
+    }
 }
 
 .board__column-new {
