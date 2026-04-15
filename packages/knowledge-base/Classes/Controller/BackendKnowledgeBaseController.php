@@ -53,9 +53,6 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
-
-
-
     public function ajaxSearchAction(ServerRequest $request): ResponseInterface
     {
         $params = $request->getQueryParams();
