@@ -1,0 +1,62 @@
+/*Page*/
+
+.page {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-left: 4px solid #d4d4d4;
+}
+
+.page-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    border-bottom: 1px solid #f2f2f2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 0px 24px;
+}
+
+.page-title {
+    display: flex;
+    align-content: center;
+    flex-wrap: wrap;
+    height: 100%;
+}
+.page-title h1 {
+    margin-bottom: unset;
+}
+
+.page-content {
+    margin: 0 24px 24px 24px;
+    padding: 1rem;
+}
+
+
+/* Edit button */
+.kb-btn-edit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: var(--pagemodule-grid-cell-bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.kb-btn-edit:hover {
+    background-color: #ff8700;
+    color: white;
+}
+
+.kb-btn-edit:hover [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
+}
+
+.kb-btn-edit .icon {
+    flex-shrink: 0;
+}

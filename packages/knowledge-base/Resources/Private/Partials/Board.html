@@ -1,3 +1,5 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
 <div class="board module">
 	<div class="board__info">
 		<div class="board__info-header">
@@ -12,7 +14,8 @@
 		</div>
 	</div>
 	<!--Breadcrumb-->
-	<div class="breadcrumb">This is the breadcrumb area</div>
+	<f:render partial="Breadcrumb" arguments="{_all}" />
+
 	<!--Board-->
 	<div class="board__content">
 		<f:render section="Status Column" arguments="{_all}"/>

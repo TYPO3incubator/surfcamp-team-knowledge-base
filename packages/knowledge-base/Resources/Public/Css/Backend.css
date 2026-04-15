@@ -1,6 +1,8 @@
 @import "General.css";
 @import "Header.css";
+@import "Breadcrumb.css";
 @import "Tree.css";
 @import "Search.css";
 @import "Board.css";
+@import "Page.css";
 @import "Modal.css";

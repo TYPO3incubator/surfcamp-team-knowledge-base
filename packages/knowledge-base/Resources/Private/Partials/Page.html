@@ -1,0 +1,23 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+
+	<div class="page">
+		<div class="page-info">
+			<div class="page-title">
+				<h1 id="page-content-headline">test</h1>
+			</div>
+			<div class="kb-header-actions">
+				<button type="button" class="kb-btn-edit">
+					<core:icon identifier="tx-knowledge-base-edit" size="small" />
+					Edit
+				</button>
+			</div>
+		</div>
+		<!--Breadcrumb-->
+		<f:render partial="Breadcrumb" arguments="{_all}" />
+
+		<div id="page-content-markup" class="page-content t3-page-ce-element"></div>
+	</div>
+
+	<div id="page-content-commands"></div>
+
+</html>
