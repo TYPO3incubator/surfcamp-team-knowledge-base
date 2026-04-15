@@ -8,12 +8,17 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
+use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
+use TYPO3Incubator\KnowledgeBase\Service\RagService;
+use TYPO3Incubator\KnowledgeBase\Service\SearchService;
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -25,6 +30,10 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly PageRenderer $pageRenderer,
         protected readonly DocumentTreeService $documentTreeService,
         protected readonly DocumentService $documentService,
+        protected readonly RagService $ragService,
+        protected readonly EmbeddingService $embeddingService,
+        protected readonly SearchService $searchService,
+        protected readonly DocumentRepository $documentRepository,
     ) {}
 
     public function initializeAction(): void
@@ -32,6 +41,7 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Modal.css');
+        $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/Backend.js');
     }
 
     public function indexAction(int $openDocumentId = 0): ResponseInterface
@@ -39,13 +49,51 @@ class BackendKnowledgeBaseController extends ActionController
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
+        $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
-    public function searchAction(string $query = ''): ResponseInterface
+
+
+
+    public function ajaxSearchAction(ServerRequest $request): ResponseInterface
     {
-        $results = $this->documentService->searchDocuments($query);
-        return $this->jsonResponse((string)json_encode($results));
+        $params = $request->getQueryParams();
+        $query = $params['query'] ?? '';
+        $mode = $params['mode'] ?? SearchService::MODE_KEYWORD;
+        if (!in_array($mode, SearchService::VALID_MODES, true)) {
+            return $this->jsonResponse((string)json_encode([
+                'error' => 'Invalid mode. Allowed: ' . implode(', ', SearchService::VALID_MODES),
+            ]));
+        }
+
+        if ($query === '' && $mode !== SearchService::MODE_KEYWORD) {
+            return $this->jsonResponse((string)json_encode([
+                'error' => 'Query must not be empty for mode: ' . $mode,
+            ]));
+        }
+
+        $envelope = match($mode) {
+            SearchService::MODE_KEYWORD  => $this->searchService->buildKeywordResults($query),
+            SearchService::MODE_SEMANTIC => $this->searchService->buildSemanticResults($query),
+            SearchService::MODE_RAG      => $this->searchService->buildRagResults($query),
+        };
+
+        return $this->jsonResponse((string)json_encode($envelope));
+    }
+
+    public function reindexAction(): ResponseInterface
+    {
+        $documents = $this->documentRepository->findAll();
+        $count = 0;
+
+        foreach ($documents as $document) {
+            $this->embeddingService->generateAndStoreIfChanged($document);
+            $count++;
+        }
+
+        return $this->jsonResponse((string)json_encode(['reindexed' => $count]));
     }
 
     public function updateAction(int $documentUid, array $documentData): ResponseInterface
@@ -63,7 +111,7 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
     }
 
-    public function createAction(string $documentHeadline, int $parentId, string $type): ResponseInterface
+    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal'): ResponseInterface
     {
         $result = $this->documentService->createDocument($documentHeadline, $parentId, $type);
 
@@ -78,5 +126,21 @@ class BackendKnowledgeBaseController extends ActionController
 
         $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
+    }
+
+    public function ajaxLoadDocumentAction(ServerRequest $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $documentUid = $params['documentUid'] ?? 0;
+        $result = $this->documentService->loadDocument((int)$documentUid);
+        return $this->jsonResponse((string)json_encode($result));
+    }
+
+    public function ajaxLoadDocumentChildrenAction(ServerRequest $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $documentUid = $params['documentUid'] ?? 0;
+        $result = $this->documentService->loadDocumentChildren($documentUid);
+        return $this->jsonResponse((string)json_encode($result));
     }
 }

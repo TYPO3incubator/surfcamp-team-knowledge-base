@@ -1,0 +1,87 @@
+<div class="board module">
+	<div class="board__info">
+		<div class="board__info-header">
+			<h2 class="board__title">Knowledge Base Board</h2>
+			<span class="board__description">Track content creation and updates</span>
+		</div>
+		<div class="kb-header-actions">
+			<button type="button" class="kb-btn-share" id="kb-open-modal">
+				<core:icon identifier="tx-knowledge-base-add" size="small" />
+				New Task
+			</button>
+		</div>
+	</div>
+	<!--Breadcrumb-->
+	<div class="breadcrumb">This is the breadcrumb area</div>
+	<!--Board-->
+	<div class="board__content">
+		<f:render section="Status Column" arguments="{_all}"/>
+	</div>
+
+	<div class="kb-create-task-modal-content">
+		<div class="kb-create-task-modal-box">
+			<f:render partial="CreateTask" />
+		</div>
+	</div>
+</div>
+
+<f:section name="Status Column">
+	<div class="board__content-container">
+		<div class="board__column">
+			<div class="board__column--data">
+				<h3 class="board__column-title">To Do</h3>
+				<span class="board__column-items">3</span>
+			</div>
+			<div class="board__column-content t3-grid-cell">
+				<!--Cards-->
+				<f:render section="Card" arguments="{_all}" />
+			</div>
+		</div>
+		<div class="board__column">
+			<div class="board__column--data">
+				<h3 class="board__column-title">In Progress</h3>
+				<span class="board__column-items">3</span>
+			</div>
+			<div class="board__column-content t3-grid-cell">
+				<!--Cards-->
+				<f:render section="Card" arguments="{_all}" />
+			</div>
+		</div>
+
+		<div class="board__column">
+			<div class="board__column--data">
+				<h3 class="board__column-title">Add New</h3>
+			</div>
+			<div class="board__column-content board__column-new t3-grid-cell">
+				<span class="add-new-icon">+</span>
+			</div>
+		</div>
+	</div>
+
+
+</f:section>
+
+<f:section name="Card">
+	<div class="board__card t3-page-ce-element ">
+		<p class="board__card--title"> Ticket Title </p>
+		<p class="board__card--description">  Ticket description</p>
+		<div class="tags">
+			<span class="tag"> tag 1</span> <span class="tag"> tag 2</span>
+		</div>
+		<div class="board__card--author">
+			<span class="board__card--author-item"><span class="board__card--name">N</span>name surname</span>
+			<span><core:icon identifier="tx-knowledge-base-comment"/>3</span>
+		</div>
+	</div>
+	<div class="board__card t3-page-ce-element ">
+		<p class="board__card--title"> Ticket Title </p>
+		<p class="board__card--description">  Ticket description</p>
+		<div class="tags">
+			<span class="tag"> tag 1</span> <span class="tag"> tag 2</span>
+		</div>
+		<div class="board__card--author">
+			<span class="board__card--author-item"><span class="board__card--name">N</span>name surname</span>
+			<span><core:icon identifier="tx-knowledge-base-comment"/>3</span>
+		</div>
+	</div>
+</f:section>

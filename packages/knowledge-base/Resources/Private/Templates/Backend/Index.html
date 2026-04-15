@@ -8,47 +8,109 @@
     <f:asset.css identifier="tree-modal" src="EXT:knowledge-base/Resources/Public/Css/Modal.css" />
     <f:asset.script identifier="tree-modal" src="EXT:knowledge-base/Resources/Public/Js/Modal.js" />
 
-    <div class="document-tree">
-        <div class="tree-header">
-            <span>Pages</span>
-            <div class="dropdown">
-                <button class="basic-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <core:icon identifier="tx-knowledge-base-add" size="default" />
-                </button>
-                <ul class="modal modal-style-default modal-severity-notice modal-size-medium modal-position-center">
-                    <div class="modal-header t3js-modal-header">
-                        New Page Content
-                        <button class="modal-header-close t3js-modal-close">
-                            <typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon>
-                        </button>
-                    </div>
-                    <div class="modal-body t3js-modal-body">
-                        <li>
-                            <a class="dropdown-item add-action" data-type="page" data-parent="0" href="#">
-                                <core:icon identifier="tx-knowledge-base-page" size="medium" />
-                                <div class="item-content">
-                                    <span class="item-title">New Page</span>
-                                    <span>Publish a standard document with rich text, images, and structured content.</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item add-action" data-type="board" data-parent="0" href="#">
-                                <core:icon identifier="tx-knowledge-base-boards" size="medium" />
-                                <div class="item-content">
-                                    <span class="item-title">New Board</span>
-                                    <span>Launch a dynamic Trello-style board with multiple columns.</span>
-                                </div>
-                            </a>
-                        </li>
-                    </div>
-                </ul>
+    <div class="kb-header">
+        <span class="kb-header-title">Knowledge Base</span>
+
+        <f:render partial="Backend/Searchbar" />
+
+        <div class="kb-header-actions">
+            <button type="button" class="kb-btn-share">
+                <core:icon identifier="tx-knowledge-base-share" size="small" />
+                Share
+            </button>
+        </div>
+    </div>
+
+    <div class="kb-container">
+        <div class="kb-tree">
+            <div class="tree-header">
+                <span>Pages</span>
+                <div class="dropdown">
+                    <button class="basic-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <core:icon identifier="tx-knowledge-base-add" size="default" />
+                    </button>
+                    <ul class="modal modal-style-default modal-severity-notice modal-size-medium modal-position-center">
+                        <div class="modal-header t3js-modal-header">
+                            New Page Content
+                            <button class="modal-header-close t3js-modal-close">
+                                <typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon>
+                            </button>
+                        </div>
+                        <div class="modal-body t3js-modal-body">
+                            <li>
+                                <a class="dropdown-item add-action" data-type="page" data-parent="0" href="#">
+                                    <core:icon identifier="tx-knowledge-base-page" size="medium" />
+                                    <div class="item-content">
+                                        <span class="item-title">New Page</span>
+                                        <span>Publish a standard document with rich text, images, and structured content.</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item add-action" data-type="board" data-parent="0" href="#">
+                                    <core:icon identifier="tx-knowledge-base-boards" size="medium" />
+                                    <div class="item-content">
+                                        <span class="item-title">New Board</span>
+                                        <span>Launch a dynamic Trello-style board with multiple columns.</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </div>
+                    </ul>
+                </div>
             </div>
+
+            <f:render partial="Node" arguments="{items: tree}"/>
         </div>
 
-        <f:render partial="Node" arguments="{items: tree}"/>
+        <div class="kb-content">
+            <f:render section="PageContent" arguments="{tree: tree}" />
+            <f:render partial="Board" arguments="{_all}" />
+        </div>
+    </div>
 
-        <f:render partial="NewPageModal" arguments="{_all}" />
+    <f:render partial="NewPageModal" arguments="{_all}" />
+</f:section>
+
+<f:section name="PageContent">
+    <h1 id="page-content-headline"></h1>
+    <div id="page-content-commands"></div>
+    <div id="page-content-markup">
+        <f:for each="{tree}" as="node">
+            <div class="wrapper">
+                <div class="page-title">
+                    <f:for each="{node.children}" as="child">
+                        <h2>{child.document.headline} (ID: {child.document.uid})</h2>
+                    </f:for>
+                </div>
+            </div>
+
+            <div class="content-inner t3-page-ce-element">
+                <f:if condition="{node.children}">
+                    <f:for each="{node.children}" as="child">
+                        <f:format.raw>{child.document.markup}</f:format.raw>
+                    </f:for>
+                </f:if>
+            </div>
+            <f:render section="Comment" arguments="{_all}"/>
+        </f:for>
     </div>
 </f:section>
+
+<f:section name="Comment">
+    <div class="wrapper">
+        <div class="page-title">
+            <h2>Comments</h2>
+        </div>
+    </div>
+    <f:for each="{tree}" as="node">
+        <div class="t3-page-ce-element">
+            <div class="t3-page-ce-header"></div>
+            <div class="comment-inner t3-page-ce-body">
+                comment section
+            </div>
+        </div>
+    </f:for>
+</f:section>
+
 </html>

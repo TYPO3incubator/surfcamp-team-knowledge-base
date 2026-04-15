@@ -115,3 +115,9 @@
     padding-left: 20px;
 }
 
+@import "General.css";
+@import "Header.css";
+@import "Tree.css";
+@import "Search.css";
+@import "Board.css";
+@import "Modal.css";

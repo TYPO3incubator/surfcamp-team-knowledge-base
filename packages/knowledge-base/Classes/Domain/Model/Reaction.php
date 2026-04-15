@@ -16,9 +16,9 @@ class Reaction extends AbstractEntity
 
     protected string $reaction = self::REACTION_LIKE;
 
-    protected Document $document;
+    protected ?Document $document = null;
 
-    protected BackendUser $user;
+    protected ?BackendUser $user = null;
 
     public function getReaction(): string
     {
@@ -30,7 +30,7 @@ class Reaction extends AbstractEntity
         $this->reaction = $reaction;
     }
 
-    public function getDocument(): Document
+    public function getDocument(): ?Document
     {
         return $this->document;
     }
@@ -40,7 +40,7 @@ class Reaction extends AbstractEntity
         $this->document = $document;
     }
 
-    public function getUser(): BackendUser
+    public function getUser(): ?BackendUser
     {
         return $this->user;
     }

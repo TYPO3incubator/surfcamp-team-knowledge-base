@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace TYPO3Incubator\KnowledgeBase\Domain\Repository;
 
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
+use TYPO3Incubator\KnowledgeBase\Dto\SlimDocumentDto;
 
+/**
+ * @extends Repository<Document>
+ */
 class DocumentRepository extends Repository
 {
     private readonly string $tableName;
@@ -19,9 +26,16 @@ class DocumentRepository extends Repository
         protected readonly ConnectionPool $connectionPool,
         protected readonly DataMapper $dataMapper,
         protected PersistenceManagerInterface $persistenceManager,
+        protected readonly Context $context,
     ) {
         parent::__construct();
         $this->tableName = $this->dataMapper->getDataMap(Document::class)->getTableName();
+    }
+
+    public function initializeObject(): void
+    {
+        $this->defaultQuerySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $this->defaultQuerySettings->setRespectStoragePage(false);
     }
 
     public function getTableName(): string
@@ -58,20 +72,28 @@ class DocumentRepository extends Repository
         return $this->dataMapper->map(Document::class, $rows);
     }
 
-    public function fetchNodesByParent(int $parentIdentifier): array
+    public function fetchSlimNodesByParent(int $parentIdentifier): array
     {
+        $backendUserUid = $this->context->getPropertyFromAspect('backend.user', 'id');
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
         $rows = $queryBuilder
-            ->select('*')
+            ->select('uid', 'parent', 'visibility', 'type', 'headline')
             ->from($this->tableName)
             ->where(
-                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT))
+                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($parentIdentifier, Connection::PARAM_INT)),
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->eq('visibility', $queryBuilder->createNamedParameter('public', Connection::PARAM_STR)),
+                    $queryBuilder->expr()->and(
+                        $queryBuilder->expr()->eq('visibility', $queryBuilder->createNamedParameter('private', Connection::PARAM_STR)),
+                        $queryBuilder->expr()->eq('user', $queryBuilder->createNamedParameter($backendUserUid, Connection::PARAM_INT))
+                    )
+                )
             )
             ->orderBy('headline', 'ASC')
             ->executeQuery()
             ->fetchAllAssociative();
 
-        return $this->dataMapper->map(Document::class, $rows);
+        return $this->dataMapper->map(SlimDocumentDto::class, $rows);
     }
 
     public function hasChildren(int $uid): bool
@@ -108,6 +130,62 @@ class DocumentRepository extends Repository
     {
         parent::add($object);
         $this->persistenceManager->persistAll();
+    }
+
+    public function getChildren(int $documentUid): array
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $rows = $queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq('parent', $queryBuilder->createNamedParameter($documentUid, Connection::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+        return $this->dataMapper->map(Document::class, $rows);
+    }
+
+    /**
+     * @param int[] $uids
+     * @return Document[]
+     */
+    public function findByUids(array $uids): array
+    {
+        if (empty($uids)) {
+            return [];
+        }
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
+        $rows = $queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->in(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uids, Connection::PARAM_INT_ARRAY)
+                )
+            )
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        // Preserve the order of $uids
+        $indexed = [];
+        foreach ($this->dataMapper->map(Document::class, $rows) as $document) {
+            $indexed[$document->getUid()] = $document;
+        }
+
+        $ordered = [];
+        foreach ($uids as $uid) {
+            if (isset($indexed[$uid])) {
+                $ordered[] = $indexed[$uid];
+            }
+        }
+        return $ordered;
     }
 }
 

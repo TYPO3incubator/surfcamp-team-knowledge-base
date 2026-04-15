@@ -1,0 +1,51 @@
+/* Header */
+.kb-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px 14px;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.kb-header-title {
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.kb-header-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+}
+
+
+/* Share button */
+.kb-btn-share {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #ff8700;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.kb-btn-share:hover {
+    background-color: #e67a00;
+}
+
+.kb-btn-share .icon {
+    flex-shrink: 0;
+}
+
+/* Always white — icon sits on orange background in both light and dark mode */
+.kb-btn-share [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
+}
