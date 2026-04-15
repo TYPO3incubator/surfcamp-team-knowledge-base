@@ -9,6 +9,12 @@
             <core:icon identifier="tx-knowledge-base-add" size="default" />
         </button>
     </div>
+    <div class="tree-search-wrapper">
+        <span class="tree-search-icon">
+            <core:icon identifier="tx-knowledge-base-search" size="small" />
+        </span>
+        <input type="text" class="tree-search-input" placeholder="Search pages..." />
+    </div>
     <f:render partial="Backend/Pagetree" section="Nodes" arguments="{tree: tree, openDocumentId: openDocumentId}"/>
 </div>
 

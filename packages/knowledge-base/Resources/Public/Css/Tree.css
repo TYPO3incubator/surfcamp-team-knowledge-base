@@ -1,5 +1,5 @@
 .document-tree {
-    width: 250px;
+    width: 300px;
     flex-shrink: 0;
     overflow-x: hidden;
     overflow-y: auto;
@@ -20,6 +20,68 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: #6b6b6b;
+}
+
+/* Tree search */
+.tree-search-wrapper {
+    position: relative;
+    margin: 0 8px 8px;
+}
+
+.tree-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 0;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.tree-search-input {
+    width: 100%;
+    padding: 8px 16px 8px 36px;
+    font-size: 0.875rem;
+    border: 1px solid #d4d4d4;
+    background: #fff;
+    color: #212529;
+    border-radius: 4px;
+    outline: none;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    box-sizing: border-box;
+}
+
+.tree-search-input::placeholder {
+    color: #aaa;
+}
+
+.tree-search-input:focus {
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #ff8700;
+}
+
+[data-bs-theme="dark"] .tree-search-input {
+    background: #3a3a3a;
+    color: #fff;
+    border-color: #555;
+}
+
+[data-bs-theme="dark"] .tree-search-input::placeholder,
+[data-bs-theme="dark"] .tree-search-icon {
+    color: #aaa;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tree-search-input {
+        background: #3a3a3a;
+        color: #fff;
+        border-color: #555;
+    }
+
+    .tree-search-input::placeholder,
+    .tree-search-icon {
+        color: #aaa;
+    }
 }
 
 /* Nodes */
