@@ -20,6 +20,7 @@ return [
                 'create',
                 'update',
                 'loadDocument',
+                'loadDocumentChildren',
             ],
         ],
     ],
