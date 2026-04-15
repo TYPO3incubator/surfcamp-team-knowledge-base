@@ -1,0 +1,10 @@
+includes:
+    - phar://phpstan.phar/vendor/autoload.php
+
+parameters:
+    level: 6
+    paths:
+        - Classes
+    excludePaths:
+        - Tests
+    treatPhpDocTypesAsCertain: false

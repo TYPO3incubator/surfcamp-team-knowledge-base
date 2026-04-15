@@ -3,9 +3,15 @@
   "description": "Generic vector embedding, semantic search and RAG infrastructure for TYPO3",
   "type": "typo3-cms-extension",
   "license": "GPL-2.0-or-later",
+  "version": "0.1.0",
+  "keywords": ["typo3", "semantic-search", "vector", "rag", "llama", "embeddings"],
   "require": {
     "php": "^8.4",
     "typo3/cms-core": "^14"
+  },
+  "suggest": {
+    "llama.cpp embedding server": "A running llama-server instance with --embedding flag (default: http://localhost:8080)",
+    "llama.cpp generation server": "A running llama-server instance for chat completions (default: http://localhost:8081)"
   },
   "autoload": {
     "psr-4": {
@@ -19,7 +25,7 @@
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "smart-search"
+      "extension-key": "smart_search"
     }
   },
   "config": {

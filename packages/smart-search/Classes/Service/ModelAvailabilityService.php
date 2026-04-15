@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TYPO3Incubator\SmartSearch\Service;
 
+use Psr\Log\LoggerInterface;
 use Throwable;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
@@ -16,13 +17,15 @@ class ModelAvailabilityService
     public function __construct(
         private readonly RequestFactory $requestFactory,
         private readonly SmartSearchConfiguration $configuration,
+        private readonly LoggerInterface $logger,
     ) {}
 
     public function isEmbeddingServerAvailable(): bool
     {
         if ($this->embeddingAvailable === null) {
             $this->embeddingAvailable = $this->checkUrl(
-                $this->configuration->getEmbeddingServerUrl() . '/health'
+                $this->configuration->getEmbeddingServerUrl() . '/health',
+                'embedding'
             );
         }
 
@@ -33,14 +36,15 @@ class ModelAvailabilityService
     {
         if ($this->generationAvailable === null) {
             $this->generationAvailable = $this->checkUrl(
-                $this->configuration->getGenerationServerUrl() . '/health'
+                $this->configuration->getGenerationServerUrl() . '/health',
+                'generation'
             );
         }
 
         return $this->generationAvailable;
     }
 
-    private function checkUrl(string $url): bool
+    private function checkUrl(string $url, string $serverType): bool
     {
         try {
             $response = $this->requestFactory->request($url, 'GET', [
@@ -48,8 +52,23 @@ class ModelAvailabilityService
                 'http_errors' => false,
             ]);
 
-            return $response->getStatusCode() < 300;
-        } catch (Throwable) {
+            $available = $response->getStatusCode() < 300;
+
+            if (!$available) {
+                $this->logger->debug('Smart search {serverType} server health check failed', [
+                    'serverType' => $serverType,
+                    'url' => $url,
+                    'status_code' => $response->getStatusCode(),
+                ]);
+            }
+
+            return $available;
+        } catch (Throwable $e) {
+            $this->logger->debug('Smart search {serverType} server is unreachable', [
+                'serverType' => $serverType,
+                'url' => $url,
+                'exception' => $e->getMessage(),
+            ]);
             return false;
         }
     }
