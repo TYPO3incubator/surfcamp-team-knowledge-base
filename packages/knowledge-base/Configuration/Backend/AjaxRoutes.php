@@ -10,7 +10,7 @@ return [
         'target' => BackendKnowledgeBaseController::class . '::ajaxLoadDocumentChildrenAction',
     ],
     'loadDocument' => [
-        'path' => '/knowledgebase/ajax/loadDocument',
+        'path' => '/knowledgebase/loadDocument',
         'target' => BackendKnowledgeBaseController::class . '::ajaxLoadDocumentAction',
     ],
 ];
