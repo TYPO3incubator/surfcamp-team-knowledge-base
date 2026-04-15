@@ -20,7 +20,7 @@
 }
 
 .kb-create-task-modal-content {
-    position: fixed; /* better than absolute for modal */
+    position: fixed;
     inset: 0;
     display: none;
     justify-content: center;
@@ -30,10 +30,4 @@
 
 .kb-create-task-modal-content.is-open {
     display: flex;
-}
-
-.kb-create-task-modal-box {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
 }
