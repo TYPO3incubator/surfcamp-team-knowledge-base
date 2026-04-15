@@ -11,9 +11,9 @@ class Comment extends AbstractEntity
 {
     protected string $comment = '';
 
-    protected Document $document;
+    protected ?Document $document = null;
 
-    protected BackendUser $user;
+    protected ?BackendUser $user = null;
 
     public function getComment(): string
     {
@@ -25,7 +25,7 @@ class Comment extends AbstractEntity
         $this->comment = $comment;
     }
 
-    public function getDocument(): Document
+    public function getDocument(): ?Document
     {
         return $this->document;
     }
@@ -35,7 +35,7 @@ class Comment extends AbstractEntity
         $this->document = $document;
     }
 
-    public function getUser(): BackendUser
+    public function getUser(): ?BackendUser
     {
         return $this->user;
     }

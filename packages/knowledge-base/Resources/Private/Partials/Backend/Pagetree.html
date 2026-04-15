@@ -21,7 +21,7 @@
 <f:section name="Nodes">
     <f:for each="{tree}" as="node">
         <div class="item-wrapper">
-            <div class="item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}">
+            <div class="document-tree-item item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}"  data-uid="{node.document.uid}">
                 <f:if condition="{node.children}">
                     <f:then>
                         <button type="button" class="kb-btn-collapse">

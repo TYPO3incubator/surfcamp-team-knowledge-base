@@ -83,9 +83,11 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
 
-    public function loadDocumentAction(int $documentUid): ResponseInterface
+    public function ajaxLoadDocumentAction(ServerRequest $request): ResponseInterface
     {
-        $result = $this->documentService->loadDocument($documentUid);
+        $params = $request->getQueryParams();
+        $documentUid = $params['documentUid'] ?? 0;
+        $result = $this->documentService->loadDocument((int)$documentUid);
         return $this->jsonResponse((string)json_encode($result));
     }
 

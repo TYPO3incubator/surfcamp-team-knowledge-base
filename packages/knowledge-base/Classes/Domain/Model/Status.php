@@ -10,7 +10,7 @@ class Status extends AbstractEntity
 {
     protected string $title = '';
 
-    protected Document $document;
+    protected ?Document $document = null;
 
     public function getTitle(): string
     {
@@ -22,7 +22,7 @@ class Status extends AbstractEntity
         $this->title = $title;
     }
 
-    public function getDocument(): Document
+    public function getDocument(): ?Document
     {
         return $this->document;
     }

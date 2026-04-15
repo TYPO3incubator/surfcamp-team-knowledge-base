@@ -7,7 +7,7 @@ namespace TYPO3Incubator\KnowledgeBase\Domain\Model;
 use TYPO3\CMS\Beuser\Domain\Model\BackendUser;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-class Document extends AbstractEntity
+class Document extends AbstractEntity implements \JsonSerializable
 {
     public const string TYPE_NORMAL = 'normal';
     public const string TYPE_BOARD = 'board';
@@ -27,7 +27,7 @@ class Document extends AbstractEntity
 
     protected ?Status $status = null;
 
-    protected BackendUser $user;
+    protected ?BackendUser $user = null;
 
     public function getHeadline(): string
     {
@@ -94,7 +94,7 @@ class Document extends AbstractEntity
         $this->status = $status;
     }
 
-    public function getUser(): BackendUser
+    public function getUser(): ?BackendUser
     {
         return $this->user;
     }
@@ -116,5 +116,19 @@ class Document extends AbstractEntity
             $current = $current->parent;
         }
         return array_reverse($breadcrumbs);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'uid' => $this->getUid(),
+            'headline' => $this->getHeadline(),
+            'markup' => $this->getMarkup(),
+            'type' => $this->getType(),
+            'visibility' => $this->getVisibility(),
+            'parent' => $this->getParent()?->getUid(),
+            'status' => $this->getStatus()?->getUid(),
+            'user' => $this->getUser()?->getUid(),
+        ];
     }
 }
