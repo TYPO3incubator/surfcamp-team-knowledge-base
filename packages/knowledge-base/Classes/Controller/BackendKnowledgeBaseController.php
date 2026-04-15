@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -31,14 +32,16 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
-		$this->pageRenderer->addjSFile('EXT:knowledge-base/Resources/Public/JavaScript/Backend.js');
-	}
+        $this->pageRenderer->addjSFile('EXT:knowledge-base/Resources/Public/JavaScript/Backend.js');
+    }
 
     public function indexAction(int $openDocumentId = 0): ResponseInterface
     {
         $tree = $this->documentTreeService->getFullTree();
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
+        $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
@@ -78,5 +81,19 @@ class BackendKnowledgeBaseController extends ActionController
 
         $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
+    }
+
+    public function loadDocumentAction(int $documentUid): ResponseInterface
+    {
+        $result = $this->documentService->loadDocument($documentUid);
+        return $this->jsonResponse((string)json_encode($result));
+    }
+
+    public function ajaxLoadDocumentChildrenAction(ServerRequest $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $documentUid = $params['documentUid'] ?? 0;
+        $result = $this->documentService->loadDocumentChildren($documentUid);
+        return $this->jsonResponse((string)json_encode($result));
     }
 }
