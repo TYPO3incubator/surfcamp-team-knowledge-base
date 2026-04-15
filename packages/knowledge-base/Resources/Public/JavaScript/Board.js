@@ -1,6 +1,4 @@
-console.log('Board.js');
 function initBoard() {
-    console.log('Board.js loaded');
     const button = document.getElementById('kb-open-modal');
     const overlay = document.querySelector('.kb-create-task-modal-content');
     const box = document.querySelector('.kb-create-task-modal-box');
