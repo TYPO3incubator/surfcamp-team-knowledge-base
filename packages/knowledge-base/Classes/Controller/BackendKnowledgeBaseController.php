@@ -13,8 +13,12 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
+use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
+use TYPO3Incubator\KnowledgeBase\Service\RagService;
+use TYPO3Incubator\KnowledgeBase\Service\SearchService;
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -26,6 +30,10 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly PageRenderer $pageRenderer,
         protected readonly DocumentTreeService $documentTreeService,
         protected readonly DocumentService $documentService,
+        protected readonly RagService $ragService,
+        protected readonly EmbeddingService $embeddingService,
+        protected readonly SearchService $searchService,
+        protected readonly DocumentRepository $documentRepository,
     ) {}
 
     public function initializeAction(): void
@@ -45,10 +53,46 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
-    public function searchAction(string $query = ''): ResponseInterface
+
+
+
+    public function ajaxSearchAction(ServerRequest $request): ResponseInterface
     {
-        $results = $this->documentService->searchDocuments($query);
-        return $this->jsonResponse((string)json_encode($results));
+        $params = $request->getQueryParams();
+        $query = $params['query'] ?? '';
+        $mode = $params['mode'] ?? SearchService::MODE_KEYWORD;
+        if (!in_array($mode, SearchService::VALID_MODES, true)) {
+            return $this->jsonResponse((string)json_encode([
+                'error' => 'Invalid mode. Allowed: ' . implode(', ', SearchService::VALID_MODES),
+            ]));
+        }
+
+        if ($query === '' && $mode !== SearchService::MODE_KEYWORD) {
+            return $this->jsonResponse((string)json_encode([
+                'error' => 'Query must not be empty for mode: ' . $mode,
+            ]));
+        }
+
+        $envelope = match($mode) {
+            SearchService::MODE_KEYWORD  => $this->searchService->buildKeywordResults($query),
+            SearchService::MODE_SEMANTIC => $this->searchService->buildSemanticResults($query),
+            SearchService::MODE_RAG      => $this->searchService->buildRagResults($query),
+        };
+
+        return $this->jsonResponse((string)json_encode($envelope));
+    }
+
+    public function reindexAction(): ResponseInterface
+    {
+        $documents = $this->documentRepository->findAll();
+        $count = 0;
+
+        foreach ($documents as $document) {
+            $this->embeddingService->generateAndStoreIfChanged($document);
+            $count++;
+        }
+
+        return $this->jsonResponse((string)json_encode(['reindexed' => $count]));
     }
 
     public function updateAction(int $documentUid, array $documentData): ResponseInterface
