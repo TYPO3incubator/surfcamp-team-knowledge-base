@@ -89,4 +89,30 @@ class DocumentService
 
         return $result;
     }
+    public function loadDocument(int $documentUid): array
+    {
+        $result = [
+            'success' => true,
+            'message' => '',
+            'document' => null,
+            'commands' => [],
+        ];
+
+        $document = $this->documentRepository->findByUid($documentUid);
+        if ($document === null) {
+            $result['success'] = false;
+            $result['message'] = LocalizationUtility::translate('flash.document.notFound', 'Knowledge-base') ?? 'Document not found.';
+            return $result;
+        }
+
+        $result['document'] = $document;
+
+        return $result;
+    }
+
+    public function loadDocumentChildren(int $documentUid): array
+    {
+        $children = $this->documentRepository->getChildren($documentUid);
+        return $children;
+    }
 }
