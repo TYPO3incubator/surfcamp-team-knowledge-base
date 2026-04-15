@@ -1,40 +1,23 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-<h1 id="page-content-headline"></h1>
-<div id="page-content-commands"></div>
-<div id="page-content-markup">
-	<h2>page content home page</h2>
-
-	<div class="page module">
-		<f:for each="{tree}" as="node">
-			<div class="page__info">
-				<div class="page-title">
-					<f:for each="{node.children}" as="child">
-						<h2>{child.document.headline} (ID: {child.document.uid})</h2>
-					</f:for>
-				</div>
-				<div class="kb-header-actions">
-					<button type="button" class="kb-btn-edit">
-						<core:icon identifier="tx-knowledge-base-edit" size="small" />
-						Edit
-					</button>
-				</div>
+	<div class="page">
+		<div class="page-info">
+			<div class="page-title">
+				<h1 id="page-content-headline">test</h1>
 			</div>
-
-			<!--Breadcrumb-->
-			<f:render partial="Breadcrumb" arguments="{_all}" />
-
-			<div class="page__content t3-page-ce-element">
-				<f:if condition="{node.children}">
-					<f:for each="{node.children}" as="child">
-						<f:format.raw>{child.document.markup}</f:format.raw>
-					</f:for>
-				</f:if>
+			<div class="kb-header-actions">
+				<button type="button" class="kb-btn-edit">
+					<core:icon identifier="tx-knowledge-base-edit" size="small" />
+					Edit
+				</button>
 			</div>
+		</div>
+		<!--Breadcrumb-->
+		<f:render partial="Breadcrumb" arguments="{_all}" />
 
-			<f:render partial="Comment" arguments="{_all}" />
-		</f:for>
+		<div id="page-content-markup" class="page-content t3-page-ce-element"></div>
 	</div>
-</div>
+
+	<div id="page-content-commands"></div>
 
 </html>
