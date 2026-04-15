@@ -17,7 +17,6 @@ document.addEventListener('click', function (e) {
         }
     }
 
-    // OPEN SECOND FORM MODAL
     if (actionItem) {
         e.preventDefault();
         const type = actionItem.getAttribute('data-type');
@@ -25,11 +24,9 @@ document.addEventListener('click', function (e) {
 
         actionItem.closest('.modal').classList.remove('is-visible');
 
-        // Titel im Formular-Modal anpassen
         const titleEl = document.getElementById('form-modal-title');
         if (titleEl) titleEl.innerText = `Create New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
 
-        // Felder im f:form finden (Selektor sucht nach Namen, die auf [parentId] etc. enden)
         const typeInput = document.querySelector('input[name$="[type]"]');
         const parentInput = document.querySelector('input[name$="[parentId]"]');
 
@@ -46,7 +43,6 @@ document.addEventListener('click', function (e) {
         treeContainer.classList.remove('has-modal');
     }
 
-    // CLOSE IF CLICKING OUTSIDE
     if (!e.target.closest('.modal') && !plusButton) {
         document.querySelectorAll('.modal.is-visible').forEach(m => m.classList.remove('is-visible'));
         treeContainer.classList.remove('has-modal');
@@ -69,25 +65,3 @@ document.addEventListener('keydown', function (e) {
         }
     }
 });
-
-// document.getElementById('kb-creation-form')?.addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     const form = this;
-//     const formData = new FormData(form);
-//
-//     const url = form.getAttribute('action');
-//
-//     fetch(url, {
-//         method: 'POST',
-//         body: formData,
-//         headers: {
-//             'X-Requested-With': 'XMLHttpRequest'
-//         }
-//     }).then(response => {
-//         if (response.ok) {
-//             window.location.reload();
-//         } else {
-//             alert('Error creating document');
-//         }
-//     });
-// });
