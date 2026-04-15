@@ -18,7 +18,7 @@
     "require": {
         "luisasofie/unicorn": "^1.0",
         "typo3-incubator/knowledge-base": "dev-main",
-        "typo3-incubator/smart-search": "dev-main",
+        "typo3-incubator/smart-search": "^0.1",
         "typo3/cms-adminpanel": "@dev",
         "typo3/cms-backend": "@dev",
         "typo3/cms-belog": "@dev",
