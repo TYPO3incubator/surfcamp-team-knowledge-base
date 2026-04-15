@@ -19,6 +19,8 @@ return [
                 'search',
                 'create',
                 'update',
+                'loadDocument',
+                'loadDocumentChildren',
             ],
         ],
     ],
