@@ -19,6 +19,7 @@ use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
 use TYPO3Incubator\KnowledgeBase\Service\SearchService;
+use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -34,6 +35,7 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly EmbeddingService $embeddingService,
         protected readonly SearchService $searchService,
         protected readonly DocumentRepository $documentRepository,
+        protected readonly ModelAvailabilityService $modelAvailabilityService,
     ) {}
 
     public function initializeAction(): void
@@ -50,6 +52,8 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
+        $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());
+        $this->moduleTemplate->assign('ragSearchAvailable', $this->modelAvailabilityService->isGenerationServerAvailable());
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
@@ -81,6 +85,10 @@ class BackendKnowledgeBaseController extends ActionController
 
     public function reindexAction(): ResponseInterface
     {
+        if (!$this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+            return $this->jsonResponse((string)json_encode(['error' => 'Embedding server is not available']));
+        }
+
         $documents = $this->documentRepository->findAll();
         $count = 0;
 
