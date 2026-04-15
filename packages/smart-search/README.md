@@ -16,16 +16,77 @@ The extension ships llama.cpp HTTP clients for both embedding and generation, an
 - PHP 8.4+
 - Two running [llama-server](https://github.com/ggml-org/llama.cpp) instances: one for embeddings, one for chat completion
 
+## System requirements
+
+### Option A — llama.sh (local binary)
+
+| Requirement | Notes |
+|-------------|-------|
+| [llama.cpp](https://github.com/ggml-org/llama.cpp) | Must be built with `LLAMA_CURL=1` so `-hf` model downloads work. Install via `brew install llama.cpp` on macOS (Homebrew formula ships with curl support), or build from source. |
+| `llama-server` on `$PATH` | Verify with `llama-server --version` |
+| ~6 GB free disk space | Models are cached in `~/.cache/huggingface` after the first download |
+| ~4 GB RAM (CPU inference) | The gemma-3-4b generation model requires roughly 4 GB; embedding model is much lighter |
+
+### Option B — DDEV
+
+| Requirement | Notes |
+|-------------|-------|
+| [DDEV](https://ddev.com) v1.23+ | |
+| Docker with ≥6 GB memory allocated | Models live in named Docker volumes; disk usage is similar to Option A |
+| No local `llama-server` needed | The Docker image `ghcr.io/ggml-org/llama.cpp:server` is used |
+
 ## Server setup
 
-### DDEV (recommended)
+### Option A — llama.sh (recommended for local development)
 
-The project ships a `.ddev/docker-compose.llama.yaml` that starts both servers automatically as part of `ddev start`. Models are downloaded from Hugging Face on first start and cached in named Docker volumes, so subsequent starts skip the download.
+The repository ships a `llama.sh` helper at the project root that manages both server processes, PID files, and log output.
+
+**Start both servers:**
 
 ```bash
-ddev start
-# llama-embed (port 8080) and llama-generate (port 8081) start alongside the web container
+./llama.sh
+# or explicitly: ./llama.sh start
 ```
+
+On first run each server downloads its model from Hugging Face (~300 MB for the embedding model, ~2.5 GB for the generation model). Subsequent starts are instant.
+
+**Check status:**
+
+```bash
+./llama.sh status
+```
+
+**Follow logs:**
+
+```bash
+tail -f var/log/llama-embed.log
+tail -f var/log/llama-generate.log
+```
+
+**Stop both servers:**
+
+```bash
+./llama.sh stop
+```
+
+After starting, verify both servers are healthy:
+
+```bash
+curl -s http://localhost:8080/health   # embedding server
+curl -s http://localhost:8081/health   # generation server
+```
+
+Both should return `{"status":"ok"}`. The extension is pre-configured to reach the servers at these URLs — no further configuration is needed for a default local setup.
+
+### Option B — DDEV
+
+The project ships `.ddev/docker-compose.llama.yaml` which defines the two llama services under the `llama` Docker Compose profile. Start them alongside the web container with:
+
+```bash
+ddev start --profile llama
+```
+
+Models are downloaded from Hugging Face on first start and cached in named Docker volumes (`llama-embed-models`, `llama-generate-models`), so subsequent starts skip the download.
 
 Watch download progress on first run:
 
@@ -41,40 +102,12 @@ ddev exec curl -s http://llama-embed:8080/health
 ddev exec curl -s http://llama-generate:8081/health
 ```
 
-### Running llama-server manually (without DDEV)
+When using DDEV, update the server URLs in **Admin Tools → Settings → Extension Configuration → smart-search**:
 
-<details>
-<summary>Expand for manual setup instructions</summary>
-
-Install [llama.cpp](https://github.com/ggml-org/llama.cpp) built with `LLAMA_CURL=1`, then start two server processes:
-
-**Embedding server (port 8080)**
-
-Uses [nomic-embed-text-v1.5](https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF). The `--ctx-size` and `--ubatch-size` must match the `embeddingContextLength` setting (2048 tokens ≈ ~8000 characters).
-
-```bash
-llama-server \
-  -hf nomic-ai/nomic-embed-text-v1.5-GGUF \
-  --port 8080 \
-  --embeddings \
-  --pooling mean \
-  --ctx-size 2048 \
-  --ubatch-size 2048
-```
-
-**Generation server (port 8081)**
-
-Uses [gemma-3-4b-it](https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF), a compact instruction-tuned model that runs well on CPU.
-
-```bash
-llama-server \
-  -hf ggml-org/gemma-3-4b-it-GGUF \
-  --port 8081
-```
-
-Both commands download the model on first run via the `-hf` flag. After starting the servers, update the URLs in **Admin Tools → Settings → Extension Configuration → smart-search** to point to your host (`http://localhost:8080` / `http://localhost:8081`).
-
-</details>
+| Setting | DDEV value |
+|---------|------------|
+| `embeddingServerUrl` | `http://llama-embed:8080` |
+| `generationServerUrl` | `http://llama-generate:8081` |
 
 ## Installation
 
