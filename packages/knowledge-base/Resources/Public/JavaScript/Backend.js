@@ -1,2 +1,3 @@
 import './Document.js'
-import './pagetree.js'
+import './Pagetree.js'
+import './Board.js'
