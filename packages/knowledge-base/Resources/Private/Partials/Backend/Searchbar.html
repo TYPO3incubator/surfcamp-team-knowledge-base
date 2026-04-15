@@ -1,0 +1,38 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<form class="kb-search-form">
+    <div class="kb-search-wrapper">
+        <span class="kb-search-icon">
+            <core:icon identifier="tx-knowledge-base-search" size="small" />
+        </span>
+        <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" />
+
+        <div class="kb-search-flyout">
+            <a href="#" class="kb-search-result-item">
+                <core:icon identifier="tx-knowledge-base-page" size="small" />
+                <div class="kb-search-result-info">
+                    <span class="kb-search-result-title">Getting Started</span>
+                    <span class="kb-search-result-path">Documentation</span>
+                </div>
+            </a>
+            <a href="#" class="kb-search-result-item">
+                <core:icon identifier="tx-knowledge-base-page" size="small" />
+                <div class="kb-search-result-info">
+                    <span class="kb-search-result-title">Installation</span>
+                    <span class="kb-search-result-path">Documentation › Getting Started</span>
+                </div>
+            </a>
+            <a href="#" class="kb-search-result-item">
+                <core:icon identifier="tx-knowledge-base-page" size="small" />
+                <div class="kb-search-result-info">
+                    <span class="kb-search-result-title">Configuration Guide</span>
+                    <span class="kb-search-result-path">Documentation › Getting Started</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</form>
+
+</html>

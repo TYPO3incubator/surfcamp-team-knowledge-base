@@ -9,38 +9,7 @@
     <div class="kb-header">
         <span class="kb-header-title">Knowledge Base</span>
 
-        <form class="kb-search-form">
-            <div class="kb-search-wrapper">
-                <span class="kb-search-icon">
-                    <core:icon identifier="tx-knowledge-base-search" size="small" />
-                </span>
-                <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" />
-
-                <div class="kb-search-flyout">
-                    <a href="#" class="kb-search-result-item">
-                        <core:icon identifier="tx-knowledge-base-page" size="small" />
-                        <div class="kb-search-result-info">
-                            <span class="kb-search-result-title">Getting Started</span>
-                            <span class="kb-search-result-path">Documentation</span>
-                        </div>
-                    </a>
-                    <a href="#" class="kb-search-result-item">
-                        <core:icon identifier="tx-knowledge-base-page" size="small" />
-                        <div class="kb-search-result-info">
-                            <span class="kb-search-result-title">Installation</span>
-                            <span class="kb-search-result-path">Documentation › Getting Started</span>
-                        </div>
-                    </a>
-                    <a href="#" class="kb-search-result-item">
-                        <core:icon identifier="tx-knowledge-base-page" size="small" />
-                        <div class="kb-search-result-info">
-                            <span class="kb-search-result-title">Configuration Guide</span>
-                            <span class="kb-search-result-path">Documentation › Getting Started</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </form>
+        <f:render partial="Backend/Searchbar" />
 
         <div class="kb-header-actions">
             <button type="button" class="kb-btn-share">
@@ -52,53 +21,7 @@
 
     <div class="kb-container">
         <div class="kb-tree">
-            <div class="document-tree">
-                <div class="tree-header">
-                    <span>Pages</span>
-                    <button class="basic-button">
-                        <core:icon identifier="tx-knowledge-base-add" size="default" />
-                    </button>
-                </div>
-            </div>
-
-            <f:render section="Tree" arguments="{tree: tree}"/>
-            <h2>Create Document</h2>
-            <f:form action="create">
-                <div>
-                    <label for="documentHeadline">Headline</label>
-                    <f:form.textfield name="documentHeadline" id="documentHeadline" />
-                </div>
-                <div>
-                    <label for="parentId">Parent</label>
-                    <f:form.textfield name="parentId" id="parentId" />
-                </div>
-                <div>
-                    <label for="type">Visibility</label>
-                    <f:form.select name="type" id="type" options="{public: 'normal', private: 'board'}" />
-                </div>
-                <f:form.submit value="Create" />
-            </f:form>
-
-            <h2>Update Document</h2>
-            <f:form action="update">
-                <div>
-                    <label for="documentUid">Document</label>
-                    <f:form.select name="documentUid" id="documentUid" options="{allDocuments}" optionLabelField="headline" optionValueField="uid" prependOptionLabel="-- Select Document --" />
-                </div>
-                <div>
-                    <label for="headline">New Headline</label>
-                    <f:form.textfield name="documentData[headline]" id="headline" />
-                </div>
-                <div>
-                    <label for="markup">New Content</label>
-                    <f:form.textarea name="documentData[markup]" id="markup" rows="5" />
-                </div>
-                <div>
-                    <label for="visibility">Visibility</label>
-                    <f:form.select name="documentData[visibility]" id="visibility" options="{public: 'Public', private: 'Private'}" />
-                </div>
-                <f:form.submit value="Update" />
-            </f:form>
+            <f:render partial="Backend/Pagetree" arguments="{tree: tree, openDocumentId: openDocumentId}"/>
         </div>
         <div class="kb-content">
             <f:render partial="Board" arguments="{_all}" />
@@ -107,39 +30,6 @@
 
 </f:section>
 
-<f:section name="Tree">
-    <f:for each="{tree}" as="node">
-        <div class="item-wrapper">
-            <div class="item">
-                <span class="icon">
-
-                    <f:if condition="{node.document.type} == 'board'">
-                        <f:then>
-                            <core:icon identifier="tx-knowledge-base-boards" size="default" />
-                        </f:then>
-                        <f:else>
-                            <core:icon identifier="tx-knowledge-base-page" size="default" />
-                        </f:else>
-                    </f:if>
-
-                </span>
-                <div class="item-text">
-                    <span>{node.document.headline} (ID: {node.document.uid})</span>
-                    <button class="basic-button">
-                        <core:icon identifier="tx-knowledge-base-add" size="default" />
-                    </button>
-                </div>
-            </div>
-
-            <f:if condition="{node.children}">
-                <div class="item-childs">
-                    <f:render section="Tree" arguments="{tree: node.children}"/>
-                </div>
-            </f:if>
-        </div>
-    </f:for>
-
-</f:section>
 
 <f:section name="PageContent">
     <f:for each="{tree}" as="node">

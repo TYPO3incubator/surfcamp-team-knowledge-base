@@ -1,0 +1,64 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<div class="document-tree">
+    <div class="tree-header">
+        <span>Pages</span>
+        <button class="basic-button">
+            <core:icon identifier="tx-knowledge-base-add" size="default" />
+        </button>
+    </div>
+    <div class="tree-search-wrapper">
+        <span class="tree-search-icon">
+            <core:icon identifier="tx-knowledge-base-search" size="small" />
+        </span>
+        <input type="text" class="tree-search-input" placeholder="Search pages..." />
+    </div>
+    <f:render partial="Backend/Pagetree" section="Nodes" arguments="{tree: tree, openDocumentId: openDocumentId}"/>
+</div>
+
+<f:section name="Nodes">
+    <f:for each="{tree}" as="node">
+        <div class="item-wrapper">
+            <div class="item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}">
+                <f:if condition="{node.children}">
+                    <f:then>
+                        <button type="button" class="kb-btn-collapse">
+                            <core:icon identifier="tx-knowledge-base-collapse" size="small" />
+                        </button>
+                    </f:then>
+                    <f:else>
+                        <span class="kb-collapse-placeholder"></span>
+                    </f:else>
+                </f:if>
+
+                <span class="item-node-icon">
+                    <f:if condition="{node.document.type} == 'board'">
+                        <f:then>
+                            <core:icon identifier="tx-knowledge-base-boards" size="small" />
+                        </f:then>
+                        <f:else>
+                            <core:icon identifier="tx-knowledge-base-page" size="small" />
+                        </f:else>
+                    </f:if>
+                </span>
+
+                <div class="item-text">
+                    <span>{node.document.headline}</span>
+                    <button type="button" class="basic-button">
+                        <core:icon identifier="tx-knowledge-base-add" size="default" />
+                    </button>
+                </div>
+            </div>
+
+            <f:if condition="{node.children}">
+                <div class="item-childs">
+                    <f:render partial="Backend/Pagetree" section="Nodes" arguments="{tree: node.children, openDocumentId: openDocumentId}"/>
+                </div>
+            </f:if>
+        </div>
+    </f:for>
+</f:section>
+
+</html>

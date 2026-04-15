@@ -87,12 +87,6 @@ body {
     height: 100%;
 }
 
-.document-tree {
-    max-width: 200px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
 .document-content {
     width: 100%;
     padding: 2rem;
