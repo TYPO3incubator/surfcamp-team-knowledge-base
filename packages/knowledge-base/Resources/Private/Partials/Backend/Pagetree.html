@@ -8,6 +8,7 @@
         <button class="basic-button">
             <core:icon identifier="tx-knowledge-base-add" size="default" />
         </button>
+        <f:render partial="Backend/ActionModal" arguments="{parentId: 0}" />
     </div>
     <div class="tree-search-wrapper">
         <span class="tree-search-icon">
@@ -26,7 +27,7 @@
 <f:section name="Nodes">
     <f:for each="{tree}" as="node">
         <div class="item-wrapper">
-            <div class="document-tree-item item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}"  data-uid="{node.document.uid}">
+            <div class="document-tree-item item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}"  data-uid="{node.document.uid}" data-document-type="{node.document.type}">
                 <f:if condition="{node.children}">
                     <f:then>
                         <button type="button" class="kb-btn-collapse">
@@ -51,13 +52,18 @@
 
                 <div class="item-text">
                     <span>{node.document.headline}</span>
-                    <button type="button" class="basic-button">
-                        <core:icon identifier="tx-knowledge-base-add" size="default" />
-                    </button>
+
+                    <f:if condition="{node.document.type} != 'board'">
+                        <button type="button" class="basic-button">
+                            <core:icon identifier="tx-knowledge-base-add" size="default" />
+                        </button>
+                    </f:if>
+
+                    <f:render partial="Backend/ActionModal" arguments="{parentId: node.document.uid}" />
                 </div>
             </div>
 
-            <f:if condition="{node.children}">
+            <f:if condition="{node.children} && {node.document.type} != 'board'">
                 <div class="item-childs">
                     <f:render partial="Backend/Pagetree" section="Nodes" arguments="{tree: node.children, openDocumentId: openDocumentId}"/>
                 </div>

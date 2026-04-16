@@ -13,6 +13,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
@@ -20,6 +21,9 @@ use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
 use TYPO3Incubator\KnowledgeBase\Service\SearchService;
 use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
+
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -42,16 +46,21 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
+        $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Modal.css');
         $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/Backend.js');
         $this->pageRenderer->loadJavaScriptModule('@typo3/rte-ckeditor/ckeditor5.js');
     }
 
-    public function indexAction(): ResponseInterface
+    public function indexAction(int $openDocumentId = 0): ResponseInterface
     {
         $tree = $this->documentTreeService->getFullTree();
-        $openDocumentId = $this->documentTreeService->getOpenDocumentId($tree);
+        if ($openDocumentId === 0) {
+            $openDocumentId = $this->documentTreeService->getOpenDocumentId($tree);
+        }
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $openDocument = $this->documentRepository->findByUid($openDocumentId);
+        $this->moduleTemplate->assign('openDocumentType', $openDocument?->getType() ?? Document::TYPE_NORMAL);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());
@@ -59,7 +68,7 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
-    public function ajaxSearchAction(ServerRequest $request): ResponseInterface
+    public function ajaxSearchAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $query = $params['query'] ?? '';
@@ -82,7 +91,7 @@ class BackendKnowledgeBaseController extends ActionController
             SearchService::MODE_RAG      => $this->searchService->buildRagResults($query),
         };
 
-        return $this->jsonResponse((string)json_encode($envelope));
+        return new JsonResponse($envelope);
     }
 
     public function reindexAction(): ResponseInterface
@@ -99,7 +108,7 @@ class BackendKnowledgeBaseController extends ActionController
             $count++;
         }
 
-        return $this->jsonResponse((string)json_encode(['reindexed' => $count]));
+        return new JsonResponse(['reindexed' => $count]);
     }
 
     public function updateAction(int $documentUid, array $documentData): ResponseInterface
@@ -134,19 +143,21 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
 
-    public function ajaxLoadDocumentAction(ServerRequest $request): ResponseInterface
+    public function ajaxLoadDocumentAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $documentUid = $params['documentUid'] ?? 0;
         $result = $this->documentService->loadDocument((int)$documentUid);
-        return $this->jsonResponse((string)json_encode($result));
+        return new JsonResponse($result);
     }
 
-    public function ajaxLoadDocumentChildrenAction(ServerRequest $request): ResponseInterface
-    {
-        $params = $request->getQueryParams();
-        $documentUid = $params['documentUid'] ?? 0;
-        $result = $this->documentService->loadDocumentChildren($documentUid);
-        return $this->jsonResponse((string)json_encode($result));
-    }
+	public function ajaxLoadDocumentChildrenAction(ServerRequestInterface $request): ResponseInterface
+	{
+		$params = $request->getQueryParams();
+		$documentUid = (int)($params['documentUid'] ?? 0);
+
+		$result = $this->documentService->loadDocumentChildren($documentUid);
+
+		return new JsonResponse($result);
+	}
 }

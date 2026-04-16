@@ -2,7 +2,6 @@
       xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:layout name="Default"/>
 <f:layout name="Module"/>
 
 <f:section name="Content">
@@ -23,12 +22,55 @@
         <div class="kb-tree">
             <f:render partial="Backend/Pagetree" arguments="{tree: tree, openDocumentId: openDocumentId}"/>
         </div>
-        <div class="kb-tree-resizer" aria-hidden="true"></div>
-        <div class="kb-content">
-            <f:render partial="Page" arguments="{_all}" />
+
+<div class="kb-tree-resizer" aria-hidden="true"></div>        <div class="kb-content" data-open-document-id="{openDocumentId}" data-open-document-type="{openDocumentType}">
             <f:render partial="Board" arguments="{_all}" />
+            <f:render partial="Page" arguments="{_all}" />
         </div>
     </div>
 
+    <f:render partial="NewPageModal" arguments="{_all}" />
 </f:section>
+
+<f:section name="PageContent">
+    <h1 id="page-content-headline"></h1>
+    <div id="page-content-commands"></div>
+    <div id="page-content-markup">
+        <f:for each="{tree}" as="node">
+            <div class="wrapper">
+                <div class="page-title">
+                    <f:for each="{node.children}" as="child">
+                        <h2>{child.document.headline} (ID: {child.document.uid})</h2>
+                    </f:for>
+                </div>
+            </div>
+
+            <div class="content-inner t3-page-ce-element">
+                <f:if condition="{node.children}">
+                    <f:for each="{node.children}" as="child">
+                        <f:format.raw>{child.document.markup}</f:format.raw>
+                    </f:for>
+                </f:if>
+            </div>
+            <f:render section="Comment" arguments="{_all}"/>
+        </f:for>
+    </div>
+</f:section>
+
+<f:section name="Comment">
+    <div class="wrapper">
+        <div class="page-title">
+            <h2>Comments</h2>
+        </div>
+    </div>
+    <f:for each="{tree}" as="node">
+        <div class="t3-page-ce-element">
+            <div class="t3-page-ce-header"></div>
+            <div class="comment-inner t3-page-ce-body">
+                comment section
+            </div>
+        </div>
+    </f:for>
+</f:section>
+
 </html>
