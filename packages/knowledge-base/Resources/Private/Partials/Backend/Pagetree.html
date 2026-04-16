@@ -8,6 +8,7 @@
         <button class="basic-button">
             <core:icon identifier="tx-knowledge-base-add" size="default" />
         </button>
+        <f:render partial="Backend/ActionModal" arguments="{parentId: 0}" />
     </div>
     <div class="tree-search-wrapper">
         <span class="tree-search-icon">
@@ -58,35 +59,7 @@
                         </button>
                     </f:if>
 
-                    <ul class="modal modal-style-default modal-severity-notice modal-size-medium modal-position-center">
-
-                        <div class="modal-header t3js-modal-header">
-                            New Page Content
-                            <button class="modal-header-close t3js-modal-close"><typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon><span class="visually-hidden"><!--?lit$623924901$-->Close New Page Content</span></button>
-                        </div>
-                        <div class="modal-body t3js-modal-body">
-
-                            <li>
-                                <a class="dropdown-item add-action" data-type="page" data-parent="{node.document.uid}" href="#">
-                                    <core:icon identifier="tx-knowledge-base-page" size="medium" />
-                                    <div class="item-content">
-                                        <span class="item-title">New Page</span>
-                                        <div>Publish a standard document with rich text, images, and structured content. Perfect for guides and documentation.</div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item add-action" data-type="board" data-parent="{node.document.uid}" href="#">
-                                    <core:icon identifier="tx-knowledge-base-boards" size="medium" />
-                                    <div class="item-content">
-                                        <span class="item-title">New Board</span>
-                                        <div>Launch a dynamic Trello-style board with multiple columns. Ideal for organizing tasks and managing team workflows.</div>
-                                    </div>
-                                </a>
-                            </li>
-                        </div>
-
-                    </ul>
+                    <f:render partial="Backend/ActionModal" arguments="{parentId: node.document.uid}" />
                 </div>
             </div>
 
