@@ -3,6 +3,10 @@
     --kb-font-family: var(--typo3-font-family, Inter, system-ui, -apple-system, sans-serif);
 }
 
+html {
+    overflow: hidden;
+}
+
 body {
     height: 100vh;
     font-family: var(--kb-font-family);
@@ -18,7 +22,7 @@ body {
 }
 
 .module-body-container {
-    height: 100%;
+    height: 100vh;
 }
 
 [data-bs-theme="dark"] [class*="icon-tx-knowledge-base"] img {
@@ -70,13 +74,33 @@ body {
 }
 
 .kb-tree {
-    border-right: 4px solid #d4d4d4;
-    padding: 0 24px;
-    width: 20%;
+    width: 260px;
+    flex-shrink: 0;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.kb-tree-resizer {
+    width: 4px;
+    flex-shrink: 0;
+    background: #d4d4d4;
+    cursor: col-resize;
+    transition: background 0.15s ease;
+}
+
+.kb-tree-resizer:hover,
+.kb-tree-resizer.is-resizing {
+    background: #ff8700;
+}
+
+[data-bs-theme="dark"] .kb-tree-resizer {
+    background: #555;
 }
 
 .kb-content {
-    width: 80%;
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
 }
 
 .knowledge-base {

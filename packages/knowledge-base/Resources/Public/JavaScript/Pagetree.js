@@ -34,6 +34,9 @@ function initPageTree() {
     const pageContentMarkup = document.getElementById('page-content-markup');
     const pageContentHeadline = document.getElementById('page-content-headline');
     const pageContentCommands = document.getElementById('page-content-commands');
+    const currentDocumentId = document.getElementById('open-document-id').innerHTML;
+
+    loadDocument(currentDocumentId);
 
     /**
      * Updates the page content area with document data and available commands
@@ -240,4 +243,55 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPageTree);
 } else {
     initPageTree();
+}
+
+function initTreeResizer() {
+    const resizer = document.querySelector('.kb-tree-resizer');
+    const tree = document.querySelector('.kb-tree');
+    const container = document.querySelector('.kb-container');
+
+    if (!resizer || !tree || !container) return;
+
+    const STORAGE_KEY = 'kb-tree-width';
+    const MIN_WIDTH = 180;
+
+    const savedWidth = localStorage.getItem(STORAGE_KEY);
+    if (savedWidth) {
+        tree.style.width = savedWidth + 'px';
+    }
+
+    resizer.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+
+        const startX = e.clientX;
+        const startWidth = tree.offsetWidth;
+
+        resizer.classList.add('is-resizing');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+
+        const onMouseMove = (e) => {
+            const maxWidth = Math.floor(container.offsetWidth * 0.5);
+            const newWidth = Math.max(MIN_WIDTH, Math.min(maxWidth, startWidth + (e.clientX - startX)));
+            tree.style.width = newWidth + 'px';
+        };
+
+        const onMouseUp = () => {
+            resizer.classList.remove('is-resizing');
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+            localStorage.setItem(STORAGE_KEY, parseInt(tree.style.width));
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTreeResizer);
+} else {
+    initTreeResizer();
 }

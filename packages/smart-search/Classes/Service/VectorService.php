@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace TYPO3Incubator\SmartSearch\Service;
 
-use TYPO3Incubator\SmartSearch\Embedding\EmbeddingClientInterface;
+use Psr\Log\LoggerInterface;
 use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
+use TYPO3Incubator\SmartSearch\Embedding\EmbeddingClientInterface;
 use TYPO3Incubator\SmartSearch\Repository\VectorRepository;
 
 class VectorService
@@ -14,6 +15,7 @@ class VectorService
         private readonly EmbeddingClientInterface $embeddingClient,
         private readonly VectorRepository $vectorRepository,
         private readonly SmartSearchConfiguration $configuration,
+        private readonly LoggerInterface $logger,
     ) {}
 
     /**
@@ -27,11 +29,21 @@ class VectorService
         $hash = md5($text);
 
         if ($this->vectorRepository->findContentHash($collection, $identifier) === $hash) {
+            $this->logger->debug('Skipping embedding — content hash unchanged', [
+                'collection' => $collection,
+                'identifier' => $identifier,
+            ]);
             return;
         }
 
         $vector = $this->embeddingClient->embed($text);
         $this->vectorRepository->upsert($collection, $identifier, $vector, $hash);
+
+        $this->logger->debug('Stored embedding', [
+            'collection' => $collection,
+            'identifier' => $identifier,
+            'dimensions' => count($vector),
+        ]);
     }
 
     /**
@@ -51,6 +63,16 @@ class VectorService
 
         $scored = [];
         foreach ($all as $entry) {
+            if (count($entry['vector']) !== count($queryVector)) {
+                $this->logger->warning('Vector dimension mismatch — entry skipped', [
+                    'collection' => $collection,
+                    'identifier' => $entry['identifier'],
+                    'stored_dimensions' => count($entry['vector']),
+                    'query_dimensions' => count($queryVector),
+                ]);
+                continue;
+            }
+
             $scored[] = [
                 'identifier' => $entry['identifier'],
                 'score' => $this->cosineSimilarity($queryVector, $entry['vector']),

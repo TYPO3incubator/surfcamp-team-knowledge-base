@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
+use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
 
 class DocumentService
 {
@@ -17,6 +18,7 @@ class DocumentService
         protected readonly BackendUserRepository $backendUserRepository,
         protected readonly Context $context,
         protected readonly EmbeddingService $embeddingService,
+        private readonly ModelAvailabilityService $modelAvailabilityService,
     ) {}
 
     public function searchDocuments(string $query): array
@@ -50,7 +52,9 @@ class DocumentService
         $document->setVisibility($documentData['visibility'] ?? $document->getVisibility());
 
         $this->documentRepository->update($document);
-        $this->embeddingService->generateAndStoreIfChanged($document);
+        if ($this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+            $this->embeddingService->generateAndStoreIfChanged($document);
+        }
         return $result;
     }
 

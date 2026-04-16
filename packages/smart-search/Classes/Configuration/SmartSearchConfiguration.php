@@ -12,7 +12,7 @@ class SmartSearchConfiguration
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
-        $this->config = (array)$extensionConfiguration->get('smart-search');
+        $this->config = (array)$extensionConfiguration->get('smart_search');
     }
 
     public function getEmbeddingServerUrl(): string

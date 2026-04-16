@@ -20,6 +20,7 @@ use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
 use TYPO3Incubator\KnowledgeBase\Service\SearchService;
+use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 
@@ -38,24 +39,29 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly EmbeddingService $embeddingService,
         protected readonly SearchService $searchService,
         protected readonly DocumentRepository $documentRepository,
+        protected readonly ModelAvailabilityService $modelAvailabilityService,
     ) {}
 
     public function initializeAction(): void
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
+        $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Modal.css');
         $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/Backend.js');
     }
 
-    public function indexAction(int $openDocumentId = 0): ResponseInterface
+    public function indexAction(): ResponseInterface
     {
         $tree = $this->documentTreeService->getFullTree();
+        $openDocumentId = $this->documentTreeService->getOpenDocumentId($tree);
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $openDocument = $this->documentRepository->findByUid($openDocumentId);
         $this->moduleTemplate->assign('openDocumentType', $openDocument?->getType() ?? Document::TYPE_NORMAL);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
+        $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());
+        $this->moduleTemplate->assign('ragSearchAvailable', $this->modelAvailabilityService->isGenerationServerAvailable());
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
@@ -87,6 +93,10 @@ class BackendKnowledgeBaseController extends ActionController
 
     public function reindexAction(): ResponseInterface
     {
+        if (!$this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+            return $this->jsonResponse((string)json_encode(['error' => 'Embedding server is not available']));
+        }
+
         $documents = $this->documentRepository->findAll();
         $count = 0;
 

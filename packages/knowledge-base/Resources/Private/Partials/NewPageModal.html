@@ -1,0 +1,41 @@
+<div id="form-modal" class="modal modal-style-default contextual-record-edit">
+    <div class="contextual-record-edit-header">
+        <div class="contextual-record-edit-title-group">
+            <span class="contextual-record-edit-title" id="form-modal-title">Create new Page</span>
+        </div>
+        <div class="contextual-record-edit-actions">
+            <button type="submit" form="kb-creation-form" class="btn btn-primary">
+                <core:icon identifier="actions-document-save" size="small" />
+                <span class="contextual-record-edit-button-label">Save</span>
+            </button>
+            <button type="button" class="btn btn-default t3js-modal-close-form">
+                <core:icon identifier="actions-close" size="small" />
+                <span class="contextual-record-edit-button-label">Close</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="contextual-record-edit-body">
+        <f:form action="create" id="kb-creation-form" class="typo3-TCEforms">
+            <f:form.hidden name="type" id="field-type" value="" />
+            <f:form.hidden name="parentId" id="field-parent" value="0" />
+
+            <fieldset class="form-section">
+                <div class="form-group">
+                    <label for="documentHeadline" class="form-label">Headline</label>
+                    <div class="form-control-wrap">
+                        <f:form.textfield name="documentHeadline" id="documentHeadline" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="visibility" class="form-label">Visibility</label>
+                    <div class="form-control-wrap">
+                        <f:form.select name="visibility" id="visibility" options="{public: 'public', private: 'private'}" class="form-select" />
+                    </div>
+                </div>
+            </fieldset>
+
+        </f:form>
+    </div>
+</div>

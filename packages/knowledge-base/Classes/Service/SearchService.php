@@ -8,6 +8,7 @@ use TYPO3\CMS\Beuser\Domain\Repository\BackendUserRepository;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
+use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
 
 class SearchService
 {
@@ -23,6 +24,7 @@ class SearchService
         protected readonly EmbeddingService $embeddingService,
         protected readonly RagService $ragService,
         protected readonly DocumentService $documentService,
+        protected readonly ModelAvailabilityService $modelAvailabilityService,
     ) {}
 
     public function searchDocuments(string $query): array
@@ -55,6 +57,10 @@ class SearchService
 
     public function buildSemanticResults(string $query): array
     {
+        if (!$this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+            return $this->buildKeywordResults($query);
+        }
+
         $results = $this->ragService->searchSemantic($query);
 
         return [
@@ -67,6 +73,14 @@ class SearchService
 
     public function buildRagResults(string $query): array
     {
+        if (!$this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+            return $this->buildKeywordResults($query);
+        }
+
+        if (!$this->modelAvailabilityService->isGenerationServerAvailable()) {
+            return $this->buildSemanticResults($query);
+        }
+
         $ragResult = $this->ragService->ask($query);
 
         return [
