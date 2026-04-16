@@ -80,10 +80,11 @@ Both should return `{"status":"ok"}`. The extension is pre-configured to reach t
 
 ### Option B — DDEV
 
-The project ships `.ddev/docker-compose.llama.yaml` which defines the two llama services under the `llama` Docker Compose profile. Start them alongside the web container with:
+The project ships `.ddev/docker-compose.llama.yaml` which defines the two llama services under the `llama` Docker Compose profile. The project ships a `.ddev/commands/host/llama` custom command. Start DDEV normally, then bring the llama servers up separately:
 
 ```bash
-ddev start --profile llama
+ddev start
+ddev llama        # or: ddev llama start
 ```
 
 Models are downloaded from Hugging Face on first start and cached in named Docker volumes (`llama-embed-models`, `llama-generate-models`), so subsequent starts skip the download.
@@ -91,8 +92,14 @@ Models are downloaded from Hugging Face on first start and cached in named Docke
 Watch download progress on first run:
 
 ```bash
-ddev logs -s llama-embed
-ddev logs -s llama-generate
+ddev logs -f -s llama-embed
+ddev logs -f -s llama-generate
+```
+
+Stop the llama servers (without stopping DDEV):
+
+```bash
+ddev llama stop
 ```
 
 Verify the servers are up from inside the web container:
