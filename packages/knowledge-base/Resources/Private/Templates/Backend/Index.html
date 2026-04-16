@@ -20,46 +20,11 @@
 
     <div class="kb-container">
         <div class="kb-tree">
-            <div class="tree-header">
-                <span>Pages</span>
-                <div class="dropdown">
-                    <button class="basic-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <core:icon identifier="tx-knowledge-base-add" size="default" />
-                    </button>
-                    <ul class="modal modal-style-default modal-severity-notice modal-size-medium modal-position-center">
-                        <div class="modal-header t3js-modal-header">
-                            New Page Content
-                            <button class="modal-header-close t3js-modal-close">
-                                <typo3-backend-icon identifier="actions-close" size="small"></typo3-backend-icon>
-                            </button>
-                        </div>
-                        <div class="modal-body t3js-modal-body">
-                            <li>
-                                <a class="dropdown-item add-action" data-type="page" data-parent="0" href="#">
-                                    <core:icon identifier="tx-knowledge-base-page" size="medium" />
-                                    <div class="item-content">
-                                        <span class="item-title">New Page</span>
-                                        <span>Publish a standard document with rich text, images, and structured content.</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item add-action" data-type="board" data-parent="0" href="#">
-                                    <core:icon identifier="tx-knowledge-base-boards" size="medium" />
-                                    <div class="item-content">
-                                        <span class="item-title">New Board</span>
-                                        <span>Launch a dynamic Trello-style board with multiple columns.</span>
-                                    </div>
-                                </a>
-                            </li>
-                        </div>
-                    </ul>
-                </div>
-            </div>
-
-            <f:render partial="Node" arguments="{items: tree}"/>
+            <f:render partial="Backend/Pagetree" arguments="{tree: tree, openDocumentId: openDocumentId}"/>
         </div>
+
         <div class="kb-tree-resizer" aria-hidden="true"></div>
+
         <div class="kb-content">
             <f:render partial="Page" arguments="{_all}" />
             <f:render partial="Board" arguments="{_all}" />

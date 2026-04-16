@@ -6,7 +6,7 @@ document.addEventListener('click', function (e) {
 
     const treeContainer = document.querySelector('.document-tree');
     const formModal = document.getElementById('form-modal');
-
+    console.log(plusButton)
     if (plusButton) {
         e.preventDefault();
         e.stopPropagation();
