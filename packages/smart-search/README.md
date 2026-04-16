@@ -1,234 +1,399 @@
-# smart-search
+# smart_search
 
-Generic vector embedding, semantic search, and RAG (Retrieval-Augmented Generation) infrastructure for TYPO3 14.x. Provides the building blocks for any extension that wants to make its content semantically searchable and LLM-queryable, without being tied to any specific data structure.
+> Generic vector embedding, semantic search, and RAG (Retrieval-Augmented Generation) infrastructure for TYPO3 14.
 
-## What it does
+![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php)
+![TYPO3 14](https://img.shields.io/badge/TYPO3-14-FF8700?logo=typo3)
+![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue)
 
-- **Vectorization** — embeds arbitrary text into float vectors and stores them in a generic table. Change detection via MD5 hashing avoids redundant API calls.
-- **Semantic search** — finds the most relevant stored entries for a natural-language query using cosine similarity.
-- **RAG generation** — given a query and pre-formatted context blocks, calls a chat LLM and returns a grounded answer.
+`smart_search` gives any TYPO3 extension the building blocks for semantic search and LLM-powered answers — without being tied to any specific data model or AI provider. Drop in the services, embed your content, and get back results ranked by meaning rather than keyword overlap.
 
-The extension ships llama.cpp HTTP clients for both embedding and generation, and exposes interfaces (`EmbeddingClientInterface`, `GenerationClientInterface`) so you can swap in any other backend.
+---
+
+## Features
+
+- **Vectorization** — embed arbitrary text into float vectors via a pluggable client. Change detection via MD5 hashing avoids redundant API calls.
+- **Semantic search** — find the most relevant stored entries for a natural-language query using cosine similarity, ranked by score.
+- **RAG generation** — supply pre-formatted context blocks and get a grounded LLM answer that cites its sources.
+- **Pluggable backends** — ships llama.cpp clients for both embedding and generation; swap in OpenAI, Ollama, or any other HTTP-based model by implementing two small interfaces.
+- **Collection scoping** — multiple extensions can share the same table using distinct collection names without collision.
+- **PSR-3 logging** — all HTTP errors and unexpected responses are logged to the TYPO3 log.
+
+---
 
 ## Requirements
 
-- TYPO3 14.x
-- PHP 8.4+
-- Two running [llama-server](https://github.com/ggml-org/llama.cpp) instances: one for embeddings, one for chat completion
+| Requirement | Version |
+|-------------|---------|
+| PHP | 8.4+ |
+| TYPO3 | 14.x |
+| Embedding server | llama-server with `--embedding` flag (default `http://localhost:8080`) |
+| Generation server | llama-server for chat completions (default `http://localhost:8081`) |
 
-## System requirements
+The two llama-server instances can be replaced by any HTTP server that speaks the same API (see [Custom Backend](#implementing-a-custom-backend)).
 
-### Option A — llama.sh (local binary)
+---
+
+## Installation
+
+```bash
+composer require typo3-incubator/smart-search
+```
+
+Activate the extension:
+
+```bash
+vendor/bin/typo3 extension:activate smart_search
+```
+
+Run the database schema update in **Admin Tools → Maintenance → Analyze Database Structure** to create the `tx_smartsearch_vector` table.
+
+---
+
+## Server Setup
+
+### Option A — llama.sh (local binary, recommended for development)
+
+**Prerequisites**
 
 | Requirement | Notes |
 |-------------|-------|
-| [llama.cpp](https://github.com/ggml-org/llama.cpp) | Must be built with `LLAMA_CURL=1` so `-hf` model downloads work. Install via `brew install llama.cpp` on macOS (Homebrew formula ships with curl support), or build from source. |
-| `llama-server` on `$PATH` | Verify with `llama-server --version` |
-| ~6 GB free disk space | Models are cached in `~/.cache/huggingface` after the first download |
-| ~4 GB RAM (CPU inference) | The gemma-3-4b generation model requires roughly 4 GB; embedding model is much lighter |
+| [llama.cpp](https://github.com/ggml-org/llama.cpp) | Install via `brew install llama.cpp` on macOS (ships with curl/Hugging Face support), or build from source with `LLAMA_CURL=1`. |
+| `llama-server` on `$PATH` | Verify: `llama-server --version` |
+| ~6 GB free disk space | Models are cached in `~/.cache/huggingface` after first download. |
+| ~4 GB RAM | The gemma-3-4b generation model needs ~4 GB; the embedding model is much lighter. |
+
+The extension ships a `llama.sh` helper that manages both server processes, PID files, and log rotation.
+
+```bash
+# Start both servers (downloads models on first run)
+./llama.sh start
+
+# Check status
+./llama.sh status
+
+# Follow logs
+tail -f var/log/llama-embed.log
+tail -f var/log/llama-generate.log
+
+# Stop both servers
+./llama.sh stop
+```
+
+Verify both servers are healthy after starting:
+
+```bash
+curl -s http://localhost:8080/health   # {"status":"ok"}
+curl -s http://localhost:8081/health   # {"status":"ok"}
+```
+
+The extension defaults to these URLs — no further configuration is needed for a standard local setup.
 
 ### Option B — DDEV
+
+**Prerequisites**
 
 | Requirement | Notes |
 |-------------|-------|
 | [DDEV](https://ddev.com) v1.23+ | |
-| Docker with ≥6 GB memory allocated | Models live in named Docker volumes; disk usage is similar to Option A |
-| No local `llama-server` needed | The Docker image `ghcr.io/ggml-org/llama.cpp:server` is used |
+| Docker with ≥ 6 GB memory | Models live in named Docker volumes. |
 
-## Server setup
-
-### Option A — llama.sh (recommended for local development)
-
-The repository ships a `llama.sh` helper at the project root that manages both server processes, PID files, and log output.
-
-**Start both servers:**
-
-```bash
-./llama.sh
-# or explicitly: ./llama.sh start
-```
-
-On first run each server downloads its model from Hugging Face (~300 MB for the embedding model, ~2.5 GB for the generation model). Subsequent starts are instant.
-
-**Check status:**
-
-```bash
-./llama.sh status
-```
-
-**Follow logs:**
-
-```bash
-tail -f var/log/llama-embed.log
-tail -f var/log/llama-generate.log
-```
-
-**Stop both servers:**
-
-```bash
-./llama.sh stop
-```
-
-After starting, verify both servers are healthy:
-
-```bash
-curl -s http://localhost:8080/health   # embedding server
-curl -s http://localhost:8081/health   # generation server
-```
-
-Both should return `{"status":"ok"}`. The extension is pre-configured to reach the servers at these URLs — no further configuration is needed for a default local setup.
-
-### Option B — DDEV
-
-The project ships `.ddev/docker-compose.llama.yaml` which defines the two llama services under the `llama` Docker Compose profile. The project ships a `.ddev/commands/host/llama` custom command. Start DDEV normally, then bring the llama servers up separately:
+The project ships `.ddev/docker-compose.llama.yaml` and a `ddev llama` host command:
 
 ```bash
 ddev start
-ddev llama        # or: ddev llama start
-```
+ddev llama start          # first run downloads models; watch with ddev logs -f -s llama-embed
 
-Models are downloaded from Hugging Face on first start and cached in named Docker volumes (`llama-embed-models`, `llama-generate-models`), so subsequent starts skip the download.
+# Verify from inside the web container
+ddev exec curl -s http://llama-embed:8080/health
+ddev exec curl -s http://llama-generate:8081/health
 
-Watch download progress on first run:
-
-```bash
-ddev logs -f -s llama-embed
-ddev logs -f -s llama-generate
-```
-
-Stop the llama servers (without stopping DDEV):
-
-```bash
 ddev llama stop
 ```
 
-Verify the servers are up from inside the web container:
-
-```bash
-ddev exec curl -s http://llama-embed:8080/health
-ddev exec curl -s http://llama-generate:8081/health
-```
-
-When using DDEV, update the server URLs in **Admin Tools → Settings → Extension Configuration → smart-search**:
+When using DDEV, update the URLs under **Admin Tools → Settings → Extension Configuration → smart_search**:
 
 | Setting | DDEV value |
 |---------|------------|
 | `embeddingServerUrl` | `http://llama-embed:8080` |
 | `generationServerUrl` | `http://llama-generate:8081` |
 
-## Installation
-
-Add the package to your project's `composer.json`:
-
-```json
-"typo3-incubator/smart-search": "dev-main"
-```
-
-Then run `composer update` and activate the extension:
-
-```bash
-vendor/bin/typo3 extension:activate smart-search
-```
-
-Run the database schema analyser (Install Tool → Maintenance → Analyze Database Structure) to create the `tx_smartsearch_vector` table.
+---
 
 ## Configuration
 
-All settings live under **Admin Tools → Settings → Extension Configuration → smart-search**.
+All settings are available under **Admin Tools → Settings → Extension Configuration → smart_search**.
 
-| Key | Default | Description |
-|-----|---------|-------------|
-| `embeddingServerUrl` | `http://localhost:8080` | URL of the llama-server embedding instance |
-| `generationServerUrl` | `http://localhost:8081` | URL of the llama-server chat instance |
-| `generationMaxTokens` | `512` | Maximum tokens in a generated answer |
-| `embeddingContextLength` | `6000` | Maximum characters passed to the embedding server (~4 chars/token; keep in sync with `--ctx-size`) |
-| `ragTopK` | `5` | Default number of top documents retrieved for RAG context |
-| `documentContextLength` | `800` | Maximum characters of content per document in the RAG context block |
-| `semanticThreshold` | `0.30` | Minimum cosine similarity (0.0–1.0) to consider a result a semantic match |
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `embeddingServerUrl` | string | `http://localhost:8080` | Base URL of the llama-server embedding instance. |
+| `generationServerUrl` | string | `http://localhost:8081` | Base URL of the llama-server chat completions instance. |
+| `generationMaxTokens` | integer | `512` | Maximum tokens allowed in a generated answer. Increase for longer, more detailed responses. |
+| `generationTimeout` | integer | `300` | HTTP timeout in seconds for generation requests. CPU inference is slow — increase if answers are cut off. |
+| `embeddingContextLength` | integer | `6000` | Maximum characters of text passed to the embedding server. Keep in sync with the model's `--ctx-size` (roughly 4 chars per token for typical prose). |
+| `ragTopK` | integer | `5` | Number of top-scoring documents retrieved and passed as context for RAG generation. |
+| `documentContextLength` | integer | `800` | Maximum characters of document content included per context block in RAG requests. |
+| `semanticThreshold` | float | `0.30` | Minimum cosine similarity score (0.0–1.0) to treat a result as a semantic match. Results below this threshold can be filtered by the consuming extension. |
+
+---
 
 ## Usage
 
-### Storing embeddings
+Inject the services via constructor injection — TYPO3's dependency injection container wires everything automatically.
 
-Call `VectorService::embedAndStore()` whenever content changes. Pass a **collection** name (a string scoping your entries), a stable **identifier**, and the **plain text** to embed. HTML stripping is your responsibility before calling this method.
+### Storing and updating embeddings
+
+Call `VectorService::embedAndStore()` whenever content is created or updated. Pass a **collection** name (a string that scopes your entries), a stable **identifier**, and the **plain text** to embed. Strip HTML before calling.
 
 ```php
 use TYPO3Incubator\SmartSearch\Service\VectorService;
 
-$vectorService->embedAndStore(
-    collection: 'my-extension-articles',
-    identifier: $article->getUid(),
-    text: $article->getTitle() . "\n\n" . strip_tags($article->getBody())
-);
+class MyEventListener
+{
+    public function __construct(
+        private readonly VectorService $vectorService,
+    ) {}
+
+    public function afterSave(MyRecord $record): void
+    {
+        $this->vectorService->embedAndStore(
+            collection: 'my-extension-articles',
+            identifier: $record->getUid(),
+            text: $record->getTitle() . "\n\n" . strip_tags($record->getBodyText()),
+        );
+    }
+}
 ```
 
-The call is idempotent — if the text has not changed since the last call, the embedding server is not contacted.
+The call is **idempotent** — if the text has not changed since the last call, the embedding server is not contacted and the database is not written to.
 
 ### Semantic search
 
 ```php
-$hits = $vectorService->findSimilar(
+$hits = $this->vectorService->findSimilar(
     collection: 'my-extension-articles',
     query: 'how do I configure caching?',
-    topK: 5
+    topK: 5,
 );
 
-// $hits = [['identifier' => '42', 'score' => 0.87], ...]
+// Returns: [['identifier' => '42', 'score' => 0.87], ['identifier' => '7', 'score' => 0.74], ...]
+// Sorted by cosine similarity descending. 'identifier' is always a string.
+foreach ($hits as $hit) {
+    $record = $this->recordRepository->findByUid((int)$hit['identifier']);
+    // filter by threshold if needed: if ($hit['score'] < 0.30) continue;
+}
 ```
 
-Results are sorted by cosine similarity descending. `identifier` is always a string; cast to `int` if your IDs are integers.
-
-### RAG generation
+### RAG generation (full example)
 
 ```php
 use TYPO3Incubator\SmartSearch\Service\GenerationService;
+use TYPO3Incubator\SmartSearch\Service\VectorService;
+use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
 
-// Build context blocks however you like — one string per source document
-$contextBlocks = array_map(
-    fn($article) => sprintf('[%d] %s\n%s', $article->getUid(), $article->getTitle(), $excerpt),
-    $relevantArticles
-);
+class SearchController
+{
+    public function __construct(
+        private readonly VectorService $vectorService,
+        private readonly GenerationService $generationService,
+        private readonly SmartSearchConfiguration $configuration,
+    ) {}
 
-$answer = $generationService->generate(
-    query: 'how do I configure caching?',
-    contextBlocks: $contextBlocks
-);
+    public function answerAction(string $question): string
+    {
+        // 1. Find the most relevant documents
+        $hits = $this->vectorService->findSimilar(
+            collection: 'my-extension-articles',
+            query: $question,
+            topK: $this->configuration->getRagTopK(),
+        );
+
+        // 2. Filter by semantic threshold
+        $threshold = $this->configuration->getSemanticThreshold();
+        $hits = array_filter($hits, fn($h) => $h['score'] >= $threshold);
+
+        if (empty($hits)) {
+            return 'No relevant documents found.';
+        }
+
+        // 3. Build context blocks — one string per source document
+        $maxChars = $this->configuration->getDocumentContextLength();
+        $contextBlocks = [];
+        foreach ($hits as $hit) {
+            $record = $this->recordRepository->findByUid((int)$hit['identifier']);
+            $excerpt = mb_substr(strip_tags($record->getBodyText()), 0, $maxChars);
+            $contextBlocks[] = sprintf('[%d] %s\n%s', $record->getUid(), $record->getTitle(), $excerpt);
+        }
+
+        // 4. Generate a grounded answer
+        return $this->generationService->generate(
+            query: $question,
+            contextBlocks: $contextBlocks,
+        );
+        // The system prompt instructs the model to answer only from the provided
+        // documents and to cite sources by their identifier (e.g. [42]).
+    }
+}
 ```
-
-`GenerationService` assembles a system + user message and calls the chat LLM. The system prompt instructs the model to answer only from the provided documents and cite sources by their identifier.
 
 ### Removing vectors
 
+Remove individual vectors when records are deleted, or wipe an entire collection before a full reindex:
+
 ```php
-// Remove a single entry (e.g. when a record is deleted)
-$vectorRepository->deleteByIdentifier('my-extension-articles', (string)$uid);
+use TYPO3Incubator\SmartSearch\Repository\VectorRepository;
 
-// Remove all entries for a collection (e.g. before a full reindex)
-$vectorRepository->deleteByCollection('my-extension-articles');
+// Remove a single entry
+$this->vectorRepository->deleteByIdentifier('my-extension-articles', (string)$uid);
+
+// Remove all entries in a collection (e.g. before a full reindex)
+$this->vectorRepository->deleteByCollection('my-extension-articles');
 ```
 
-## Database table
+### Checking server availability
 
-```sql
-tx_smartsearch_vector (
-    collection   VARCHAR(255)   -- scopes entries per extension/use-case
-    identifier   VARCHAR(255)   -- stable ID within the collection
-    vector       LONGTEXT       -- JSON-encoded float array
-    content_hash VARCHAR(32)    -- MD5 for change detection
-    tstamp       INT UNSIGNED
-)
+Use `ModelAvailabilityService` to guard features that depend on the llama servers, for example to show or hide a semantic search toggle in the UI:
+
+```php
+use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
+
+if ($this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+    // offer semantic search
+}
+
+if ($this->modelAvailabilityService->isGenerationServerAvailable()) {
+    // offer RAG answers
+}
 ```
 
-Multiple extensions can share the table without collision by using distinct collection names.
+Results are cached for the duration of the current request (null-coalescing pattern).
 
-## Swapping the embedding or generation backend
+---
 
-Bind your own implementation in your extension's `Services.yaml`:
+## Implementing a Custom Backend
+
+The two interfaces make it straightforward to replace the llama.cpp clients with any other embedding or generation provider.
+
+### Custom embedding client (example: OpenAI)
+
+```php
+namespace MyVendor\MyExtension\Embedding;
+
+use TYPO3Incubator\SmartSearch\Embedding\EmbeddingClientInterface;
+
+final class OpenAiEmbeddingClient implements EmbeddingClientInterface
+{
+    public function __construct(
+        private readonly string $apiKey,
+        private readonly string $model = 'text-embedding-3-small',
+    ) {}
+
+    /** @return float[] */
+    public function embed(string $text): array
+    {
+        // Call the OpenAI embeddings API and return the float array.
+        // ...
+    }
+}
+```
+
+Then bind it in your extension's `Configuration/Services.yaml`:
 
 ```yaml
 TYPO3Incubator\SmartSearch\Embedding\EmbeddingClientInterface:
   alias: MyVendor\MyExtension\Embedding\OpenAiEmbeddingClient
-
-TYPO3Incubator\SmartSearch\Generation\GenerationClientInterface:
-  alias: MyVendor\MyExtension\Generation\OpenAiGenerationClient
 ```
+
+The same pattern applies to `GenerationClientInterface` for swapping the chat completion backend.
+
+> **Note:** When using a different embedding model, make sure all vectors in a collection were generated by the same model. Mixing models produces meaningless similarity scores. Use `VectorRepository::deleteByCollection()` and re-embed when switching models.
+
+---
+
+## Troubleshooting
+
+### Search returns empty results
+
+1. Check that the embedding server is running: `curl -s http://localhost:8080/health`
+2. Confirm that `embedAndStore()` was called for your records.
+3. Query the database directly: `SELECT COUNT(*) FROM tx_smartsearch_vector WHERE collection = 'your-collection';`
+4. Lower `semanticThreshold` temporarily to `0.0` to see all results regardless of score.
+
+### Health check fails / server unavailable
+
+- Verify the server is running: `./llama.sh status` or check your Docker containers.
+- Confirm the URL in **Extension Configuration** matches the actual server address (especially in DDEV: use `http://llama-embed:8080`, not `localhost`).
+- Check server logs: `tail -f var/log/llama-embed.log`
+
+### Generated answers are cut off
+
+- Increase `generationMaxTokens` in the extension configuration.
+- Increase `generationTimeout` — CPU inference for long responses can exceed 300 seconds on slow hardware.
+
+### Generation is very slow
+
+- CPU inference speed depends heavily on hardware. A GPU-accelerated llama.cpp build (`LLAMA_METAL=1` on macOS, `LLAMA_CUDA=1` on Linux) can be 10–50× faster.
+- Reduce `ragTopK` and `documentContextLength` to pass less context to the model.
+- Use a smaller/quantized model (e.g. Q4_K_M instead of Q8_0).
+
+### Results have low relevance / wrong ranking
+
+- Make sure you strip HTML and normalise whitespace before calling `embedAndStore()`. Tags pollute the vector representation.
+- Ensure the text passed to `embedAndStore()` contains the full semantic content, not just a title.
+- Verify you are using the same model for both embedding stored content and embedding queries. Mismatched models produce meaningless similarity scores.
+
+### Dimension mismatch warning in logs
+
+You switched embedding models without re-indexing. Entries generated by the old model have a different vector dimension than the query vector and are automatically skipped. Run a full reindex:
+
+```php
+$vectorRepository->deleteByCollection('your-collection');
+// then re-call embedAndStore() for all records
+```
+
+---
+
+## Known Limitations
+
+- **No streaming** — generation responses are returned in full after the model finishes. The `stream: false` flag is hardcoded.
+- **Single-vector operations** — there is no batch embed API; callers must loop over records.
+- **No metadata fields** — the vector table stores only collection, identifier, vector, and a content hash. Extra fields (e.g. source URL, author) must be managed in the consuming extension's own tables.
+- **PHP 8.4+ only** — the extension uses readonly constructor properties and other PHP 8.4 features.
+- **In-process similarity search** — cosine similarity is computed in PHP after fetching all vectors for a collection. This works well up to tens of thousands of entries; for larger datasets consider a dedicated vector database.
+
+---
+
+## Database Schema
+
+```
+tx_smartsearch_vector
+├── uid          INT UNSIGNED AUTO_INCREMENT  PRIMARY KEY
+├── collection   VARCHAR(255)                 -- scopes entries per extension/use-case
+├── identifier   VARCHAR(255)                 -- stable record ID within the collection
+├── vector       LONGTEXT                     -- JSON-encoded float array
+├── content_hash VARCHAR(32)                  -- MD5 of the normalised text (change detection)
+└── tstamp       INT UNSIGNED                 -- Unix timestamp of last update
+
+UNIQUE KEY  uq_collection_identifier (collection, identifier(191))
+KEY         idx_collection (collection)
+```
+
+Multiple extensions can share the table without collision by using distinct collection names (e.g. `news-articles`, `faq-entries`, `product-descriptions`).
+
+---
+
+## Contributing
+
+1. Fork the repository and create a branch.
+2. Install dependencies: `composer install`
+3. Run the test suite: `vendor/bin/phpunit packages/smart-search/Tests/Unit/`
+4. Run static analysis: `vendor/bin/phpstan analyse -c packages/smart-search/phpstan.neon`
+5. Submit a pull request with a clear description of the change.
+
+Please follow the existing code style (strict types, readonly constructors, PSR-12).
+
+---
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).

@@ -7,8 +7,9 @@ namespace TYPO3Incubator\SmartSearch\Tests\Unit\Service;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use TYPO3Incubator\SmartSearch\Embedding\EmbeddingClientInterface;
+use Psr\Log\LoggerInterface;
 use TYPO3Incubator\SmartSearch\Configuration\SmartSearchConfiguration;
+use TYPO3Incubator\SmartSearch\Embedding\EmbeddingClientInterface;
 use TYPO3Incubator\SmartSearch\Repository\VectorRepository;
 use TYPO3Incubator\SmartSearch\Service\VectorService;
 
@@ -30,6 +31,7 @@ final class VectorServiceTest extends TestCase
             $this->embeddingClient,
             $this->vectorRepository,
             $this->configuration,
+            $this->createMock(LoggerInterface::class),
         );
     }
 
