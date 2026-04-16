@@ -119,3 +119,22 @@ body {
 .content-inner {
     padding: 2rem;
 }
+
+
+.breadcrumb {
+    margin: 24px;
+}
+
+.tag {
+    border-radius: 4px;
+    padding: 2px 8px;
+    background: #fff4e6;
+    color: #ff8700;
+    font-size: 12px;
+    width: fit-content;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin-bottom: unset;
+    padding-bottom: unset;
+}

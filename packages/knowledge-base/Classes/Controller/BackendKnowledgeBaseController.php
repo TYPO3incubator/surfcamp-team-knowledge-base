@@ -13,6 +13,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
@@ -20,6 +21,9 @@ use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
 use TYPO3Incubator\KnowledgeBase\Service\SearchService;
 use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
+
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -52,6 +56,8 @@ class BackendKnowledgeBaseController extends ActionController
         $openDocumentId = $this->documentTreeService->getOpenDocumentId($tree);
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
+        $openDocument = $this->documentRepository->findByUid($openDocumentId);
+        $this->moduleTemplate->assign('openDocumentType', $openDocument?->getType() ?? Document::TYPE_NORMAL);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());
@@ -142,11 +148,13 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->jsonResponse((string)json_encode($result));
     }
 
-    public function ajaxLoadDocumentChildrenAction(ServerRequest $request): ResponseInterface
-    {
-        $params = $request->getQueryParams();
-        $documentUid = $params['documentUid'] ?? 0;
-        $result = $this->documentService->loadDocumentChildren($documentUid);
-        return $this->jsonResponse((string)json_encode($result));
-    }
+	public function ajaxLoadDocumentChildrenAction(ServerRequestInterface $request): ResponseInterface
+	{
+		$params = $request->getQueryParams();
+		$documentUid = (int)($params['documentUid'] ?? 0);
+
+		$result = $this->documentService->loadDocumentChildren($documentUid);
+
+		return new JsonResponse($result);
+	}
 }
