@@ -53,8 +53,6 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
-        $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());
-        $this->moduleTemplate->assign('ragSearchAvailable', $this->modelAvailabilityService->isGenerationServerAvailable());
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
@@ -131,6 +129,22 @@ class BackendKnowledgeBaseController extends ActionController
 
         $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
+    }
+
+    public function ajaxCheckAvailabilityAction(ServerRequest $request): ResponseInterface
+    {
+        $service = $request->getQueryParams()['service'] ?? '';
+
+        $result = match($service) {
+            'semantic' => ['available' => $this->modelAvailabilityService->isEmbeddingServerAvailable()],
+            'rag'      => ['available' => $this->modelAvailabilityService->isGenerationServerAvailable()],
+            default    => [
+                'semantic' => $this->modelAvailabilityService->isEmbeddingServerAvailable(),
+                'rag'      => $this->modelAvailabilityService->isGenerationServerAvailable(),
+            ],
+        };
+
+        return $this->jsonResponse((string)json_encode($result));
     }
 
     public function ajaxLoadDocumentAction(ServerRequest $request): ResponseInterface

@@ -30,6 +30,7 @@ class KnowledgeBaseSearchBar {
         this.iconBoard = document.getElementById('kb-icon-board')?.innerHTML ?? '';
 
         this.bindEvents();
+        this.checkAvailability();
     }
 
     bindEvents() {
@@ -73,6 +74,36 @@ class KnowledgeBaseSearchBar {
         });
 
         this.form.addEventListener('submit', e => e.preventDefault());
+    }
+
+    async checkAvailability() {
+        const base = TYPO3?.settings?.ajaxUrls?.checkAvailability;
+        if (!base) return;
+
+        const check = async (service) => {
+            try {
+                const response = await fetch(`${base}&service=${service}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                });
+                if (!response.ok) return true;
+                const data = await response.json();
+                return data.available !== false;
+            } catch {
+                return true; // leave enabled if check fails
+            }
+        };
+
+        const [semanticOk, ragOk] = await Promise.all([check('semantic'), check('rag')]);
+
+        this.modeButtons.forEach(btn => {
+            if (btn.dataset.mode === 'semantic' && !semanticOk) {
+                btn.disabled = true;
+                btn.title = 'Semantic search server unavailable';
+            } else if (btn.dataset.mode === 'rag' && !ragOk) {
+                btn.disabled = true;
+                btn.title = 'RAG search server unavailable';
+            }
+        });
     }
 
     openFlyout() {

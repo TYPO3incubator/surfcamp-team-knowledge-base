@@ -17,4 +17,8 @@ return [
         'path' => '/knowledgebase/searchDocuments',
         'target' => BackendKnowledgeBaseController::class . '::ajaxSearchAction',
     ],
+    'checkAvailability' => [
+        'path' => '/knowledgebase/checkAvailability',
+        'target' => BackendKnowledgeBaseController::class . '::ajaxCheckAvailabilityAction',
+    ],
 ];
