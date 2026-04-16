@@ -65,7 +65,7 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
 
-    public function ajaxSearchAction(ServerRequest $request): ResponseInterface
+    public function ajaxSearchAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $query = $params['query'] ?? '';
@@ -88,7 +88,7 @@ class BackendKnowledgeBaseController extends ActionController
             SearchService::MODE_RAG      => $this->searchService->buildRagResults($query),
         };
 
-        return $this->jsonResponse((string)json_encode($envelope));
+        return new JsonResponse($envelope);
     }
 
     public function reindexAction(): ResponseInterface
@@ -105,7 +105,7 @@ class BackendKnowledgeBaseController extends ActionController
             $count++;
         }
 
-        return $this->jsonResponse((string)json_encode(['reindexed' => $count]));
+        return new JsonResponse(['reindexed' => $count]);
     }
 
     public function updateAction(int $documentUid, array $documentData): ResponseInterface
@@ -140,12 +140,12 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
     }
 
-    public function ajaxLoadDocumentAction(ServerRequest $request): ResponseInterface
+    public function ajaxLoadDocumentAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
         $documentUid = $params['documentUid'] ?? 0;
         $result = $this->documentService->loadDocument((int)$documentUid);
-        return $this->jsonResponse((string)json_encode($result));
+        return new JsonResponse($result);
     }
 
 	public function ajaxLoadDocumentChildrenAction(ServerRequestInterface $request): ResponseInterface
