@@ -2,9 +2,7 @@
 
 .page {
     position: relative;
-    height: 100%;
     overflow: hidden;
-    border-left: 4px solid #d4d4d4;
 }
 
 .page-info {

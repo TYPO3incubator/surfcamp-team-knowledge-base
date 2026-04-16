@@ -6,3 +6,31 @@
 @import "Board.css";
 @import "Page.css";
 @import "Modal.css";
+
+/* Dark mode: TYPO3 renders SVG icons as <img> tags inside an iframe, so CSS
+   color inheritance and [data-bs-theme] on the outer shell do not apply here.
+   Use prefers-color-scheme (works in auto mode) plus explicit dark override. */
+@media (prefers-color-scheme: dark) {
+    [class*="icon-tx-knowledge-base"] img {
+        filter: invert(1);
+    }
+}
+
+/* Explicit dark mode (user manually selected) */
+[data-bs-theme="dark"] [class*="icon-tx-knowledge-base"] img {
+    filter: invert(1);
+}
+
+/* Explicit light mode cancels the media query invert */
+[data-bs-theme="light"] [class*="icon-tx-knowledge-base"] img {
+    filter: none;
+}
+
+/* Extension icons: 24px for small size */
+[class*="icon-tx-knowledge-base"].icon-size-small,
+[class*="icon-tx-knowledge-base"].icon-size-small img,
+[class*="icon-tx-knowledge-base"].icon-size-small svg {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+}
