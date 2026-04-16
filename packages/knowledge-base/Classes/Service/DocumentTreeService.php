@@ -31,4 +31,9 @@ class DocumentTreeService
 
         return $items;
     }
+
+    public function getOpenDocumentId($tree): ?int
+    {
+        return !empty($tree) ? $tree[0]['document']->getUid() : null;
+    }
 }
