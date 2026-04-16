@@ -110,3 +110,7 @@
 .kb-create-task-modal-content.is-open {
     display: flex;
 }
+
+.contextual-record-edit-body {
+    background-color: white;
+}

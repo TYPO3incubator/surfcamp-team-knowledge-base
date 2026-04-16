@@ -16,7 +16,7 @@
                 </f:if>
             </span>
             <div class="item-text">
-                <span>{node.document.headline} (ID: {node.document.uid})</span>
+                <span>{node.document.headline}</span>
 
                 <f:if condition="{node.document.type} != 'board'">
                     <div class="dropdown">
@@ -56,7 +56,6 @@
                 </f:if>
             </div>
         </div>
-
         <f:if condition="{node.children} && {node.document.type} != 'board'">
             <div class="item-childs">
                 <f:render partial="Node" arguments="{items: node.children}"/>

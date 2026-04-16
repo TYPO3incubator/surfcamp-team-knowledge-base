@@ -51,7 +51,7 @@ document.addEventListener('click', function (e) {
 
     if (!e.target.closest('.modal') && !plusButton) {
         document.querySelectorAll('.modal.is-visible').forEach(m => m.classList.remove('is-visible'));
-        treeContainer.classList.remove('has-modal');
+        treeContainer?.classList.remove('has-modal');
     }
 });
 

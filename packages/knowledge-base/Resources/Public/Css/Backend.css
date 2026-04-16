@@ -1,3 +1,12 @@
+@import "General.css";
+@import "Header.css";
+@import "Breadcrumb.css";
+@import "Tree.css";
+@import "Search.css";
+@import "Board.css";
+@import "Page.css";
+@import "Modal.css";
+
 /* Dark mode: TYPO3 renders SVG icons as <img> tags inside an iframe, so CSS
    color inheritance and [data-bs-theme] on the outer shell do not apply here.
    Use prefers-color-scheme (works in auto mode) plus explicit dark override. */
@@ -25,101 +34,3 @@
     height: 24px;
     line-height: 24px;
 }
-
-.document-tree {
-    max-width: 200px;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-/* PageTree Header */
-.tree-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid #c3c3c3;
-}
-
-.basic-button {
-    background: unset;
-    border: unset;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-}
-
-.basic-button:hover {
-    background: #c3c3c34a;
-}
-
-/* PageTree Nodes */
-.item-wrapper {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-}
-
-.item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 4px 8px;
-    gap: 8px;
-    overflow: hidden;
-}
-
-.item-text {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    min-width: 0;
-}
-
-.item-text > span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-    margin-right: 5px;
-}
-
-.basic-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    padding: 2px;
-    transition: opacity 0.2s;
-}
-
-.item:hover .basic-button {
-    opacity: 1;
-}
-
-.item .basic-button {
-    opacity: 0;
-}
-
-.basic-button svg {
-    width: 16px;
-    height: 16px;
-}
-
-.item-childs {
-    padding-left: 20px;
-}
-
-@import "General.css";
-@import "Header.css";
-@import "Breadcrumb.css";
-@import "Tree.css";
-@import "Search.css";
-@import "Board.css";
-@import "Page.css";
-@import "Modal.css";
