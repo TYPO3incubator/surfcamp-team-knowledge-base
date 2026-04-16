@@ -10,7 +10,7 @@
         <span class="kb-header-title">Knowledge Base</span>
 
         <f:render partial="Backend/Searchbar" />
-
+       <div id="open-document-id" hidden>{openDocumentId}</div>
         <div class="kb-header-actions">
             <button type="button" class="kb-btn-share">
                 <core:icon identifier="tx-knowledge-base-share" size="small" />
@@ -23,6 +23,7 @@
         <div class="kb-tree">
             <f:render partial="Backend/Pagetree" arguments="{tree: tree, openDocumentId: openDocumentId}"/>
         </div>
+        <div class="kb-tree-resizer" aria-hidden="true"></div>
         <div class="kb-content">
             <f:render partial="Page" arguments="{_all}" />
             <f:render partial="Board" arguments="{_all}" />
