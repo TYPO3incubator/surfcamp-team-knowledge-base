@@ -8,3 +8,9 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/Domain/Model/*'
+
+  TYPO3Incubator\KnowledgeBase\Command\ReIndexDocumentEmbeddingsCommand:
+    tags:
+      - name: 'console.command'
+        command: 'knowledge-base:reindexDocumentEmbeddings'
+        schedulable: true
