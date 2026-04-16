@@ -134,6 +134,8 @@ function initPageTree() {
         const item = e.target.closest('.document-tree-item, .tree-search-result-item, .kb-flyout-result-item');
         if (item) {
             e.preventDefault();
+            const contentEl = document.querySelector('.kb-content');
+            contentEl.dataset.openDocumentId = item.dataset.uid;
             if (item.dataset.documentType === 'board') {
                 changeToBoard(item.dataset.uid);
             } else {
