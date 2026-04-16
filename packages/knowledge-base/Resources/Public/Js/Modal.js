@@ -24,6 +24,12 @@ document.addEventListener('click', function (e) {
 
         actionItem.closest('.modal').classList.remove('is-visible');
 
+        const typeField = document.getElementById('field-type');
+        const parentField = document.getElementById('field-parent');
+
+        if (typeField) typeField.value = type;
+        if (parentField) parentField.value = parentId;
+
         const titleEl = document.getElementById('form-modal-title');
         if (titleEl) titleEl.innerText = `Create New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
 
