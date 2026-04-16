@@ -35,9 +35,7 @@
 				<h3 class="board__column-title">To Do</h3>
 				<span class="board__column-items">3</span>
 			</div>
-			<div class="board__column-content t3-grid-cell">
-				<!--Cards-->
-				<f:render section="Card" arguments="{_all}" />
+			<div class="board__column-content t3-grid-cell" data-column="todo">
 			</div>
 		</div>
 		<div class="board__column">
@@ -45,9 +43,7 @@
 				<h3 class="board__column-title">In Progress</h3>
 				<span class="board__column-items">3</span>
 			</div>
-			<div class="board__column-content t3-grid-cell">
-				<!--Cards-->
-				<f:render section="Card" arguments="{_all}" />
+			<div class="board__column-content t3-grid-cell" data-column="progress">
 			</div>
 		</div>
 
@@ -59,32 +55,16 @@
 				<span class="add-new-icon">+</span>
 			</div>
 		</div>
+
 	</div>
 
 
 </f:section>
 
-<f:section name="Card">
-	<div class="board__card t3-page-ce-element ">
-		<p class="board__card--title"> Ticket Title </p>
-		<p class="board__card--description">  Ticket description</p>
-		<div class="tags">
-			<span class="tag"> tag 1</span> <span class="tag"> tag 2</span>
-		</div>
-		<div class="board__card--author">
-			<span class="board__card--author-item"><span class="board__card--name">N</span>name surname</span>
-			<span><core:icon identifier="tx-knowledge-base-comment"/>3</span>
-		</div>
+
+
+<div class="kb-edit-task-modal-content">
+	<div class="kb-edit-task-modal-box">
+		<f:render partial="EditTask" />
 	</div>
-	<div class="board__card t3-page-ce-element ">
-		<p class="board__card--title"> Ticket Title </p>
-		<p class="board__card--description">  Ticket description</p>
-		<div class="tags">
-			<span class="tag"> tag 1</span> <span class="tag"> tag 2</span>
-		</div>
-		<div class="board__card--author">
-			<span class="board__card--author-item"><span class="board__card--name">N</span>name surname</span>
-			<span><core:icon identifier="tx-knowledge-base-comment"/>3</span>
-		</div>
-	</div>
-</f:section>
+</div>

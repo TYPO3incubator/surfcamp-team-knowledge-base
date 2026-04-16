@@ -31,3 +31,16 @@
 .kb-create-task-modal-content.is-open {
     display: flex;
 }
+
+.kb-edit-task-modal-content {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8e8e880;
+}
+
+.kb-edit-task-modal-content.is-open {
+    display: flex;
+}

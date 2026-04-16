@@ -1,35 +1,6 @@
 // Shared drag type so card and column handlers don't interfere with each other
 let activeDragType = null;
 
-function initBoard() {
-    const button = document.getElementById('kb-open-modal');
-    const overlay = document.querySelector('.kb-create-task-modal-content');
-    const box = document.querySelector('.kb-create-task-modal-box');
-
-    if (!button || !overlay || !box) return;
-
-    button.addEventListener('click', function () {
-        overlay.classList.add('is-open');
-    });
-
-    // click outside modal box closes
-    overlay.addEventListener('click', function () {
-        overlay.classList.remove('is-open');
-    });
-
-    // prevent closing when clicking inside modal
-    box.addEventListener('click', function (e) {
-        e.stopPropagation();
-    });
-
-    // ESC close
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            overlay.classList.remove('is-open');
-        }
-    });
-}
-
 function initBoardDragDrop() {
     let draggedCard = null;
     let placeholder = null;
@@ -211,12 +182,10 @@ function initColumnDragDrop() {
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-        initBoard();
         initBoardDragDrop();
         initColumnDragDrop();
     });
 } else {
-    initBoard();
     initBoardDragDrop();
     initColumnDragDrop();
 }

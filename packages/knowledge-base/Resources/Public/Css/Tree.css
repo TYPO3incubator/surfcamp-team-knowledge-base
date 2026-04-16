@@ -1,6 +1,4 @@
 .document-tree {
-    width: 300px;
-    flex-shrink: 0;
     overflow-x: hidden;
     overflow-y: auto;
 }

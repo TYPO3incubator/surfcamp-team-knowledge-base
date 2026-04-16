@@ -1,45 +1,35 @@
-<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
-	<div class="modal-header t3js-modal-header">
-		<h3 class="kb-modal-title">Create New Task</h3>
-	</div>
-	<div class="modal-body t3js-modal-body">
-		<div class="form-group">
-			<label for="task-name" class="form-label">
-				<span data-template-property="label">Task name</span>
-			</label>
-			<div class="form-control-wrap">
-				<input
-						type="text"
-						id="task-name"
-						name="taskName"
-						value=""
-						class="form-control"
-						placeholder="Enter task name"
-				>
+<form method="post" action="{f:uri.action(action: 'create')}">
+	<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
+		<div class="modal-header">
+			<h3 class="kb-modal-title">Create New Task</h3>
+		</div>
+		<div class="modal-body t3js-modal-body">
+
+			<div class="form-group">
+				<label for="task-name" class="form-label">
+					<span data-template-property="label">Task name</span>
+				</label>
+				<input type="text" name="documentHeadline" class="form-control" id="task-name" placeholder="Task name" />
+			</div>
+
+			<div class="form-group">
+				<label for="task-description" class="form-label">
+					<span data-template-property="label">Task Description</span>
+				</label>
+				<textarea name="taskDescription" class="form-control" id="task-description"></textarea>
+			</div>
+
+			<input type="hidden" name="parentId" value="6" />
+			<input type="hidden" name="type" value="normal" />
+
+			<div class="kb-header-actions">
+				<button type="button" class="kb-btn-share kb-btn-close">
+					Cancel
+				</button>
+				<button type="submit" class="kb-btn-share kb-btn-create">
+					Create Task
+				</button>
 			</div>
 		</div>
-
-		<div class="form-group">
-			<label for="task-description" class="form-label">
-				<span data-template-property="label">Task Description</span>
-			</label>
-			<div class="form-control-wrap">
-		<textarea
-				id="task-description"
-				name="taskDescription"
-				class="form-control"
-				placeholder="Enter task description"
-		></textarea>
-			</div>
-		</div>
-
-		<div class="kb-header-actions">
-			<button type="button" class="kb-btn-share">
-				Cancel
-			</button>
-			<button type="button" class="kb-btn-share">
-				Create Task
-			</button>
-		</div>
 	</div>
-</div>
+</form>

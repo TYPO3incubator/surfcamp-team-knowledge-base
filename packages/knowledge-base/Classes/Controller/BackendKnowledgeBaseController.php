@@ -19,6 +19,9 @@ use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
 use TYPO3Incubator\KnowledgeBase\Service\SearchService;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
+
 
 #[AsController]
 class BackendKnowledgeBaseController extends ActionController
@@ -52,9 +55,6 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         return $this->moduleTemplate->renderResponse('Backend/Index');
     }
-
-
-
 
     public function ajaxSearchAction(ServerRequest $request): ResponseInterface
     {
@@ -135,11 +135,13 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->jsonResponse((string)json_encode($result));
     }
 
-    public function ajaxLoadDocumentChildrenAction(ServerRequest $request): ResponseInterface
-    {
-        $params = $request->getQueryParams();
-        $documentUid = $params['documentUid'] ?? 0;
-        $result = $this->documentService->loadDocumentChildren($documentUid);
-        return $this->jsonResponse((string)json_encode($result));
-    }
+	public function ajaxLoadDocumentChildrenAction(ServerRequestInterface $request): ResponseInterface
+	{
+		$params = $request->getQueryParams();
+		$documentUid = (int)($params['documentUid'] ?? 0);
+
+		$result = $this->documentService->loadDocumentChildren($documentUid);
+
+		return new JsonResponse($result);
+	}
 }

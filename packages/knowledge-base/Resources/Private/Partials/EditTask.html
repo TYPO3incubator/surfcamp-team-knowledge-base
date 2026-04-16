@@ -1,0 +1,56 @@
+<form method="post" action="{f:uri.action(action: 'update')}">
+	<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
+
+		<div class="modal-header t3js-modal-header">
+			<h3 class="kb-modal-title">Edit Task</h3>
+		</div>
+
+		<div class="modal-body t3js-modal-body">
+
+			<!-- REQUIRED: document UID -->
+			<input type="hidden" name="documentUid" value="{document.uid}" />
+
+			<!-- Headline -->
+			<div class="form-group">
+				<label for="document-headline" class="form-label">
+					Task name
+				</label>
+				<input
+						type="text"
+						id="document-headline"
+						name="documentData[headline]"
+						value="{document.headline}"
+						class="form-control"
+						placeholder="Task name"
+				/>
+			</div>
+
+			<!-- Description -->
+			<div class="form-group">
+				<label for="document-markup" class="form-label">
+					Task Description
+				</label>
+				<textarea
+						id="document-markup"
+						name="documentData[markup]"
+						class="form-control"
+						placeholder="This is the task description"
+				>{document.markup}</textarea>
+			</div>
+
+			<!-- Visibility (optional but matches your service) -->
+<!-- -->
+
+			<!-- Actions -->
+			<div class="kb-header-actions">
+				<button type="button" class="kb-btn-share kb-edit-close">
+					Cancel
+				</button>
+				<button type="submit" class="kb-btn-share kb-btn-save">
+					Update Task
+				</button>
+			</div>
+
+		</div>
+	</div>
+</form>

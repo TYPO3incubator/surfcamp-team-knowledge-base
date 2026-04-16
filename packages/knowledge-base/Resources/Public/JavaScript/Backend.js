@@ -1,5 +1,9 @@
 import './Document.js'
 import './Pagetree.js'
+import './CreateTask.js'
+import './EditTask.js'
+import './NewTask.js'
+import './EditFunctionality.js'
 import './Board.js'
 import './Searchbar.js'
-
+import './ShowBoardTasks.js'
