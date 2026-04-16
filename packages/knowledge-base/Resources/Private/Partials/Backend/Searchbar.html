@@ -7,30 +7,16 @@
         <span class="kb-search-icon">
             <core:icon identifier="tx-knowledge-base-search" size="small" />
         </span>
-        <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" />
+        <input type="text" name="search" placeholder="Search knowledge base..." class="kb-search-input" autocomplete="off" />
 
         <div class="kb-search-flyout">
-            <a href="#" class="kb-search-result-item">
-                <core:icon identifier="tx-knowledge-base-page" size="small" />
-                <div class="kb-search-result-info">
-                    <span class="kb-search-result-title">Getting Started</span>
-                    <span class="kb-search-result-path">Documentation</span>
-                </div>
-            </a>
-            <a href="#" class="kb-search-result-item">
-                <core:icon identifier="tx-knowledge-base-page" size="small" />
-                <div class="kb-search-result-info">
-                    <span class="kb-search-result-title">Installation</span>
-                    <span class="kb-search-result-path">Documentation › Getting Started</span>
-                </div>
-            </a>
-            <a href="#" class="kb-search-result-item">
-                <core:icon identifier="tx-knowledge-base-page" size="small" />
-                <div class="kb-search-result-info">
-                    <span class="kb-search-result-title">Configuration Guide</span>
-                    <span class="kb-search-result-path">Documentation › Getting Started</span>
-                </div>
-            </a>
+            <div class="kb-flyout-modes">
+                <button type="button" class="kb-flyout-mode-btn is-active" data-mode="keyword">Keyword</button>
+                <button type="button" class="kb-flyout-mode-btn" data-mode="semantic">Semantic</button>
+                <button type="button" class="kb-flyout-mode-btn" data-mode="rag">RAG</button>
+            </div>
+            <div class="kb-flyout-status" hidden></div>
+            <div class="kb-flyout-results"></div>
         </div>
     </div>
 </form>
