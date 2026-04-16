@@ -100,7 +100,7 @@ function initPageTree() {
 
     // Use event delegation for document tree items and search results
     document.addEventListener('click', (e) => {
-        const item = e.target.closest('.document-tree-item, .tree-search-result-item');
+        const item = e.target.closest('.document-tree-item, .tree-search-result-item, .kb-flyout-result-item');
         if (item) {
             e.preventDefault();
             loadDocument(item.dataset.uid);
