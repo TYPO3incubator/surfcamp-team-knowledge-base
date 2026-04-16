@@ -47,7 +47,7 @@
     opacity: 0.6;
 }
 
-.modal-body {
+ul.modal .modal-body {
     display: flex;
     flex-direction: row;
     list-style: none;
@@ -109,6 +109,15 @@
 
 .kb-create-task-modal-content.is-open {
     display: flex;
+}
+
+/* The CreateTask overlay manages its own visibility — un-hide any .modal nested inside it */
+.kb-create-task-modal-content.is-open .modal {
+    display: block;
+    position: static;
+    transform: none;
+    top: auto;
+    left: auto;
 }
 
 .kb-edit-task-modal-content {
