@@ -53,8 +53,78 @@
     overflow: hidden;
 }
 
-.kb-search-wrapper:focus-within .kb-search-flyout {
+.kb-search-flyout.is-open {
     display: block;
+}
+
+/* Flyout mode tabs */
+.kb-flyout-modes {
+    display: flex;
+    gap: 2px;
+    padding: 6px 6px 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.kb-flyout-mode-btn {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b6b6b;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.1s ease, background 0.1s ease;
+}
+
+.kb-flyout-mode-btn:hover {
+    background: #f5f5f5;
+    color: #212529;
+}
+
+.kb-flyout-mode-btn.is-active {
+    color: #ff8700;
+    border-color: rgba(255, 135, 0, 0.3);
+    background: rgba(255, 135, 0, 0.06);
+}
+
+/* Flyout status (loading / error) */
+.kb-flyout-status {
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    color: #6b6b6b;
+}
+
+/* Flyout empty state */
+.kb-flyout-empty {
+    padding: 12px;
+    font-size: 0.875rem;
+    color: #6b6b6b;
+    text-align: center;
+}
+
+/* RAG answer box */
+.kb-flyout-answer {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    background: rgba(255, 135, 0, 0.04);
+}
+
+.kb-flyout-answer-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #ff8700;
+    margin-bottom: 4px;
+}
+
+.kb-flyout-answer-body {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
 }
 
 .kb-search-result-item {
@@ -140,5 +210,25 @@
     .kb-search-result-icon,
     .kb-search-result-path {
         color: #aaa;
+    }
+
+    .kb-flyout-modes {
+        border-bottom-color: #3a3a3a;
+    }
+
+    .kb-flyout-mode-btn:hover {
+        background: #3a3a3a;
+        color: #fff;
+    }
+
+    .kb-flyout-answer {
+        border-bottom-color: #3a3a3a;
+        background: rgba(255, 135, 0, 0.08);
+    }
+
+    .kb-flyout-answer-body,
+    .kb-flyout-status,
+    .kb-flyout-empty {
+        color: #ccc;
     }
 }

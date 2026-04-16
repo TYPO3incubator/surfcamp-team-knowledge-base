@@ -84,6 +84,18 @@
     }
 }
 
+/* Search results */
+.tree-search-results {
+    padding: 0 8px 4px;
+}
+
+.tree-search-no-results {
+    font-size: 0.875rem;
+    color: #6b6b6b;
+    padding: 8px 4px;
+    text-align: center;
+}
+
 /* Nodes */
 .item-wrapper {
     display: flex;
