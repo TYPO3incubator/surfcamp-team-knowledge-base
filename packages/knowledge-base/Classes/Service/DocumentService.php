@@ -6,6 +6,7 @@ namespace TYPO3Incubator\KnowledgeBase\Service;
 
 use TYPO3\CMS\Beuser\Domain\Repository\BackendUserRepository;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
@@ -19,6 +20,7 @@ class DocumentService
         protected readonly Context $context,
         protected readonly EmbeddingService $embeddingService,
         private readonly ModelAvailabilityService $modelAvailabilityService,
+        protected readonly PersistenceManager $persistenceManager,
     ) {}
 
     public function searchDocuments(string $query): array
@@ -89,6 +91,7 @@ class DocumentService
         }
 
         $this->documentRepository->add($document);
+        $this->persistenceManager->persistAll();
         $result['documentUid'] = $document->getUid();
 
         return $result;

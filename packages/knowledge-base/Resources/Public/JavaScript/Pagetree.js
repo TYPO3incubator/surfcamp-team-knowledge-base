@@ -1,8 +1,25 @@
 import { loadChildren, renderChildren } from './ShowBoardTasks.js';
 
+function expandToActiveItem() {
+    const activeItem = document.querySelector('.document-tree-item.is-active');
+    if (!activeItem) return;
+
+    let current = activeItem.closest('.item-childs');
+    while (current) {
+        current.hidden = false;
+        const parentWrapper = current.parentElement;
+        const collapseBtn = parentWrapper?.querySelector(':scope > .document-tree-item .kb-btn-collapse');
+        if (collapseBtn) {
+            collapseBtn.classList.remove('is-collapsed');
+        }
+        current = current.parentElement?.closest('.item-childs');
+    }
+}
+
 function initTree() {
     document.querySelectorAll('.item-childs').forEach(el => { el.hidden = true; });
     document.querySelectorAll('.kb-btn-collapse').forEach(btn => { btn.classList.add('is-collapsed'); });
+    expandToActiveItem();
 }
 
 if (document.readyState === 'loading') {

@@ -126,11 +126,6 @@ class DocumentRepository extends Repository
             ->set('tstamp', (string)time())
             ->executeStatement();
     }
-    public function add($object): void
-    {
-        parent::add($object);
-        $this->persistenceManager->persistAll();
-    }
 
     public function getChildren(int $documentUid): array
     {

@@ -50,10 +50,12 @@ class BackendKnowledgeBaseController extends ActionController
         $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/Backend.js');
     }
 
-    public function indexAction(): ResponseInterface
+    public function indexAction(int $openDocumentId = 0): ResponseInterface
     {
         $tree = $this->documentTreeService->getFullTree();
-        $openDocumentId = $this->documentTreeService->getOpenDocumentId($tree);
+        if ($openDocumentId === 0) {
+            $openDocumentId = $this->documentTreeService->getOpenDocumentId($tree);
+        }
         $this->moduleTemplate->assign('tree', $tree);
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $openDocument = $this->documentRepository->findByUid($openDocumentId);
