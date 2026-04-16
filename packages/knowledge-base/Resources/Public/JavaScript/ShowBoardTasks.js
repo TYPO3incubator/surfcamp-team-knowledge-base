@@ -17,7 +17,6 @@ export async function loadChildren(documentUid = 6) {
         }
 
         const data = await response.json();
-        console.log('Children loaded:', data);
 
         return data;
 

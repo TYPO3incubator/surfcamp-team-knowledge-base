@@ -34,10 +34,6 @@ function initPageTree() {
     const pageContentMarkup = document.getElementById('page-content-markup');
     const pageContentHeadline = document.getElementById('page-content-headline');
     const pageContentCommands = document.getElementById('page-content-commands');
-    const currentDocumentId = document.getElementById('open-document-id').innerHTML;
-
-    loadDocument(currentDocumentId);
-
     /**
      * Updates the page content area with document data and available commands
      *
