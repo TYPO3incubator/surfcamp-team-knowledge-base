@@ -1,3 +1,5 @@
+import { loadChildren, renderChildren } from './ShowBoardTasks.js';
+
 function initTree() {
     document.querySelectorAll('.item-childs').forEach(el => { el.hidden = true; });
     document.querySelectorAll('.kb-btn-collapse').forEach(btn => { btn.classList.add('is-collapsed'); });
@@ -62,13 +64,42 @@ function initPageTree() {
         }
     };
 
+    const setActiveItem = (uid) => {
+        document.querySelectorAll('.document-tree-item.is-active').forEach(el => el.classList.remove('is-active'));
+        document.querySelector(`.document-tree-item[data-uid="${uid}"]`)?.classList.add('is-active');
+    };
+
+    /**
+     * Switches to the board view and loads children for the given board document
+     *
+     * @param {string} uid
+     */
+    const changeToBoard = async (uid) => {
+        setActiveItem(uid);
+        document.querySelector('.board.module')?.removeAttribute('hidden');
+        document.querySelector('.page')?.setAttribute('hidden', '');
+
+        const treeItem = document.querySelector(`[data-uid="${uid}"] .item-text span`);
+        const boardTitle = document.getElementById('board-content-headline');
+        if (boardTitle && treeItem) {
+            boardTitle.textContent = treeItem.textContent;
+        }
+
+        const children = await loadChildren(uid);
+        if (children && Array.isArray(children)) {
+            renderChildren(children);
+        }
+    };
+
     /**
      * Loads a document via AJAX
      *
      * @param {string} uid
-     * @param {string} loadUrl
      */
     const loadDocument = (uid) => {
+        setActiveItem(uid);
+        document.querySelector('.board.module')?.setAttribute('hidden', '');
+        document.querySelector('.page')?.removeAttribute('hidden');
 
         const url = TYPO3.settings.ajaxUrls.loadDocument.concat('&documentUid='+uid)
 
@@ -103,7 +134,11 @@ function initPageTree() {
         const item = e.target.closest('.document-tree-item, .tree-search-result-item, .kb-flyout-result-item');
         if (item) {
             e.preventDefault();
-            loadDocument(item.dataset.uid);
+            if (item.dataset.documentType === 'board') {
+                changeToBoard(item.dataset.uid);
+            } else {
+                loadDocument(item.dataset.uid);
+            }
         }
     });
 
@@ -141,7 +176,7 @@ function initPageTree() {
             searchResultsEl.innerHTML = '<div class="tree-search-no-results">No documents found.</div>';
         } else {
             searchResultsEl.innerHTML = results.map(doc => `
-                <div class="item tree-search-result-item" data-uid="${doc.uid}">
+                <div class="item tree-search-result-item" data-uid="${doc.uid}" data-type="${escapeHtml(doc.type ?? '')}">
                     <span class="kb-collapse-placeholder"></span>
                     <span class="item-node-icon">${doc.type === 'board' ? iconBoard : iconPage}</span>
                     <div class="item-text">
@@ -184,6 +219,19 @@ function initPageTree() {
         clearTimeout(searchDebounce);
         searchDebounce = setTimeout(() => performSearch(searchInput.value.trim()), 400);
     });
+
+    // Bootstrap the initial view from server-rendered state
+    const contentEl = document.querySelector('.kb-content');
+    const initId = contentEl?.dataset.openDocumentId;
+    const initType = contentEl?.dataset.openDocumentType;
+
+    if (initId && parseInt(initId) > 0) {
+        if (initType === 'board') {
+            changeToBoard(initId);
+        } else {
+            loadDocument(initId);
+        }
+    }
 }
 
 if (document.readyState === 'loading') {

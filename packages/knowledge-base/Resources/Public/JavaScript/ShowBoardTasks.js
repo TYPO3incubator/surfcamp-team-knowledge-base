@@ -1,4 +1,4 @@
-async function loadChildren(documentUid = 6) {
+export async function loadChildren(documentUid = 6) {
     const url = TYPO3.settings.ajaxUrls.loadDocumentChildren + '&documentUid=' + documentUid;
 
     try {
@@ -29,7 +29,7 @@ async function loadChildren(documentUid = 6) {
 
 
 // Render function
-function renderChildren(children) {
+export function renderChildren(children) {
     const todoColumn = document.querySelector('[data-column="todo"]');
     const progressColumn = document.querySelector('[data-column="progress"]');
 
@@ -70,18 +70,3 @@ function renderChildren(children) {
     });
 }
 
-// INIT (FIXED)
-async function initBoard() {
-    const children = await loadChildren(6);
-
-    if (children && Array.isArray(children)) {
-        renderChildren(children);
-    }
-}
-
-// Safe bootstrap
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBoard);
-} else {
-    initBoard();
-}
