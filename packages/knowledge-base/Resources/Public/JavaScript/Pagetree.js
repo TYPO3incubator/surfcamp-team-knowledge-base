@@ -29,9 +29,42 @@ document.addEventListener('click', e => {
 
 
 function initPageTree() {
+    const loadDocument = (uid) => {
+        console.log("loading document with id " + uid)
+        const url = TYPO3.settings.ajaxUrls.loadDocument.concat('&documentUid='+uid)
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.document) {
+                    updatePageContent(data.document, data.commands);
+                } else {
+                    const errorMsg = data.message || 'Unknown error';
+                    console.error('Error loading document:', errorMsg);
+                    if (pageContentMarkup) {
+                        pageContentMarkup.innerHTML = `<span style="color:red">Error loading document: ${errorMsg}</span>`;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                if (pageContentMarkup) {
+                    pageContentMarkup.innerHTML = `<span style="color:red">Fetch error: ${error.message}</span>`;
+                }
+            });
+    };
+
     const pageContentMarkup = document.getElementById('page-content-markup');
     const pageContentHeadline = document.getElementById('page-content-headline');
     const pageContentCommands = document.getElementById('page-content-commands');
+    const currentDocumentId = document.getElementById('open-document-id').innerHTML;
+
+    loadDocument(currentDocumentId);
 
     /**
      * Updates the page content area with document data and available commands
@@ -68,35 +101,6 @@ function initPageTree() {
      * @param {string} uid
      * @param {string} loadUrl
      */
-    const loadDocument = (uid) => {
-
-        const url = TYPO3.settings.ajaxUrls.loadDocument.concat('&documentUid='+uid)
-
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success && data.document) {
-                    updatePageContent(data.document, data.commands);
-                } else {
-                    const errorMsg = data.message || 'Unknown error';
-                    console.error('Error loading document:', errorMsg);
-                    if (pageContentMarkup) {
-                        pageContentMarkup.innerHTML = `<span style="color:red">Error loading document: ${errorMsg}</span>`;
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                if (pageContentMarkup) {
-                    pageContentMarkup.innerHTML = `<span style="color:red">Fetch error: ${error.message}</span>`;
-                }
-            });
-    };
 
     // Use event delegation for document tree items
     document.addEventListener('click', (e) => {
