@@ -15,7 +15,7 @@ return [
     ],
     'types' => [
         '1' => [
-            'showitem' => 'document, title',
+            'showitem' => 'document, title, ordering',
         ],
     ],
     'columns' => [
@@ -42,5 +42,15 @@ return [
                 'required' => true,
             ],
         ],
+        'ordering' => [
+            'label' => 'LLL:EXT:knowledge-base/Resources/Private/Language/locallang_db.xlf:tx_knowledgebase_domain_model_status.ordering',
+            'config' => [
+                'type' => 'input',
+                'size' => 50,
+                'max' => 255,
+                'eval' => 'trim',
+                'required' => true,
+            ]
+        ]
     ],
 ];
