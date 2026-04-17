@@ -145,8 +145,10 @@ class KnowledgeBaseSearchBar {
         } else {
             html += results.map(doc => {
                 const icon = doc.type === 'board' ? this.iconBoard : this.iconPage;
-                const path = doc.breadcrumb
-                    ? `<span class="kb-search-result-path">${this.escapeHtml(doc.breadcrumb)}</span>`
+                const crumbs = Array.isArray(doc.breadcrumb) ? doc.breadcrumb : [];
+                const ancestors = crumbs.slice(0, -1);
+                const path = ancestors.length
+                    ? `<span class="kb-search-result-path">${ancestors.map(c => this.escapeHtml(c.headline)).join(' › ')}</span>`
                     : '';
                 return `<a href="#" class="kb-search-result-item kb-flyout-result-item" data-uid="${doc.uid}">
                     ${icon}
