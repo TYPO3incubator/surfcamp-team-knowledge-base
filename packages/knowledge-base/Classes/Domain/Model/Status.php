@@ -11,6 +11,7 @@ class Status extends AbstractEntity
     protected string $title = '';
 
     protected ?Document $document = null;
+    protected int $ordering = 0;
 
     public function getTitle(): string
     {
@@ -30,5 +31,15 @@ class Status extends AbstractEntity
     public function setDocument(Document $document): void
     {
         $this->document = $document;
+    }
+
+    public function getOrdering(): int
+    {
+        return $this->ordering;
+    }
+
+    public function setOrdering(int $ordering): void
+    {
+        $this->ordering = $ordering;
     }
 }

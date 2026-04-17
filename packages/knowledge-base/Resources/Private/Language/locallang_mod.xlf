@@ -15,8 +15,14 @@
             <trans-unit id="flash.document.updated">
                 <source>Document updated successfully.</source>
             </trans-unit>
+            <trans-unit id="flash.document.created">
+                <source>Document created successfully.</source>
+            </trans-unit>
             <trans-unit id="flash.document.notFound">
                 <source>Document not found.</source>
+            </trans-unit>
+            <trans-unit id="flash.status.created">
+                <source>Status created successfully.</source>
             </trans-unit>
         </body>
     </file>
