@@ -1,4 +1,4 @@
-import { initBoardDragDrop } from './Board.js';
+import { initBoardDragDrop, initColumnDragDrop } from './Board.js';
 
 export async function loadChildren(documentUid = 6) {
     const url = TYPO3.settings.ajaxUrls.loadDocumentChildren + '&documentUid=' + documentUid;
@@ -68,6 +68,8 @@ export function renderStatuses(statuses) {
         `;
         container.insertBefore(col, addNewCol);
     });
+
+    initColumnDragDrop();
 }
 
 // Render function

@@ -122,7 +122,7 @@ function persistColumnOrder() {
     });
 }
 
-function initColumnDragDrop() {
+export function initColumnDragDrop() {
     let draggedColumn = null;
     let placeholder = null;
 
