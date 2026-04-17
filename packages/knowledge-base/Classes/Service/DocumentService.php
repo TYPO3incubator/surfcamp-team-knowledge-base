@@ -94,6 +94,7 @@ class DocumentService
         $this->documentRepository->add($document);
         $this->persistenceManager->persistAll();
         $result['documentUid'] = $document->getUid();
+        $result['parentType'] = $document->getParent()->getType();
 
 		if ($this->modelAvailabilityService->isEmbeddingServerAvailable()) {
 			$this->embeddingService->generateAndStoreIfChanged($document);
