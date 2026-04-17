@@ -14,38 +14,47 @@
     white-space: nowrap;
 }
 
+#page-content-headline {
+    font-size: 18px;
+}
 .kb-header-actions {
     display: flex;
     justify-content: flex-end;
     gap: 16px;
 }
 
-
-/* Share button */
-.kb-btn-share {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #fff;
-    background-color: #ff8700;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
+#document-visibility {
+    margin-right: 2rem;
 }
 
+
+/* Share button */
+/*.kb-btn-share {*/
+/*    display: inline-flex;*/
+/*    align-items: center;*/
+/*    gap: 6px;*/
+/*    padding: 8px 14px;*/
+/*    font-size: 0.875rem;*/
+/*    font-weight: 500;*/
+/*    border: none;*/
+/*    border-radius: 4px;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.15s ease;*/
+/*}*/
+
 .kb-btn-share:hover {
-    background-color: #e67a00;
+    background-color: #d8d8d8;
 }
 
 .kb-btn-share .icon {
     flex-shrink: 0;
 }
 
-/* Always white — icon sits on orange background in both light and dark mode */
-.kb-btn-share [class*="icon-tx-knowledge-base"] img {
-    filter: invert(1);
+.kb-btn-edit {
+    color: #fff;
+    background-color: #4229A3;
+}
+
+.kb-btn-edit:hover {
+    filter: brightness(0.8);
 }

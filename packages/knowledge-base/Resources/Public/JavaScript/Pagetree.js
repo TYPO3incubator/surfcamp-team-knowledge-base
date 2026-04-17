@@ -58,11 +58,26 @@ function initPageTree() {
      * @param {Array} commands
      */
     const updatePageContent = (documentData, commands) => {
+        // Exit edit mode if active when a new document loads
+        const pageEl = document.querySelector('.page');
+        if (pageEl?.classList.contains('page-is-editing')) {
+            pageEl.classList.remove('page-is-editing');
+            const markupEl = document.getElementById('page-content-markup');
+            if (markupEl) markupEl.hidden = false;
+        }
+
         if (pageContentHeadline) {
             pageContentHeadline.textContent = documentData.headline || '';
         }
         if (pageContentMarkup) {
             pageContentMarkup.innerHTML = documentData.markup || '<i>No content available</i>';
+        }
+
+        // Store current document data on .page so the edit form can read it reliably
+        if (pageEl) {
+            pageEl.dataset.currentHeadline = documentData.headline || '';
+            pageEl.dataset.currentVisibility = documentData.visibility || 'public';
+            pageEl.dataset.currentMarkup = documentData.markup || '';
         }
         renderBreadcrumb(document.querySelector('.page'), documentData.breadcrumbs ?? []);
         if (pageContentCommands) {

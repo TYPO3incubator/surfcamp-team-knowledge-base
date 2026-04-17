@@ -12,6 +12,17 @@ body {
     font-family: var(--kb-font-family);
 }
 
+.btn-primary {
+    border-radius: 0.75rem;
+}
+
+.btn-default {
+    border-radius: 0.75rem;
+}
+
+.form-select {
+    border-radius: 0.75rem;
+}
 .module-docheader {
     display: none !important;
 }
@@ -101,6 +112,7 @@ body {
     flex: 1;
     min-width: 0;
     overflow-y: auto;
+    padding-bottom: 2rem;
 }
 
 .knowledge-base {
@@ -123,6 +135,11 @@ body {
 
 .breadcrumb {
     margin: 24px;
+}
+
+.breadcrumb-link {
+    display: flex;
+    align-items: center;
 }
 
 .tag {

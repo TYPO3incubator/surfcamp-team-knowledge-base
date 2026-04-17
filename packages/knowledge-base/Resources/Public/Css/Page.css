@@ -30,31 +30,41 @@
     padding: 1rem;
 }
 
-
-/* Edit button */
-.kb-btn-edit {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    background-color: var(--pagemodule-grid-cell-bg);
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
+#page-content-markup i {
+    color: #b3b3b3;
 }
 
-.kb-btn-edit:hover {
-    background-color: #ff8700;
-    color: white;
-}
-
-.kb-btn-edit:hover [class*="icon-tx-knowledge-base"] img {
+.kb-btn-edit [data-identifier="tx-knowledge-base-edit"] img {
     filter: invert(1);
 }
 
 .kb-btn-edit .icon {
     flex-shrink: 0;
+}
+
+/* Edit mode toggle */
+.kb-edit-mode {
+    display: none !important;
+}
+
+.page.page-is-editing .kb-edit-mode {
+    display: block !important;
+}
+
+.page.page-is-editing .kb-view-mode {
+    display: none !important;
+}
+
+/* Headline input in edit mode */
+.kb-headline-input {
+    font-weight: normal;
+    font-size: 14px;
+    min-width: 280px;
+}
+
+/* Save/cancel button group */
+.kb-edit-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
