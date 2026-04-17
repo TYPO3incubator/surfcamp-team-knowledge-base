@@ -90,8 +90,35 @@ export function initBoardDragDrop() {
             if (draggedCard && placeholder && placeholder.parentNode === this) {
                 this.insertBefore(draggedCard, placeholder);
                 placeholder.parentNode.removeChild(placeholder);
+
+                const documentUid = draggedCard.dataset.uid;
+                const targetColumn = this.dataset.column;
+                if (documentUid && targetColumn) {
+                    const url = TYPO3.settings.ajaxUrls.updateDocumentStatus
+                        + '&documentUid=' + encodeURIComponent(documentUid)
+                        + '&column=' + encodeURIComponent(targetColumn);
+                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .catch(err => console.error('Status update failed:', err));
+                }
             }
         });
+    });
+}
+
+function persistColumnOrder() {
+    const columns = [...document.querySelectorAll('.board__content-container .board__column')];
+    columns.forEach((col, index) => {
+        const colContent = col.querySelector('.board__column-content');
+        const statusId = colContent?.dataset.statusId;
+        const title = col.querySelector('.board__column-title')?.textContent?.trim();
+        if (!statusId || !title) return;
+
+        const url = TYPO3.settings.ajaxUrls.updateStatus
+            + '&statusId=' + encodeURIComponent(statusId)
+            + '&title=' + encodeURIComponent(title)
+            + '&ordering=' + encodeURIComponent(index);
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .catch(err => console.error('Column order update failed:', err));
     });
 }
 
@@ -164,6 +191,7 @@ function initColumnDragDrop() {
             if (placeholder && placeholder.parentNode) {
                 placeholder.parentNode.insertBefore(draggedColumn, placeholder);
                 placeholder.parentNode.removeChild(placeholder);
+                persistColumnOrder();
             }
         });
     });

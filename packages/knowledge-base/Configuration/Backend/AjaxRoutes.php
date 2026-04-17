@@ -17,4 +17,12 @@ return [
         'path' => '/knowledgebase/searchDocuments',
         'target' => BackendKnowledgeBaseController::class . '::ajaxSearchAction',
     ],
+    'updateDocumentStatus' => [
+        'path' => '/knowledgebase/updateDocumentStatus',
+        'target' => BackendKnowledgeBaseController::class . '::ajaxUpdateDocumentStatusAction',
+    ],
+    'updateStatus' => [
+        'path' => '/knowledgebase/updateStatus',
+        'target' => BackendKnowledgeBaseController::class . '::ajaxUpdateStatusAction',
+    ],
 ];

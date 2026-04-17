@@ -182,6 +182,15 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
     }
 
+    public function ajaxUpdateDocumentStatusAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $documentUid = (int)($params['documentUid'] ?? 0);
+        $column = $params['column'] ?? 'todo';
+        $result = $this->documentService->updateDocumentStatus($documentUid, $column);
+        return new JsonResponse($result);
+    }
+
     public function ajaxUpdateStatusAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
