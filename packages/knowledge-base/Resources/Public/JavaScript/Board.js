@@ -1,7 +1,7 @@
 // Shared drag type so card and column handlers don't interfere with each other
 let activeDragType = null;
 
-function initBoardDragDrop() {
+export function initBoardDragDrop() {
     let draggedCard = null;
     let placeholder = null;
 
@@ -29,7 +29,16 @@ function initBoardDragDrop() {
     document.querySelectorAll('.board__card').forEach(function (card) {
         card.setAttribute('draggable', 'true');
 
+        let pointerDownOnInteractive = false;
+        card.addEventListener('mousedown', (e) => {
+            pointerDownOnInteractive = !!e.target.closest('button, a, input, .board__card-edit');
+        });
+
         card.addEventListener('dragstart', function (e) {
+            if (pointerDownOnInteractive) {
+                e.preventDefault();
+                return;
+            }
             e.stopPropagation(); // prevent column dragstart from also firing
             activeDragType = 'card';
             draggedCard = this;
@@ -181,11 +190,7 @@ function initColumnDragDrop() {
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-        initBoardDragDrop();
-        initColumnDragDrop();
-    });
+    document.addEventListener('DOMContentLoaded', initColumnDragDrop);
 } else {
-    initBoardDragDrop();
     initColumnDragDrop();
 }

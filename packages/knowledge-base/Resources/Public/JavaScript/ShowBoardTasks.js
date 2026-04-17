@@ -1,3 +1,5 @@
+import { initBoardDragDrop } from './Board.js';
+
 export async function loadChildren(documentUid = 6) {
     const url = TYPO3.settings.ajaxUrls.loadDocumentChildren + '&documentUid=' + documentUid;
 
@@ -67,5 +69,7 @@ export function renderChildren(children) {
             todoColumn.appendChild(card);
         }
     });
+
+    initBoardDragDrop();
 }
 

@@ -28,7 +28,7 @@
     <f:for each="{tree}" as="node">
         <div class="item-wrapper">
             <div class="document-tree-item item{f:if(condition: '{node.document.uid} == {openDocumentId}', then: ' is-active')}{f:if(condition: '{node.children}', then: ' has-children')}"  data-uid="{node.document.uid}" data-document-type="{node.document.type}">
-                <f:if condition="{node.children}">
+                <f:if condition="{node.children} && {node.document.type} != 'board'">
                     <f:then>
                         <button type="button" class="kb-btn-collapse">
                             <core:icon identifier="tx-knowledge-base-collapse" size="small" />
