@@ -1,14 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
 
-
-<div class="breadcrumb">
-	<f:for each="{docHeader.breadcrumb}" as="crumb">
-		<a href="{crumb.url}">
-			<core:icon identifier="{crumb.icon}" />
-			{crumb.label}
-		</a>
-	</f:for>
-</div>
-
+<nav class="kb-breadcrumb" aria-label="Breadcrumb"></nav>
 
 </html>

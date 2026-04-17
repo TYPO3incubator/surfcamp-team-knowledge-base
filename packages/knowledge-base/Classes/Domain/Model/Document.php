@@ -110,8 +110,9 @@ class Document extends AbstractEntity implements \JsonSerializable
         $current = $this;
         while ($current) {
             $breadcrumbs[] = [
-                'headline' => $current->getHeadline(),
                 'uid' => $current->getUid(),
+                'headline' => $current->getHeadline(),
+                'type' => $current->getType(),
             ];
             $current = $current->parent;
         }
@@ -129,6 +130,7 @@ class Document extends AbstractEntity implements \JsonSerializable
             'parent' => $this->getParent()?->getUid(),
             'status' => $this->getStatus()?->getUid(),
             'user' => $this->getUser()?->getUid(),
+            'breadcrumbs' => $this->getBreadcrumbs(),
         ];
     }
 }
