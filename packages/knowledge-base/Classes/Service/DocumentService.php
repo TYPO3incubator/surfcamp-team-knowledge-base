@@ -38,6 +38,46 @@ class DocumentService
         ], $documents);
     }
 
+    public function updateDocumentStatus(int $documentUid, string $column): array
+    {
+        $result = ['success' => true, 'message' => ''];
+
+        $document = $this->documentRepository->findByUid($documentUid);
+        if ($document === null) {
+            $result['success'] = false;
+            $result['message'] = 'Document not found';
+            return $result;
+        }
+
+        if ($column === 'progress') {
+            $board = $document->getParent();
+            if ($board === null) {
+                $result['success'] = false;
+                $result['message'] = 'Board not found';
+                return $result;
+            }
+            $statuses = $this->statusRepository->findByDocumentId($board->getUid());
+            $status = array_values(array_filter($statuses, fn($s) => $s->getTitle() === 'in_progress'))[0] ?? null;
+
+            if ($status === null) {
+                $status = new \TYPO3Incubator\KnowledgeBase\Domain\Model\Status();
+                $status->setTitle('in_progress');
+                $status->setDocument($board);
+                $status->setOrdering(count($statuses));
+                $this->statusRepository->add($status);
+                $this->persistenceManager->persistAll();
+            }
+
+            $document->setStatus($status);
+        } else {
+            $document->setStatus(null);
+        }
+
+        $this->documentRepository->update($document);
+        $this->persistenceManager->persistAll();
+        return $result;
+    }
+
     public function updateDocument(int $documentUid, array $documentData): array
     {
         $result = [

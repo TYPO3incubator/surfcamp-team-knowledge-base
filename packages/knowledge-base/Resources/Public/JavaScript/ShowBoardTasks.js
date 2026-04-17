@@ -1,3 +1,5 @@
+import { initBoardDragDrop } from './Board.js';
+
 export async function loadChildren(documentUid = 6) {
     const url = TYPO3.settings.ajaxUrls.loadDocumentChildren + '&documentUid=' + documentUid;
 
@@ -46,6 +48,7 @@ export function renderChildren(children) {
         const firstLetter = name.charAt(0).toUpperCase();
         const card = document.createElement('div');
         card.className = 'board__card t3-page-ce-element';
+        card.dataset.uid = child.uid;
 
         card.innerHTML = `
             <p class="board__card--title">${child.headline}</p>
@@ -67,10 +70,15 @@ export function renderChildren(children) {
         `;
 
         if (child.status === 'in_progress') {
+            if (child.statusId && !progressColumn.dataset.statusId) {
+                progressColumn.dataset.statusId = child.statusId;
+            }
             progressColumn.appendChild(card);
         } else {
             todoColumn.appendChild(card);
         }
     });
+
+    initBoardDragDrop();
 }
 

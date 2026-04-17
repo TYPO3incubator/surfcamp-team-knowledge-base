@@ -249,6 +249,9 @@
     position: absolute;
     right: 12px;
     display: none;
+    z-index: 1;
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 /*To do fix color on hover*/

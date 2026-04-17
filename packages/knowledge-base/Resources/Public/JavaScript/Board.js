@@ -1,7 +1,7 @@
 // Shared drag type so card and column handlers don't interfere with each other
 let activeDragType = null;
 
-function initBoardDragDrop() {
+export function initBoardDragDrop() {
     let draggedCard = null;
     let placeholder = null;
 
@@ -29,7 +29,16 @@ function initBoardDragDrop() {
     document.querySelectorAll('.board__card').forEach(function (card) {
         card.setAttribute('draggable', 'true');
 
+        let pointerDownOnInteractive = false;
+        card.addEventListener('mousedown', (e) => {
+            pointerDownOnInteractive = !!e.target.closest('button, a, input, .board__card-edit');
+        });
+
         card.addEventListener('dragstart', function (e) {
+            if (pointerDownOnInteractive) {
+                e.preventDefault();
+                return;
+            }
             e.stopPropagation(); // prevent column dragstart from also firing
             activeDragType = 'card';
             draggedCard = this;
@@ -81,8 +90,35 @@ function initBoardDragDrop() {
             if (draggedCard && placeholder && placeholder.parentNode === this) {
                 this.insertBefore(draggedCard, placeholder);
                 placeholder.parentNode.removeChild(placeholder);
+
+                const documentUid = draggedCard.dataset.uid;
+                const targetColumn = this.dataset.column;
+                if (documentUid && targetColumn) {
+                    const url = TYPO3.settings.ajaxUrls.updateDocumentStatus
+                        + '&documentUid=' + encodeURIComponent(documentUid)
+                        + '&column=' + encodeURIComponent(targetColumn);
+                    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                        .catch(err => console.error('Status update failed:', err));
+                }
             }
         });
+    });
+}
+
+function persistColumnOrder() {
+    const columns = [...document.querySelectorAll('.board__content-container .board__column')];
+    columns.forEach((col, index) => {
+        const colContent = col.querySelector('.board__column-content');
+        const statusId = colContent?.dataset.statusId;
+        const title = col.querySelector('.board__column-title')?.textContent?.trim();
+        if (!statusId || !title) return;
+
+        const url = TYPO3.settings.ajaxUrls.updateStatus
+            + '&statusId=' + encodeURIComponent(statusId)
+            + '&title=' + encodeURIComponent(title)
+            + '&ordering=' + encodeURIComponent(index);
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .catch(err => console.error('Column order update failed:', err));
     });
 }
 
@@ -155,6 +191,7 @@ function initColumnDragDrop() {
             if (placeholder && placeholder.parentNode) {
                 placeholder.parentNode.insertBefore(draggedColumn, placeholder);
                 placeholder.parentNode.removeChild(placeholder);
+                persistColumnOrder();
             }
         });
     });
@@ -181,11 +218,7 @@ function initColumnDragDrop() {
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () {
-        initBoardDragDrop();
-        initColumnDragDrop();
-    });
+    document.addEventListener('DOMContentLoaded', initColumnDragDrop);
 } else {
-    initBoardDragDrop();
     initColumnDragDrop();
 }
