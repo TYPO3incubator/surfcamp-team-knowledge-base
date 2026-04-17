@@ -38,7 +38,7 @@ class DocumentService
         ], $documents);
     }
 
-    public function updateDocumentStatus(int $documentUid, string $column): array
+    public function updateDocumentStatus(int $documentUid, int $statusId): array
     {
         $result = ['success' => true, 'message' => ''];
 
@@ -49,25 +49,13 @@ class DocumentService
             return $result;
         }
 
-        if ($column === 'progress') {
-            $board = $document->getParent();
-            if ($board === null) {
+        if ($statusId > 0) {
+            $status = $this->statusRepository->findByUid($statusId);
+            if ($status === null) {
                 $result['success'] = false;
-                $result['message'] = 'Board not found';
+                $result['message'] = 'Status not found';
                 return $result;
             }
-            $statuses = $this->statusRepository->findByDocumentId($board->getUid());
-            $status = array_values(array_filter($statuses, fn($s) => $s->getTitle() === 'in_progress'))[0] ?? null;
-
-            if ($status === null) {
-                $status = new \TYPO3Incubator\KnowledgeBase\Domain\Model\Status();
-                $status->setTitle('in_progress');
-                $status->setDocument($board);
-                $status->setOrdering(count($statuses));
-                $this->statusRepository->add($status);
-                $this->persistenceManager->persistAll();
-            }
-
             $document->setStatus($status);
         } else {
             $document->setStatus(null);
