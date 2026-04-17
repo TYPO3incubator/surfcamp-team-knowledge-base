@@ -7,8 +7,7 @@
 			<span class="board__description">Track content creation and updates</span>
 		</div>
 		<div class="kb-header-actions">
-			<button type="button" class="kb-btn-share" id="kb-open-modal">
-				<core:icon identifier="tx-knowledge-base-add" size="small" />
+			<button type="button" class="btn btn-default kb-btn-edit" id="kb-open-modal">
 				New Task
 			</button>
 		</div>
@@ -24,8 +23,16 @@
 	<div class="kb-create-task-modal-content">
 		<div class="kb-create-task-modal-box">
 			<f:render partial="CreateTask" />
+
 		</div>
 	</div>
+
+    <div id="edit-task-modal" class="kb-edit-task-modal-content">
+        <div class="kb-edit-task-modal-box">
+
+            <f:render partial="EditTask" />
+        </div>
+    </div>
 
 	<div class="kb-create-status-modal-content">
 		<div class="kb-create-status-modal-box">
