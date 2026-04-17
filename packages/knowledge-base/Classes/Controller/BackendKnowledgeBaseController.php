@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -61,6 +60,7 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $openDocument = $this->documentRepository->findByUid($openDocumentId);
         $this->moduleTemplate->assign('openDocumentType', $openDocument?->getType() ?? Document::TYPE_NORMAL);
+        $this->moduleTemplate->assign('openDocument', $openDocument);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());

@@ -58,3 +58,31 @@
 .kb-btn-edit .icon {
     flex-shrink: 0;
 }
+
+/* Edit mode toggle */
+.kb-edit-mode {
+    display: none !important;
+}
+
+.page.page-is-editing .kb-edit-mode {
+    display: block !important;
+}
+
+.page.page-is-editing .kb-view-mode {
+    display: none !important;
+}
+
+/* Headline input in edit mode */
+.kb-headline-input {
+    font-size: 1.5rem;
+    font-weight: 600;
+    height: 40px;
+    min-width: 280px;
+}
+
+/* Save/cancel button group */
+.kb-edit-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}

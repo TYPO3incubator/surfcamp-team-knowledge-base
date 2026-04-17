@@ -1,26 +1,62 @@
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-	<div class="page">
-		<div class="page-info">
-			<div class="page-title">
-				<h1 id="page-content-headline">test</h1>
-			</div>
-			<div class="kb-header-actions">
-				<button type="button" class="kb-btn-edit">
-					<core:icon identifier="tx-knowledge-base-edit" size="small" />
-					Edit
-				</button>
-			</div>
-		</div>
-		<!--Breadcrumb-->
-		<f:render partial="Breadcrumb" arguments="{_all}" />
+<div class="page">
 
-		<typo3-rte-ckeditor-ckeditor5 options='{&quot;customConfig&quot;:&quot;&quot;,&quot;label&quot;:&quot;Content&quot;,&quot;alignment&quot;:{&quot;options&quot;:[{&quot;name&quot;:&quot;left&quot;,&quot;className&quot;:&quot;text-start&quot;},{&quot;name&quot;:&quot;center&quot;,&quot;className&quot;:&quot;text-center&quot;},{&quot;name&quot;:&quot;right&quot;,&quot;className&quot;:&quot;text-end&quot;},{&quot;name&quot;:&quot;justify&quot;,&quot;className&quot;:&quot;text-justify&quot;}]},&quot;contentsCss&quot;:[&quot;\/_assets\/937be57c7660e085d41e9dabf38b8aa1\/Css\/contents.css?1776008751&quot;,&quot;\/_assets\/937be57c7660e085d41e9dabf38b8aa1\/Css\/contents.css?1776008751&quot;],&quot;heading&quot;:{&quot;options&quot;:[{&quot;model&quot;:&quot;paragraph&quot;,&quot;title&quot;:&quot;Paragraph&quot;,&quot;class&quot;:&quot;ck-heading_paragraph&quot;},{&quot;model&quot;:&quot;heading2&quot;,&quot;view&quot;:&quot;h2&quot;,&quot;title&quot;:&quot;Heading 2&quot;,&quot;class&quot;:&quot;ck-heading_heading2&quot;},{&quot;model&quot;:&quot;heading3&quot;,&quot;view&quot;:&quot;h3&quot;,&quot;title&quot;:&quot;Heading 3&quot;,&quot;class&quot;:&quot;ck-heading_heading3&quot;},{&quot;model&quot;:&quot;heading4&quot;,&quot;view&quot;:&quot;h4&quot;,&quot;title&quot;:&quot;Heading 4&quot;,&quot;class&quot;:&quot;ck-heading_heading4&quot;},{&quot;model&quot;:&quot;heading5&quot;,&quot;view&quot;:&quot;h5&quot;,&quot;title&quot;:&quot;Heading 5&quot;,&quot;class&quot;:&quot;ck-heading_heading5&quot;},{&quot;model&quot;:&quot;heading6&quot;,&quot;view&quot;:&quot;h6&quot;,&quot;title&quot;:&quot;Heading 6&quot;,&quot;class&quot;:&quot;ck-heading_heading6&quot;}]},&quot;height&quot;:300,&quot;style&quot;:{&quot;definitions&quot;:[{&quot;name&quot;:&quot;Intro text&quot;,&quot;element&quot;:&quot;p&quot;,&quot;classes&quot;:[&quot;lead&quot;]},{&quot;name&quot;:&quot;Small&quot;,&quot;element&quot;:&quot;p&quot;,&quot;classes&quot;:[&quot;small&quot;]}]},&quot;toolbar&quot;:{&quot;items&quot;:[&quot;removeFormat&quot;,&quot;undo&quot;,&quot;redo&quot;,&quot;findAndReplace&quot;,&quot;|&quot;,&quot;link&quot;,&quot;unlink&quot;,&quot;|&quot;,&quot;selectAll&quot;,&quot;|&quot;,&quot;bold&quot;,&quot;italic&quot;,&quot;softhyphen&quot;,&quot;|&quot;,&quot;alignment&quot;,&quot;|&quot;,&quot;numberedList&quot;,&quot;bulletedList&quot;,&quot;|&quot;,&quot;sourceEditing&quot;,&quot;|&quot;,&quot;specialCharacters&quot;,&quot;-&quot;,&quot;style&quot;,&quot;heading&quot;],&quot;removeItems&quot;:[],&quot;shouldNotGroupWhenFull&quot;:true},&quot;ui&quot;:{&quot;poweredBy&quot;:{&quot;position&quot;:&quot;inside&quot;,&quot;side&quot;:&quot;right&quot;,&quot;label&quot;:&quot;&quot;}},&quot;width&quot;:&quot;auto&quot;,&quot;wordCount&quot;:{&quot;displayCharacters&quot;:true,&quot;displayWords&quot;:true},&quot;language&quot;:{&quot;ui&quot;:&quot;en&quot;,&quot;content&quot;:&quot;en-us&quot;},&quot;debug&quot;:true}'>
-		<textarea slot="textarea" id="data_tt_content__8__bodytext_" name="data[tt_content][8][bodytext]" rows="18" class="form-control" data-formengine-validation-rules="[]" aria-invalid="false" style="display: none;">
-			&lt;p&gt;Choosing the right Camino route depends on your fitness level, the time you have available, and what you are hoping to get out of the experience. Whether you are drawn to dramatic coastlines, mountain solitude, or the bustle of a well-travelled trail, there is a route that fits. Here is a comparison of the main routes to help you find the one that suits you best.&lt;/p&gt;
-		</textarea>
-		</typo3-rte-ckeditor-ckeditor5>
+    <!-- View mode header -->
+    <div class="page-info kb-view-mode">
+        <div class="page-title">
+            <h1 id="page-content-headline"></h1>
+        </div>
+        <div class="kb-header-actions">
+            <button type="button" class="kb-btn-edit">
+                <core:icon identifier="tx-knowledge-base-edit" size="small"/>
+                Edit
+            </button>
+        </div>
+    </div>
 
-		<div id="page-content-markup" class="page-content t3-page-ce-element"></div>
-	</div>
+    <!-- Edit mode: Fluid form for updateAction (hidden until .page-is-editing) -->
+    <f:form action="update" id="kb-edit-form" method="post" class="kb-edit-mode typo3-TCEforms">
+        <!-- Plain inputs so field names are consistent (no Extbase namespace prefix); JS populates the markup field on submit -->
+        <input type="hidden" id="edit-document-uid" name="documentUid" value="{openDocument.uid}"/>
+        <input type="hidden" id="document-editor-markup" name="documentData[markup]"/>
+
+        <div class="page-info">
+            <div class="page-title">
+                <input type="text" id="document-headline" name="documentData[headline]"
+                       class="form-control kb-headline-input"
+                       value="{openDocument.headline}"/>
+            </div>
+            <div class="kb-header-actions kb-edit-actions">
+                <select id="document-visibility" name="documentData[visibility]" class="form-select">
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                </select>
+                <button type="submit" class="kb-btn-save btn btn-primary">
+                    <core:icon identifier="actions-document-save" size="small"/>
+                    <span>Save</span>
+                </button>
+                <button type="button" class="kb-btn-cancel btn btn-default">
+                    <core:icon identifier="actions-close" size="small"/>
+                    <span>Cancel</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mount point: CKEditor is created here dynamically by JS when edit mode opens,
+             so it always initialises inside a visible container. Options stored as data attr. -->
+        <div id="ckeditor-mount"
+             data-options='{&quot;customConfig&quot;:&quot;&quot;,&quot;label&quot;:&quot;Content&quot;,&quot;alignment&quot;:{&quot;options&quot;:[{&quot;name&quot;:&quot;left&quot;,&quot;className&quot;:&quot;text-start&quot;},{&quot;name&quot;:&quot;center&quot;,&quot;className&quot;:&quot;text-center&quot;},{&quot;name&quot;:&quot;right&quot;,&quot;className&quot;:&quot;text-end&quot;},{&quot;name&quot;:&quot;justify&quot;,&quot;className&quot;:&quot;text-justify&quot;}]},&quot;contentsCss&quot;:[&quot;\/_assets\/937be57c7660e085d41e9dabf38b8aa1\/Css\/contents.css?1776008751&quot;,&quot;\/_assets\/937be57c7660e085d41e9dabf38b8aa1\/Css\/contents.css?1776008751&quot;],&quot;heading&quot;:{&quot;options&quot;:[{&quot;model&quot;:&quot;paragraph&quot;,&quot;title&quot;:&quot;Paragraph&quot;,&quot;class&quot;:&quot;ck-heading_paragraph&quot;},{&quot;model&quot;:&quot;heading2&quot;,&quot;view&quot;:&quot;h2&quot;,&quot;title&quot;:&quot;Heading 2&quot;,&quot;class&quot;:&quot;ck-heading_heading2&quot;},{&quot;model&quot;:&quot;heading3&quot;,&quot;view&quot;:&quot;h3&quot;,&quot;title&quot;:&quot;Heading 3&quot;,&quot;class&quot;:&quot;ck-heading_heading3&quot;},{&quot;model&quot;:&quot;heading4&quot;,&quot;view&quot;:&quot;h4&quot;,&quot;title&quot;:&quot;Heading 4&quot;,&quot;class&quot;:&quot;ck-heading_heading4&quot;},{&quot;model&quot;:&quot;heading5&quot;,&quot;view&quot;:&quot;h5&quot;,&quot;title&quot;:&quot;Heading 5&quot;,&quot;class&quot;:&quot;ck-heading_heading5&quot;},{&quot;model&quot;:&quot;heading6&quot;,&quot;view&quot;:&quot;h6&quot;,&quot;title&quot;:&quot;Heading 6&quot;,&quot;class&quot;:&quot;ck-heading_heading6&quot;}]},&quot;height&quot;:300,&quot;style&quot;:{&quot;definitions&quot;:[{&quot;name&quot;:&quot;Intro text&quot;,&quot;element&quot;:&quot;p&quot;,&quot;classes&quot;:[&quot;lead&quot;]},{&quot;name&quot;:&quot;Small&quot;,&quot;element&quot;:&quot;p&quot;,&quot;classes&quot;:[&quot;small&quot;]}]},&quot;toolbar&quot;:{&quot;items&quot;:[&quot;removeFormat&quot;,&quot;undo&quot;,&quot;redo&quot;,&quot;findAndReplace&quot;,&quot;|&quot;,&quot;link&quot;,&quot;unlink&quot;,&quot;|&quot;,&quot;selectAll&quot;,&quot;|&quot;,&quot;bold&quot;,&quot;italic&quot;,&quot;softhyphen&quot;,&quot;|&quot;,&quot;alignment&quot;,&quot;|&quot;,&quot;numberedList&quot;,&quot;bulletedList&quot;,&quot;|&quot;,&quot;sourceEditing&quot;,&quot;|&quot;,&quot;specialCharacters&quot;,&quot;-&quot;,&quot;style&quot;,&quot;heading&quot;],&quot;removeItems&quot;:[],&quot;shouldNotGroupWhenFull&quot;:true},&quot;ui&quot;:{&quot;poweredBy&quot;:{&quot;position&quot;:&quot;inside&quot;,&quot;side&quot;:&quot;right&quot;,&quot;label&quot;:&quot;&quot;}},&quot;width&quot;:&quot;auto&quot;,&quot;wordCount&quot;:{&quot;displayCharacters&quot;:true,&quot;displayWords&quot;:true},&quot;language&quot;:{&quot;ui&quot;:&quot;en&quot;,&quot;content&quot;:&quot;en-us&quot;},&quot;debug&quot;:true}'
+        ></div>
+    </f:form>
+
+    <!--Breadcrumb-->
+    <f:render partial="Breadcrumb" arguments="{_all}"/>
+
+    <!-- View mode: rendered markup -->
+    <div id="page-content-markup" class="page-content t3-page-ce-element"></div>
+
+</div>
 </html>
