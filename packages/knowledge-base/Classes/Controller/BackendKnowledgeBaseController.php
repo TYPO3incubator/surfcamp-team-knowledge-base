@@ -14,6 +14,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
+use TYPO3Incubator\KnowledgeBase\Domain\Repository\StatusRepository;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentService;
 use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
@@ -41,6 +42,7 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly DocumentRepository $documentRepository,
         protected readonly ModelAvailabilityService $modelAvailabilityService,
         protected readonly StatusService $statusService,
+        protected readonly StatusRepository $statusRepository,
     ) {}
 
     public function initializeAction(): void
@@ -186,8 +188,21 @@ class BackendKnowledgeBaseController extends ActionController
     {
         $params = $request->getQueryParams();
         $documentUid = (int)($params['documentUid'] ?? 0);
-        $column = $params['column'] ?? 'todo';
-        $result = $this->documentService->updateDocumentStatus($documentUid, $column);
+        $statusId = (int)($params['statusId'] ?? 0);
+        $result = $this->documentService->updateDocumentStatus($documentUid, $statusId);
+        return new JsonResponse($result);
+    }
+
+    public function ajaxLoadBoardStatusesAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $documentUid = (int)($params['documentUid'] ?? 0);
+        $statuses = $this->statusRepository->findByDocumentId($documentUid);
+        $result = array_map(fn($s) => [
+            'uid' => $s->getUid(),
+            'title' => $s->getTitle(),
+            'ordering' => $s->getOrdering(),
+        ], $statuses);
         return new JsonResponse($result);
     }
 

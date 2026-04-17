@@ -92,11 +92,11 @@ export function initBoardDragDrop() {
                 placeholder.parentNode.removeChild(placeholder);
 
                 const documentUid = draggedCard.dataset.uid;
-                const targetColumn = this.dataset.column;
-                if (documentUid && targetColumn) {
+                const statusId = this.dataset.statusId ?? '0';
+                if (documentUid) {
                     const url = TYPO3.settings.ajaxUrls.updateDocumentStatus
                         + '&documentUid=' + encodeURIComponent(documentUid)
-                        + '&column=' + encodeURIComponent(targetColumn);
+                        + '&statusId=' + encodeURIComponent(statusId);
                     fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
                         .catch(err => console.error('Status update failed:', err));
                 }
@@ -122,7 +122,7 @@ function persistColumnOrder() {
     });
 }
 
-function initColumnDragDrop() {
+export function initColumnDragDrop() {
     let draggedColumn = null;
     let placeholder = null;
 
