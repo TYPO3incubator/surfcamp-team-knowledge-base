@@ -8,7 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -50,6 +49,7 @@ class BackendKnowledgeBaseController extends ActionController
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Backend.css');
         $this->pageRenderer->addCssFile('EXT:knowledge-base/Resources/Public/Css/Modal.css');
         $this->pageRenderer->loadJavaScriptModule('@vendor/typo3-incubator/knowledge-base/Backend.js');
+        $this->pageRenderer->loadJavaScriptModule('@typo3/rte-ckeditor/ckeditor5.js');
     }
 
     public function indexAction(int $openDocumentId = 0): ResponseInterface
@@ -62,6 +62,7 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $openDocument = $this->documentRepository->findByUid($openDocumentId);
         $this->moduleTemplate->assign('openDocumentType', $openDocument?->getType() ?? Document::TYPE_NORMAL);
+        $this->moduleTemplate->assign('openDocument', $openDocument);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
         $this->moduleTemplate->assign('semanticSearchAvailable', $this->modelAvailabilityService->isEmbeddingServerAvailable());
@@ -127,9 +128,9 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
     }
 
-    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal'): ResponseInterface
+    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal', string $documentDescription = ''): ResponseInterface
     {
-        $result = $this->documentService->createDocument($documentHeadline, $parentId, $type);
+        $result = $this->documentService->createDocument($documentHeadline, $parentId, $type, $documentDescription);
 
         if (!$result['success']) {
             $this->addFlashMessage(
@@ -141,7 +142,11 @@ class BackendKnowledgeBaseController extends ActionController
         }
 
         $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
-        return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
+        $documentIdToDisplay = $result['documentUid'];
+        if ($result['parentType'] === Document::TYPE_BOARD) {
+            $documentIdToDisplay = $parentId;
+        }
+        return $this->redirect('index', null, null, ['openDocumentId' => $documentIdToDisplay]);
     }
 
     public function ajaxLoadDocumentAction(ServerRequestInterface $request): ResponseInterface

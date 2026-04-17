@@ -10,6 +10,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Incubator\KnowledgeBase\Domain\Model\Document;
 use TYPO3Incubator\KnowledgeBase\Domain\Repository\DocumentRepository;
+use TYPO3Incubator\KnowledgeBase\Domain\Repository\StatusRepository;
 use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
 
 class DocumentService
@@ -21,6 +22,7 @@ class DocumentService
         protected readonly EmbeddingService $embeddingService,
         private readonly ModelAvailabilityService $modelAvailabilityService,
         protected readonly PersistenceManager $persistenceManager,
+        protected readonly StatusRepository $statusRepository,
     ) {}
 
     public function searchDocuments(string $query): array
@@ -52,15 +54,25 @@ class DocumentService
         $document->setHeadline($documentData['headline'] ?? $document->getHeadline());
         $document->setMarkup($documentData['markup'] ?? $document->getMarkup());
         $document->setVisibility($documentData['visibility'] ?? $document->getVisibility());
+        if ($documentData['status']) {
+            $status = $this->statusRepository->findByUid($documentData['status']);
+            if ($status === null) {
+                $result['success'] = false;
+                $result['message'] = 'Status not found';
+                return $result;
+            }
+            $document->setStatus($status);
+        }
 
         $this->documentRepository->update($document);
         if ($this->modelAvailabilityService->isEmbeddingServerAvailable()) {
             $this->embeddingService->generateAndStoreIfChanged($document);
         }
+        $this->persistenceManager->persistAll();
         return $result;
     }
 
-    public function createDocument(string $documentHeadline, int $parentId, string $type): array
+    public function createDocument(string $documentHeadline, int $parentId, string $type, string $documentDescription): array
     {
         $result = [
             'success' => true,
@@ -82,6 +94,7 @@ class DocumentService
         $document->setHeadline($documentHeadline);
         $document->setUser($backendUser);
         $document->setType($type);
+		$document->setMarkup($documentDescription);
 
         if ($parentId > 0) {
             $parent = $this->documentRepository->findByUid($parentId);
@@ -93,6 +106,11 @@ class DocumentService
         $this->documentRepository->add($document);
         $this->persistenceManager->persistAll();
         $result['documentUid'] = $document->getUid();
+        $result['parentType'] = $document->getParent()->getType();
+
+		if ($this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+			$this->embeddingService->generateAndStoreIfChanged($document);
+		}
 
         return $result;
     }

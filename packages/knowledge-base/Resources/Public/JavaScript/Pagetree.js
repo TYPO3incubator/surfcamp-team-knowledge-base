@@ -58,12 +58,28 @@ function initPageTree() {
      * @param {Array} commands
      */
     const updatePageContent = (documentData, commands) => {
+        // Exit edit mode if active when a new document loads
+        const pageEl = document.querySelector('.page');
+        if (pageEl?.classList.contains('page-is-editing')) {
+            pageEl.classList.remove('page-is-editing');
+            const markupEl = document.getElementById('page-content-markup');
+            if (markupEl) markupEl.hidden = false;
+        }
+
         if (pageContentHeadline) {
             pageContentHeadline.textContent = documentData.headline || '';
         }
         if (pageContentMarkup) {
             pageContentMarkup.innerHTML = documentData.markup || '<i>No content available</i>';
         }
+
+        // Store current document data on .page so the edit form can read it reliably
+        if (pageEl) {
+            pageEl.dataset.currentHeadline = documentData.headline || '';
+            pageEl.dataset.currentVisibility = documentData.visibility || 'public';
+            pageEl.dataset.currentMarkup = documentData.markup || '';
+        }
+        renderBreadcrumb(document.querySelector('.page'), documentData.breadcrumbs ?? []);
         if (pageContentCommands) {
             pageContentCommands.innerHTML = '';
             if (commands && Array.isArray(commands)) {
@@ -95,13 +111,26 @@ function initPageTree() {
         document.querySelector('.board.module')?.removeAttribute('hidden');
         document.querySelector('.page')?.setAttribute('hidden', '');
 
+        // Set title immediately from tree DOM while async calls are in flight
         const treeItem = document.querySelector(`[data-uid="${uid}"] .item-text span`);
         const boardTitle = document.getElementById('board-content-headline');
         if (boardTitle && treeItem) {
             boardTitle.textContent = treeItem.textContent;
         }
 
-        const children = await loadChildren(uid);
+        const docUrl = TYPO3.settings.ajaxUrls.loadDocument.concat('&documentUid=' + uid);
+        const [children] = await Promise.all([
+            loadChildren(uid),
+            fetch(docUrl)
+                .then(r => r.json())
+                .then(data => {
+                    if (data?.success && data?.document) {
+                        renderBreadcrumb(document.querySelector('.board.module'), data.document.breadcrumbs ?? []);
+                    }
+                })
+                .catch(() => {}),
+        ]);
+
         if (children && Array.isArray(children)) {
             renderChildren(children);
         }
@@ -147,7 +176,7 @@ function initPageTree() {
 
     // Use event delegation for document tree items and search results
     document.addEventListener('click', (e) => {
-        const item = e.target.closest('.document-tree-item, .tree-search-result-item, .kb-flyout-result-item');
+        const item = e.target.closest('.document-tree-item, .tree-search-result-item, .kb-flyout-result-item, .kb-breadcrumb-item');
         if (item) {
             e.preventDefault();
             const contentEl = document.querySelector('.kb-content');
@@ -179,6 +208,31 @@ function initPageTree() {
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+
+    const renderBreadcrumb = (container, breadcrumbs) => {
+        const el = container?.querySelector('.kb-breadcrumb');
+        if (!el) return;
+
+        if (!breadcrumbs?.length) {
+            el.innerHTML = '';
+            return;
+        }
+
+        const homeIcon = document.getElementById('kb-icon-home')?.innerHTML ?? '';
+        let html = `<span class="kb-crumb-home">${homeIcon}</span>`;
+
+        breadcrumbs.forEach((crumb, index) => {
+            const isLast = index === breadcrumbs.length - 1;
+            html += `<span class="kb-crumb-sep">›</span>`;
+            if (isLast) {
+                html += `<span class="kb-crumb-current">${escapeHtml(crumb.headline)}</span>`;
+            } else {
+                html += `<a class="kb-crumb-link kb-breadcrumb-item" href="#" data-uid="${crumb.uid}" data-document-type="${escapeHtml(crumb.type ?? 'normal')}">${escapeHtml(crumb.headline)}</a>`;
+            }
+        });
+
+        el.innerHTML = html;
+    };
 
     const showTree = () => {
         searchResultsEl.hidden = true;
