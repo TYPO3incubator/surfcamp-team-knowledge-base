@@ -1,4 +1,6 @@
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
 
 <div class="board module" hidden>
 	<div class="board__info">
@@ -7,6 +9,10 @@
 			<span class="board__description">Track content creation and updates</span>
 		</div>
 		<div class="kb-header-actions">
+			<button type="button" class="kb-btn-delete" data-action="delete" data-confirm="Are you sure you want to delete this board and all its tasks?">
+				<core:icon identifier="actions-delete" size="small" />
+				Delete
+			</button>
 			<button type="button" class="kb-btn-share" id="kb-open-modal">
 				<core:icon identifier="tx-knowledge-base-add" size="small" />
 				New Task

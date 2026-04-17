@@ -140,4 +140,32 @@ class DocumentService
         $children = $this->documentRepository->getChildren($documentUid);
         return $children;
     }
+
+    public function deleteDocument(int $documentUid): array
+    {
+        $result = [
+            'success' => true,
+            'message' => '',
+        ];
+        $document = $this->documentRepository->findByUid($documentUid);
+        if ($document === null) {
+            $result['success'] = false;
+            $result['message'] = LocalizationUtility::translate('flash.document.notFound', 'Knowledge-base') ?? '';
+            return $result;
+        }
+
+        $this->deleteDocumentRecursive($document);
+        $this->persistenceManager->persistAll();
+
+        return $result;
+    }
+
+    protected function deleteDocumentRecursive(Document $document): void
+    {
+        $children = $this->documentRepository->getChildren((int)$document->getUid());
+        foreach ($children as $child) {
+            $this->deleteDocumentRecursive($child);
+        }
+        $this->documentRepository->remove($document);
+    }
 }

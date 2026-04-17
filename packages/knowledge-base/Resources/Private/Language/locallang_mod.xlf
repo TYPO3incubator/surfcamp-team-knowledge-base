@@ -24,6 +24,9 @@
             <trans-unit id="flash.status.created">
                 <source>Status created successfully.</source>
             </trans-unit>
+            <trans-unit id="flash.document.deleted">
+                <source>Document deleted successfully.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
