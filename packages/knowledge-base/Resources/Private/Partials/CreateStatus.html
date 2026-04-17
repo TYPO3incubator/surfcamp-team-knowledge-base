@@ -1,32 +1,28 @@
-<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
-	<div class="modal-header t3js-modal-header">
-		<h3 class="kb-modal-title">Create New status</h3>
-		<core:icon identifier="tx-knowledge-base-add" size="small" />
-	</div>
-	<div class="modal-body t3js-modal-body">
-		<div class="form-group">
-			<label for="status-name" class="form-label">
-				<span data-template-property="label">Status name</span>
-			</label>
-			<div class="form-control-wrap">
-				<input
-						type="text"
-						id="status-name"
-						name="statusName"
-						value=""
-						class="form-control"
-						placeholder="Enter status name"
-				>
+<f:form action="createStatus" id="kb-status-creation-form-edit" class="typo3-TCEforms">
+	<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
+		<div class="modal-header t3js-modal-header">
+			<h3 class="kb-modal-title">Create New status</h3>
+		</div>
+		<div class="modal-body t3js-modal-body">
+			<div class="form-group">
+				<label for="status-name" class="form-label">
+					<span data-template-property="label">Status name</span>
+				</label>
+				<div class="form-control-wrap">
+					<input type="text" name="title" id="status-name" class="form-control" placeholder="Enter status name" />
+				</div>
+			</div>
+
+			<input type="hidden" name="documentUid" value="" />
+
+			<div class="kb-header-actions">
+				<button type="button" class="kb-btn-share kb-btn-close-status">
+					Cancel
+				</button>
+				<button type="submit" class="kb-btn-share kb-btn-create-status">
+					Create status
+				</button>
 			</div>
 		</div>
-
-		<div class="kb-header-actions">
-			<button type="button" class="kb-btn-share">
-				Cancel
-			</button>
-			<button type="button" class="kb-btn-share">
-				Create status
-			</button>
-		</div>
 	</div>
-</div>
+</f:form>

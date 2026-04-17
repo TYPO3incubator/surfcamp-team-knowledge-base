@@ -98,7 +98,8 @@ ul.modal .modal-body {
     padding: 24px;
 }
 
-.kb-create-task-modal-content {
+.kb-create-task-modal-content,
+.kb-create-status-modal-content {
     position: fixed;
     inset: 0;
     display: none;
@@ -107,12 +108,14 @@ ul.modal .modal-body {
     background-color: #e8e8e880;
 }
 
-.kb-create-task-modal-content.is-open {
+.kb-create-task-modal-content.is-open,
+.kb-create-status-modal-content.is-open {
     display: flex;
 }
 
 /* The CreateTask overlay manages its own visibility — un-hide any .modal nested inside it */
-.kb-create-task-modal-content.is-open .modal {
+.kb-create-task-modal-content.is-open .modal,
+.kb-create-status-modal-content.is-open .modal {
     display: block;
     position: static;
     transform: none;
@@ -120,7 +123,8 @@ ul.modal .modal-body {
     left: auto;
 }
 
-.kb-edit-task-modal-content {
+.kb-edit-task-modal-content,
+.kb-edit-status-modal-content {
     position: fixed;
     inset: 0;
     display: none;
@@ -129,7 +133,8 @@ ul.modal .modal-body {
     background-color: #e8e8e880;
 }
 
-.kb-edit-task-modal-content.is-open {
+.kb-edit-task-modal-content.is-open,
+.kb-edit-status-modal-content.is-open {
     display: flex;
 }
 
