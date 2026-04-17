@@ -25,4 +25,8 @@ return [
         'path' => '/knowledgebase/updateStatus',
         'target' => BackendKnowledgeBaseController::class . '::ajaxUpdateStatusAction',
     ],
+    'loadBoardStatuses' => [
+        'path' => '/knowledgebase/loadBoardStatuses',
+        'target' => BackendKnowledgeBaseController::class . '::ajaxLoadBoardStatusesAction',
+    ],
 ];

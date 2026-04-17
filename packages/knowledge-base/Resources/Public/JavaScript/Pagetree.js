@@ -1,4 +1,4 @@
-import { loadChildren, renderChildren } from './ShowBoardTasks.js';
+import { loadChildren, loadBoardStatuses, renderStatuses, renderChildren } from './ShowBoardTasks.js';
 
 function expandToActiveItem() {
     const activeItem = document.querySelector('.document-tree-item.is-active');
@@ -119,7 +119,8 @@ function initPageTree() {
         }
 
         const docUrl = TYPO3.settings.ajaxUrls.loadDocument.concat('&documentUid=' + uid);
-        const [children] = await Promise.all([
+        const [statuses, children] = await Promise.all([
+            loadBoardStatuses(uid),
             loadChildren(uid),
             fetch(docUrl)
                 .then(r => r.json())
@@ -131,6 +132,9 @@ function initPageTree() {
                 .catch(() => {}),
         ]);
 
+        if (statuses && Array.isArray(statuses)) {
+            renderStatuses(statuses);
+        }
         if (children && Array.isArray(children)) {
             renderChildren(children);
         }
