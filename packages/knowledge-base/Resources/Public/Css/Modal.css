@@ -136,3 +136,16 @@ ul.modal .modal-body {
 .contextual-record-edit-body {
     background-color: white;
 }
+
+.modal-create-task {
+    padding: unset;
+}
+
+.board__card-edit.js-edit-task {
+    background: transparent;
+    border: none;
+}
+
+.kb-edit-task-modal-content.is-open {
+    z-index: 9999999;
+}

@@ -155,3 +155,36 @@ h1, h2, h3, h4, h5, h6, p {
     margin-bottom: unset;
     padding-bottom: unset;
 }
+
+.kb-modal-wrapper {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+}
+
+.kb-modal-wrapper.is-open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    width: 400px;
+}
+
+.kb-edit-task-modal-content {
+    display: none;
+}
+
+.kb-edit-task-modal-content.is-open {
+    display: block;
+}
+
+.kb-edit-task-modal-content.is-open .modal {
+    display: block;
+}

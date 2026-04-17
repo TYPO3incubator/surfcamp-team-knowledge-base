@@ -1,43 +1,50 @@
-function initBoard() {
-    const button = document.getElementById('kb-edit-modal');
-    const overlay = document.querySelector('.kb-edit-task-modal-content');
-    const box = document.querySelector('.kb-edit-task-modal-box');
+function initEditTaskModal() {
+    const overlay = document.querySelector('#edit-task-modal');
     const closeBtn = document.querySelector('.kb-edit-close');
 
-    if (!button || !overlay || !box) return;
+    if (!overlay) return;
 
-    button.addEventListener('click', function () {
+    // OPEN modal when edit button clicked (event delegation)
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.js-edit-task');
+        if (!btn) return;
+
+        const card = btn.closest('.board__card');
+        if (!card) return;
+
+        const uid = btn.dataset.uid;
+        const title = card.querySelector('.board__card--title')?.textContent || '';
+        const desc = card.querySelector('.board__card--description')?.textContent || '';
+
+        // fill form
+        const form = document.querySelector('#kb-edit-form-edit');
+        if (form) {
+            form.querySelector('input[name="documentUid"]').value = uid;
+            form.querySelector('input[name="documentData[headline]"]').value = title;
+            form.querySelector('textarea[name="documentData[markup]"]').value = desc;
+        }
+
+        // open modal
         overlay.classList.add('is-open');
     });
 
-    // cancel button closes modal
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
-            overlay.classList.remove('is-open');
-        });
-    }
-
-    // click outside modal box closes
-    overlay.addEventListener('click', function () {
+    // close modal
+    closeBtn?.addEventListener('click', () => {
         overlay.classList.remove('is-open');
     });
 
-    // prevent closing when clicking inside modal
-    box.addEventListener('click', function (e) {
-        e.stopPropagation();
-    });
-
-    // ESC close
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
+    // click outside box closes
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
             overlay.classList.remove('is-open');
         }
     });
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBoard);
+    document.addEventListener('DOMContentLoaded', function () {
+        initEditTaskModal();
+    });
 } else {
-    initBoard();
+    initEditTaskModal();
 }
-

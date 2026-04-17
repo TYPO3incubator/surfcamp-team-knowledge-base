@@ -1,5 +1,5 @@
-<form method="post" action="{f:uri.action(action: 'update')}">
-	<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
+<f:form action="update" id="kb-edit-form-edit" class="typo3-TCEforms">
+	<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center modal-create-task">
 
 		<div class="modal-header t3js-modal-header">
 			<h3 class="kb-modal-title">Edit Task</h3>
@@ -8,7 +8,7 @@
 		<div class="modal-body t3js-modal-body">
 
 			<!-- REQUIRED: document UID -->
-			<input type="hidden" name="documentUid" value="{document.uid}" />
+			<input type="hidden" name="documentUid" />
 
 			<!-- Headline -->
 			<div class="form-group">
@@ -16,13 +16,13 @@
 					Task name
 				</label>
 				<input
-						type="text"
 						id="document-headline"
+						type="text"
 						name="documentData[headline]"
-						value="{document.headline}"
 						class="form-control"
 						placeholder="Task name"
 				/>
+
 			</div>
 
 			<!-- Description -->
@@ -30,27 +30,26 @@
 				<label for="document-markup" class="form-label">
 					Task Description
 				</label>
+
 				<textarea
 						id="document-markup"
 						name="documentData[markup]"
 						class="form-control"
 						placeholder="This is the task description"
-				>{document.markup}</textarea>
+				></textarea>
 			</div>
-
-			<!-- Visibility (optional but matches your service) -->
-<!-- -->
 
 			<!-- Actions -->
 			<div class="kb-header-actions">
-				<button type="button" class="kb-btn-share kb-edit-close">
+				<button type="button" class="btn btn-default kb-btn-edit kb-edit-close">
 					Cancel
 				</button>
-				<button type="submit" class="kb-btn-share kb-btn-save">
+				<button type="submit" class="btn btn-default kb-btn-edit kb-btn-save">
 					Update Task
 				</button>
 			</div>
 
 		</div>
 	</div>
-</form>
+</f:form>
+
