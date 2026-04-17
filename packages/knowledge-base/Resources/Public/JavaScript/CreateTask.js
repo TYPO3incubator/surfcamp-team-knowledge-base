@@ -1,4 +1,4 @@
-function initBoard() {
+function initCreateModal() {
     const button = document.getElementById('kb-open-modal');
     const overlay = document.querySelector('.kb-create-task-modal-content');
     const box = document.querySelector('.kb-create-task-modal-box');
@@ -35,8 +35,33 @@ function initBoard() {
     });
 }
 
+function initCreateTaskModal() {
+    const form = document.getElementById('kb-creation-form-edit');
+    if (!form) return;
+
+    const button = form.querySelector('.kb-btn-create');
+    const parentInput = form.querySelector('input[name="parentId"]');
+
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const contentEl = document.querySelector('.kb-content');
+
+        const parentId = contentEl?.dataset.openDocumentId;
+
+        parentInput.value = parentId;
+
+        form.submit();
+    });
+}
+
+
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBoard);
+    document.addEventListener('DOMContentLoaded', function () {
+        initCreateModal();
+        initCreateTaskModal();
+    });
 } else {
-    initBoard();
+    initCreateModal();
+    initCreateTaskModal();
 }

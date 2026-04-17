@@ -1,4 +1,4 @@
-<form method="post" action="{f:uri.action(action: 'create')}">
+<f:form action="create" id="kb-creation-form-edit" class="typo3-TCEforms">
 	<div class="modal t3js-modal modal-type-ajax modal-style-default modal-severity-notice modal-size-small modal-position-center">
 		<div class="modal-header">
 			<h3 class="kb-modal-title">Create New Task</h3>
@@ -16,11 +16,11 @@
 				<label for="task-description" class="form-label">
 					<span data-template-property="label">Task Description</span>
 				</label>
-				<textarea name="taskDescription" class="form-control" id="task-description"></textarea>
+				<textarea name="documentDescription" class="form-control" id="task-description"></textarea>
 			</div>
 
-			<input type="hidden" name="parentId" value="6" />
-			<input type="hidden" name="type" value="normal" />
+			<input type="hidden" name="parentId" value="" />
+			<input type="hidden" name="type" value="" />
 
 			<div class="kb-header-actions">
 				<button type="button" class="kb-btn-share kb-btn-close">
@@ -32,4 +32,4 @@
 			</div>
 		</div>
 	</div>
-</form>
+</f:form>

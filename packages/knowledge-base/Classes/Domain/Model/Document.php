@@ -131,6 +131,7 @@ class Document extends AbstractEntity implements \JsonSerializable
             'status' => $this->getStatus()?->getUid(),
             'user' => $this->getUser()?->getUid(),
             'breadcrumbs' => $this->getBreadcrumbs(),
+			'userName' => $this->getUser()?->getRealName(),
         ];
     }
 }
