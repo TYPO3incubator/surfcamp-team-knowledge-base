@@ -42,6 +42,8 @@ export function renderChildren(children) {
 
     children.forEach(child => {
 
+        const name = child.userName ?? '';
+        const firstLetter = name.charAt(0).toUpperCase();
         const card = document.createElement('div');
         card.className = 'board__card t3-page-ce-element';
 
@@ -50,17 +52,20 @@ export function renderChildren(children) {
             <p class="board__card--description">${child.markup ?? ''}</p>
 
             <div class="board__card--author">
-                <span class="board__card--author-item">
-                    <span class="board__card--name">U</span>
-                    user ${child.user ?? ''}
+                <span class="board__card--author-item"><span class="board__card--name"> ${firstLetter}</span>${child.userName ?? ''}</span>  
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 </span>
-                <span>💬 0</span>
             </div>
 
-            <span class="board__card-edit" data-uid="${child.uid}">✏️</span>
+            <div class="board__card-edit" data-uid="${child.uid}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                    <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+                </svg>
+            </div>           
         `;
 
-        // 👉 simple routing example (adjust later)
         if (child.status === 'in_progress') {
             progressColumn.appendChild(card);
         } else {

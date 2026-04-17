@@ -86,6 +86,9 @@
             <trans-unit id="tx_knowledgebase_domain_model_status.document">
                 <source>Board Document</source>
             </trans-unit>
+            <trans-unit id="tx_knowledgebase_domain_model_status.ordering">
+                <source>Ordering</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

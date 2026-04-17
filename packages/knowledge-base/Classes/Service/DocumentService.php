@@ -60,7 +60,7 @@ class DocumentService
         return $result;
     }
 
-    public function createDocument(string $documentHeadline, int $parentId, string $type): array
+    public function createDocument(string $documentHeadline, int $parentId, string $type, string $documentDescription): array
     {
         $result = [
             'success' => true,
@@ -82,6 +82,7 @@ class DocumentService
         $document->setHeadline($documentHeadline);
         $document->setUser($backendUser);
         $document->setType($type);
+		$document->setMarkup($documentDescription);
 
         if ($parentId > 0) {
             $parent = $this->documentRepository->findByUid($parentId);
@@ -93,6 +94,11 @@ class DocumentService
         $this->documentRepository->add($document);
         $this->persistenceManager->persistAll();
         $result['documentUid'] = $document->getUid();
+        $result['parentType'] = $document->getParent()->getType();
+
+		if ($this->modelAvailabilityService->isEmbeddingServerAvailable()) {
+			$this->embeddingService->generateAndStoreIfChanged($document);
+		}
 
         return $result;
     }

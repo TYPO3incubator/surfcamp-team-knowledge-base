@@ -19,6 +19,7 @@ use TYPO3Incubator\KnowledgeBase\Service\DocumentTreeService;
 use TYPO3Incubator\KnowledgeBase\Service\EmbeddingService;
 use TYPO3Incubator\KnowledgeBase\Service\RagService;
 use TYPO3Incubator\KnowledgeBase\Service\SearchService;
+use TYPO3Incubator\KnowledgeBase\Service\StatusService;
 use TYPO3Incubator\SmartSearch\Service\ModelAvailabilityService;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -39,6 +40,7 @@ class BackendKnowledgeBaseController extends ActionController
         protected readonly SearchService $searchService,
         protected readonly DocumentRepository $documentRepository,
         protected readonly ModelAvailabilityService $modelAvailabilityService,
+        protected readonly StatusService $statusService,
     ) {}
 
     public function initializeAction(): void
@@ -126,9 +128,9 @@ class BackendKnowledgeBaseController extends ActionController
         return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
     }
 
-    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal'): ResponseInterface
+    public function createAction(string $documentHeadline, int $parentId = 0, string $type = 'normal', string $documentDescription = ''): ResponseInterface
     {
-        $result = $this->documentService->createDocument($documentHeadline, $parentId, $type);
+        $result = $this->documentService->createDocument($documentHeadline, $parentId, $type, $documentDescription);
 
         if (!$result['success']) {
             $this->addFlashMessage(
@@ -140,7 +142,11 @@ class BackendKnowledgeBaseController extends ActionController
         }
 
         $this->addFlashMessage(LocalizationUtility::translate('flash.document.created', 'Knowledge-base') ?? 'Document created.');
-        return $this->redirect('index', null, null, ['openDocumentId' => $result['documentUid']]);
+        $documentIdToDisplay = $result['documentUid'];
+        if ($result['parentType'] === Document::TYPE_BOARD) {
+            $documentIdToDisplay = $parentId;
+        }
+        return $this->redirect('index', null, null, ['openDocumentId' => $documentIdToDisplay]);
     }
 
     public function ajaxLoadDocumentAction(ServerRequestInterface $request): ResponseInterface
@@ -160,4 +166,37 @@ class BackendKnowledgeBaseController extends ActionController
 
 		return new JsonResponse($result);
 	}
+
+    public function createStatusAction(int $documentUid, string $title): ResponseInterface
+    {
+        $result = $this->statusService->createStatus($documentUid, $title);
+        if (!$result['success']) {
+            $this->addFlashMessage(
+                $result['message'] ?? '',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('index');
+        }
+        $this->addFlashMessage(LocalizationUtility::translate('flash.status.created', 'Knowledge-base') ?? 'Status created.');
+        return $this->redirect('index', null, null, ['openDocumentId' => $documentUid]);
+    }
+
+    public function ajaxUpdateStatusAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $params = $request->getQueryParams();
+        $statusId = (int)$params['statusId'] ?? '';
+        $title = $params['title'] ?? '';
+        $ordering = (int)$params['ordering'] ?? '';
+        $result = $this->statusService->updateStatus($statusId, $title, $ordering);
+        if (!$result['success']) {
+            $this->addFlashMessage(
+                $result['message'] ?? '',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('index');
+        }
+        return new JsonResponse($result);
+    }
 }
