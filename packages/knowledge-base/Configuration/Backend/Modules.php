@@ -19,6 +19,7 @@ return [
                 'search',
                 'create',
                 'update',
+                'createStatus',
                 'loadDocument',
                 'loadDocumentChildren',
                 'rag',

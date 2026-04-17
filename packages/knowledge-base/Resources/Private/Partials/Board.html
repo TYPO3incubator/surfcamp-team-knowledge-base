@@ -26,6 +26,12 @@
 			<f:render partial="CreateTask" />
 		</div>
 	</div>
+
+	<div class="kb-create-status-modal-content">
+		<div class="kb-create-status-modal-box">
+			<f:render partial="CreateStatus" arguments="{openDocumentId: openDocumentId}" />
+		</div>
+	</div>
 </div>
 
 <f:section name="Status Column">
@@ -51,7 +57,7 @@
 			<div class="board__column--data">
 				<h3 class="board__column-title">Add New</h3>
 			</div>
-			<div class="board__column-content board__column-new t3-grid-cell">
+			<div class="board__column-content board__column-new t3-grid-cell" id="status-open-modal">
 				<span class="add-new-icon">+</span>
 			</div>
 		</div>
