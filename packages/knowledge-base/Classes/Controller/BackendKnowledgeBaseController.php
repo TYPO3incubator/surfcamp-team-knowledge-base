@@ -62,6 +62,11 @@ class BackendKnowledgeBaseController extends ActionController
         $this->moduleTemplate->assign('openDocumentId', $openDocumentId);
         $openDocument = $this->documentRepository->findByUid($openDocumentId);
         $this->moduleTemplate->assign('openDocumentType', $openDocument?->getType() ?? Document::TYPE_NORMAL);
+
+        $this->pageRenderer->addInlineSetting('KnowledgeBase', 'updateDocumentUrl', (string)$this->uriBuilder->reset()->uriFor('update'));
+        $this->pageRenderer->addInlineSetting('KnowledgeBase', 'createDocumentUrl', (string)$this->uriBuilder->reset()->uriFor('create'));
+        $this->pageRenderer->addInlineSetting('KnowledgeBase', 'deleteDocumentUrl', (string)$this->uriBuilder->reset()->uriFor('delete', ['documentUid' => '###UID###']));
+
         $this->moduleTemplate->assign('openDocument', $openDocument);
         $loadChildrenUrl = $this->uriBuilder->reset()->uriFor('loadDocumentChildren', ['documentUid' => 'DOCUMENT_ID_PLACEHOLDER']);
         $this->moduleTemplate->assign('loadChildrenUrl', $loadChildrenUrl);
@@ -147,6 +152,22 @@ class BackendKnowledgeBaseController extends ActionController
             $documentIdToDisplay = $parentId;
         }
         return $this->redirect('index', null, null, ['openDocumentId' => $documentIdToDisplay]);
+    }
+
+    public function deleteAction(int $documentUid): ResponseInterface
+    {
+        $result = $this->documentService->deleteDocument($documentUid);
+        if (!$result['success']) {
+            $this->addFlashMessage(
+                $result['message'] ?? '',
+                '',
+                ContextualFeedbackSeverity::ERROR
+            );
+            return $this->redirect('index');
+        }
+
+        $this->addFlashMessage(LocalizationUtility::translate('flash.document.deleted', 'Knowledge-base') ?? 'Document deleted.');
+        return $this->redirect('index');
     }
 
     public function ajaxLoadDocumentAction(ServerRequestInterface $request): ResponseInterface

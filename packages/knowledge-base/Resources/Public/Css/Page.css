@@ -68,3 +68,32 @@
     gap: 8px;
     align-items: center;
 }
+
+/* Delete button */
+.kb-btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: var(--pagemodule-grid-cell-bg);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.kb-btn-delete:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+.kb-btn-delete:hover img {
+    filter: invert(1);
+}
+
+.kb-btn-delete .icon {
+    flex-shrink: 0;
+}

@@ -194,6 +194,28 @@ function initPageTree() {
     const searchResultsEl = document.querySelector('.tree-search-results');
     const treeNodesEl = document.getElementById('tree-nodes-container');
 
+    // Delete action handler
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.kb-btn-delete[data-action="delete"]');
+        if (!btn) return;
+
+        e.preventDefault();
+        const contentEl = document.querySelector('.kb-content');
+        const uid = contentEl?.dataset.openDocumentId;
+        const deleteUrlTemplate = contentEl?.dataset.deleteUrl || TYPO3.settings.KnowledgeBase?.deleteDocumentUrl;
+
+        if (!uid || !deleteUrlTemplate || uid === '0') {
+            console.error('Missing UID or delete URL template', { uid, deleteUrlTemplate });
+            return;
+        }
+
+        const confirmMsg = btn.dataset.confirm || 'Are you sure you want to delete this document?';
+        if (confirm(confirmMsg)) {
+            const url = deleteUrlTemplate.replace(encodeURIComponent('###UID###'), uid).replace('###UID###', uid);
+            window.location.href = url;
+        }
+    });
+
     if (!searchInput || !searchResultsEl || !treeNodesEl) return;
 
     const iconPage = document.getElementById('kb-icon-page')?.innerHTML ?? '';
@@ -248,7 +270,7 @@ function initPageTree() {
             searchResultsEl.innerHTML = '<div class="tree-search-no-results">No documents found.</div>';
         } else {
             searchResultsEl.innerHTML = results.map(doc => `
-                <div class="item tree-search-result-item" data-uid="${doc.uid}" data-type="${escapeHtml(doc.type ?? '')}">
+                <div class="item tree-search-result-item" data-uid="${doc.uid}" data-document-type="${escapeHtml(doc.type ?? '')}">
                     <span class="kb-collapse-placeholder"></span>
                     <span class="item-node-icon">${doc.type === 'board' ? iconBoard : iconPage}</span>
                     <div class="item-text">
